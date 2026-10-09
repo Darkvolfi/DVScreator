@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Hareketli sticker testleri 100+ kareyi (≈1 MB/kare) bellekte tutar -->
+    <application android:largeHeap="true" />
+</manifest>

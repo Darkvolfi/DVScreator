@@ -28,15 +28,16 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 ## M2 — Hareketli sticker hattı  ← ana özellik
 - [x] **Fizibilite:** ContentProvider + 6 test paketi → gerçek hareketli ✅, 2 kareli "hareketli" ✅, 500 KB üstü ❌, statik 100 KB üstü ❌ (WhatsApp + QA) — [raporlar/m2-whatsapp-fizibilite.md](raporlar/m2-whatsapp-fizibilite.md)
 - [ ] Gönderim testi: 2 kareli ve gerçek hareketli sticker sohbete gönderildiğinde kalite ve görünüm korunuyor mu? (QA)
-- [~] libwebp `WebPAnimEncoder` JNI ✅ + mux (statik→2 kare) ✅ + demux bilgi ✅; `WebPAnimDecoder` (hareketli WebP kaynağı için) eksik (Görüntü)
-- [ ] Video kaynağı: `MediaExtractor` + `MediaCodec` ile zaman damgalı kare çıkarma (Görüntü)
-- [ ] GIF / animated WebP kaynağı: kare + süre çıkarma (Görüntü)
-- [ ] Zamansal sabitleme: gürültü eşiği altındaki değişimleri önceki kareden kopyala → fark kodlaması tam verimli (Görüntü) — bkz. 02 madde 9
-- [ ] Animasyon BEST_FIT: sabitleme → kalite ikili arama → FPS düşürme (süre korunarak) → süre önerisi; ≤ 500 KB, kare ≥ 8 ms, ≤ 10 sn (Görüntü)
-- [ ] Animasyon kalite ölçümü: kare bazında SSIM (ortalama + en kötü kare) (Görüntü)
-- [ ] "Maksimum kalite modu": statik görsel → 2 kareli animated WebP, 500 KB bütçe (Görüntü) — bkz. 02 madde 7b
-- [ ] Animasyon altın seti + cihaz testleri, eşik kilitleme (QA)
-- [ ] Kalite laboratuvarına video / GIF desteği (Android)
+- [x] libwebp `WebPAnimEncoder` + mux (statik→2 kare) + demux + akışlı `WebPAnimDecoder` JNI (Görüntü)
+- [~] Video kaynağı: `MediaMetadataRetriever` ile kare çıkarma, ≤150 kare (Görüntü) — yazıldı, gerçek videolarla denenmedi; yavaşsa `MediaCodec`e geçilecek
+- [~] GIF kaynağı (glide gifdecoder) (Görüntü) — yazıldı, gerçek GIF ile denenmedi; hareketli WebP kaynağı eksik
+- [x] Zamansal sabitleme: 8×8 blok bazlı (Görüntü) — ±3 gürültüde 6 kat küçültme (303 → 50 KB)
+- [x] Animasyon BEST_FIT: sabitleme → kayıpsız (tahminli) → kayıplı interpolasyonlu arama → FPS düşürme (süre korunarak) (Görüntü)
+- [x] Animasyon kalite ölçümü: örneklenmiş kare SSIM (ortalama + en kötü kare) (Görüntü)
+- [x] "Maksimum kalite modu": statik görsel → 2 kareli animated WebP, 500 KB bütçe (Görüntü) — WhatsApp kabul ediyor
+- [~] Animasyon altın seti + cihaz testleri (QA) — sentetik klipler; eşikler gerçek videolardan sonra kilitlenecek
+- [x] Kalite laboratuvarına video / GIF desteği (Android)
+- [ ] Gerçek video / GIF ile ölçüm ve hız iyileştirmesi (QA)
 
 ## M3 — WhatsApp entegrasyonu
 - [ ] Room şeması, StickerStorage, repository'ler (Android)

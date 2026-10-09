@@ -80,6 +80,35 @@ object Resampler {
         return out
     }
 
+    /**
+     * Tam sayı katlı alan ortalaması (premultiplied): her `factor × factor` blok tek piksel olur.
+     * Kenarlarda artan pikseller atılır (en fazla factor-1 px). Hızlı ön küçültme içindir.
+     */
+    fun boxDownscale(src: ArgbImage, factor: Int): ArgbImage {
+        require(factor >= 1)
+        if (factor == 1) return src
+        val w = src.width / factor
+        val h = src.height / factor
+        val out = ArgbImage(w.coerceAtLeast(1), h.coerceAtLeast(1))
+        val n = factor * factor
+        for (y in 0 until out.height) for (x in 0 until out.width) {
+            var a = 0L; var r = 0L; var g = 0L; var b = 0L
+            for (dy in 0 until factor) {
+                var i = (y * factor + dy) * src.width + x * factor
+                for (dx in 0 until factor) {
+                    val p = src.pixels[i++]
+                    val pa = alphaOf(p)
+                    a += pa; r += redOf(p) * pa; g += greenOf(p) * pa; b += blueOf(p) * pa
+                }
+            }
+            out.pixels[y * out.width + x] = if (a == 0L) 0 else argbOf(
+                ((a + n / 2) / n).toInt(),
+                ((r + a / 2) / a).toInt(), ((g + a / 2) / a).toInt(), ((b + a / 2) / a).toInt(),
+            )
+        }
+        return out
+    }
+
     private fun unpremultiply(r: Float, g: Float, b: Float, a: Float, linearLight: Boolean): Int {
         // Lanczos'un negatif lobları aşma (ringing) üretebilir → sınırla
         val alpha = a.coerceIn(0f, 1f)

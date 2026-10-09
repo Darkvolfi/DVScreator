@@ -65,6 +65,35 @@ object NativeWebp : WebpCodec {
         )
     }
 
+    /**
+     * Hareketli WebP'nin karelerini sırayla, tam tuval olarak verir (bellekte aynı anda tek kare).
+     * [onFrame]'e verilen dizi her karede yeniden kullanılır — saklamak gerekiyorsa kopyalanmalı.
+     */
+    inline fun forEachFrame(webp: ByteArray, onFrame: (index: Int, argb: IntArray, endTimestampMs: Int) -> Unit): WebpAnimHeader {
+        val info = IntArray(3)
+        val handle = animDecoderOpen(webp, info)
+        try {
+            val buffer = IntArray(info[0] * info[1])
+            var index = 0
+            while (true) {
+                val ts = animDecoderNext(handle, buffer)
+                if (ts < 0) break
+                onFrame(index++, buffer, ts)
+            }
+        } finally {
+            animDecoderClose(handle)
+        }
+        return WebpAnimHeader(info[0], info[1], info[2])
+    }
+
+    @PublishedApi internal fun animDecoderOpen(webp: ByteArray, info: IntArray): Long = nativeAnimDecoderOpen(webp, info)
+    @PublishedApi internal fun animDecoderNext(handle: Long, out: IntArray): Int = nativeAnimDecoderNext(handle, out)
+    @PublishedApi internal fun animDecoderClose(handle: Long) = nativeAnimDecoderClose(handle)
+
+    private external fun nativeAnimDecoderOpen(webp: ByteArray, info: IntArray): Long
+    private external fun nativeAnimDecoderNext(handle: Long, out: IntArray): Int
+    private external fun nativeAnimDecoderClose(handle: Long)
+
     private external fun nativeEncode(
         argb: IntArray, width: Int, height: Int,
         lossless: Boolean, losslessLevel: Int, quality: Float, method: Int,
@@ -84,6 +113,8 @@ object NativeWebp : WebpCodec {
     private external fun nativeDecode(webp: ByteArray): IntArray?
     private external fun nativeInfo(webp: ByteArray): IntArray?
 }
+
+class WebpAnimHeader(val canvasWidth: Int, val canvasHeight: Int, val frameCount: Int)
 
 class WebpInfo(
     val canvasWidth: Int,

@@ -15,13 +15,18 @@ object StickerCanvas {
         size: Int,
         margin: Int,
         linearLight: Boolean = false,
+        /** Video kareleri için: önce tam sayı katlı alan ortalaması, sonra Lanczos (~10 kat hızlı). */
+        fast: Boolean = false,
     ): ArgbImage {
         require(margin in 0 until size / 2) { "geçersiz kenar boşluğu: $margin" }
         val box = size - 2 * margin
         val scale = box.toDouble() / max(src.width, src.height)
         val w = (src.width * scale).roundToInt().coerceIn(1, box)
         val h = (src.height * scale).roundToInt().coerceIn(1, box)
-        val scaled = Resampler.lanczos3(src, w, h, linearLight)
+        // Alan ortalaması alias üretmez; Lanczos'a hedefin en az 2 katı çözünürlük bırakılır
+        val factor = if (fast) max(src.width, src.height) / (2 * max(w, h)) else 1
+        val pre = if (factor >= 2) Resampler.boxDownscale(src, factor) else src
+        val scaled = Resampler.lanczos3(pre, w, h, linearLight)
 
         val canvas = ArgbImage(size, size)
         val left = (size - w) / 2

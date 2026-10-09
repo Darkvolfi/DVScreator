@@ -4,16 +4,10 @@
 
     <!-- Geçici geliştirici ekranı (M1) -->
     <string name="lab_title">Quality lab</string>
-    <string name="lab_subtitle">Pick a photo to turn it into a 512×512 sticker and see the measurements.</string>
-    <string name="lab_pick">Pick photo</string>
+    <string name="lab_subtitle">Pick a photo, video or GIF to turn it into a 512×512 sticker and see the measurements.</string>
+    <string name="lab_pick">Pick photo / video / GIF</string>
+    <string name="lab_working">Processing… videos can take 5–30 seconds.</string>
     <string name="lab_error">Error: %1$s</string>
-    <string name="lab_mode_lossless">Lossless — pixel-identical</string>
-    <string name="lab_mode_near_lossless">Near-lossless (level %1$d)</string>
-    <string name="lab_mode_lossy">Lossy (quality %1$d)</string>
-    <string name="lab_size">Size: %1$s KB / 100 KB</string>
-    <string name="lab_ssim">SSIM: %1$s (1.0 = identical)</string>
-    <string name="lab_source">Decoded source: %1$s px</string>
-    <string name="lab_time">Load: %1$d ms · Total: %2$d ms</string>
 
     <!-- Sekmeler ve WhatsApp fizibilite testi (geçici) -->
     <string name="tab_lab">Quality lab</string>

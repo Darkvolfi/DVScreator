@@ -50,7 +50,7 @@ object TestImages {
                 val s = 18 * sin(x * 0.9) * sin(y * 0.7)
                 r += s; g += s; b += s
             }
-            val noise = rnd.nextDouble(-grain, grain)
+            val noise = if (grain > 0) rnd.nextDouble(-grain, grain) else 0.0
             img[x, y] = argbOf(255, c(r + noise), c(g + noise), c(b + noise))
         }
         return img

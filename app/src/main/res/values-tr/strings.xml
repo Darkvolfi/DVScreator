@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lab_title">Kalite laboratuvarı</string>
-    <string name="lab_subtitle">Bir fotoğraf seç; 512×512 sticker\'a çevrilsin ve ölçümleri görün.</string>
-    <string name="lab_pick">Fotoğraf seç</string>
+    <string name="lab_subtitle">Bir fotoğraf, video ya da GIF seç; 512×512 sticker\'a çevrilsin ve ölçümleri görün.</string>
+    <string name="lab_pick">Fotoğraf / video / GIF seç</string>
+    <string name="lab_working">İşleniyor… videolar 5–30 saniye sürebilir.</string>
     <string name="lab_error">Hata: %1$s</string>
-    <string name="lab_mode_lossless">Kayıpsız — piksel piksel aynı</string>
-    <string name="lab_mode_near_lossless">Neredeyse kayıpsız (seviye %1$d)</string>
-    <string name="lab_mode_lossy">Kayıplı (kalite %1$d)</string>
-    <string name="lab_size">Boyut: %1$s KB / 100 KB</string>
-    <string name="lab_ssim">SSIM: %1$s (1.0 = birebir aynı)</string>
-    <string name="lab_source">Çözülen kaynak: %1$s px</string>
-    <string name="lab_time">Yükleme: %1$d ms · Toplam: %2$d ms</string>
 
     <string name="tab_lab">Kalite laboratuvarı</string>
     <string name="tab_probe">WhatsApp testi</string>

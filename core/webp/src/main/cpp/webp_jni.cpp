@@ -57,6 +57,7 @@ bool buildConfig(JNIEnv *env, WebPConfig *config,
     config->alpha_compression = 1;            // alfa kanalı her zaman kayıpsız sıkıştırılır
     config->alpha_filtering = alphaFiltering;  // 0 yok, 1 hızlı, 2 en iyi (çok yavaş)
     config->exact = exact ? 1 : 0;
+    config->thread_level = 1;  // çok çekirdekli kodlama (çıktıyı değiştirmez, yalnızca hız)
     if (!WebPValidateConfig(config)) {
         throwIllegalState(env, "gecersiz WebP ayarlari");
         return false;
@@ -316,6 +317,82 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeDecode(
     return out;
 #else
     return nullptr;
+#endif
+}
+
+// ---- Hareketli WebP çözücü (akış hâlinde: bellekte aynı anda tek kare) ----
+
+#ifdef HAVE_LIBWEBP
+namespace {
+struct AnimDecoderHandle {
+    std::vector<uint8_t> data;  // WebPAnimDecoder veriyi kopyalamaz; ömrü boyunca tutulmalı
+    WebPAnimDecoder *decoder = nullptr;
+    int width = 0;
+    int height = 0;
+};
+}  // namespace
+#endif
+
+/** Dönüş: tutamaç (0 = hata). Bilgi `info` dizisine yazılır: [genişlik, yükseklik, kareSayısı]. */
+extern "C" JNIEXPORT jlong JNICALL
+Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderOpen(
+        JNIEnv *env, jobject, jbyteArray data, jintArray info) {
+#ifdef HAVE_LIBWEBP
+    auto *handle = new AnimDecoderHandle();
+    const jsize size = env->GetArrayLength(data);
+    handle->data.resize(static_cast<size_t>(size));
+    env->GetByteArrayRegion(data, 0, size, reinterpret_cast<jbyte *>(handle->data.data()));
+
+    WebPAnimDecoderOptions options;
+    WebPAnimDecoderOptionsInit(&options);
+    options.color_mode = MODE_BGRA;  // little-endian int → 0xAARRGGBB, non-premultiplied
+    options.use_threads = 1;
+    WebPData webpData = {handle->data.data(), handle->data.size()};
+    handle->decoder = WebPAnimDecoderNew(&webpData, &options);
+    if (handle->decoder == nullptr) {
+        delete handle;
+        throwIllegalState(env, "hareketli WebP acilamadi");
+        return 0;
+    }
+    WebPAnimInfo animInfo;
+    WebPAnimDecoderGetInfo(handle->decoder, &animInfo);
+    handle->width = static_cast<int>(animInfo.canvas_width);
+    handle->height = static_cast<int>(animInfo.canvas_height);
+    const jint values[3] = {handle->width, handle->height, static_cast<jint>(animInfo.frame_count)};
+    env->SetIntArrayRegion(info, 0, 3, values);
+    return reinterpret_cast<jlong>(handle);
+#else
+    return 0;
+#endif
+}
+
+/** Sonraki kareyi (tam tuval, kompozit) `out`'a yazar. Dönüş: karenin bitiş zaman damgası (ms), -1 = bitti. */
+extern "C" JNIEXPORT jint JNICALL
+Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderNext(
+        JNIEnv *env, jobject, jlong ptr, jintArray out) {
+#ifdef HAVE_LIBWEBP
+    auto *handle = reinterpret_cast<AnimDecoderHandle *>(ptr);
+    if (handle == nullptr || !WebPAnimDecoderHasMoreFrames(handle->decoder)) return -1;
+    uint8_t *buffer = nullptr;
+    int timestamp = 0;
+    if (!WebPAnimDecoderGetNext(handle->decoder, &buffer, &timestamp)) {
+        throwIllegalState(env, "kare cozulemedi");
+        return -1;
+    }
+    env->SetIntArrayRegion(out, 0, handle->width * handle->height, reinterpret_cast<const jint *>(buffer));
+    return timestamp;
+#else
+    return -1;
+#endif
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderClose(JNIEnv *, jobject, jlong ptr) {
+#ifdef HAVE_LIBWEBP
+    auto *handle = reinterpret_cast<AnimDecoderHandle *>(ptr);
+    if (handle == nullptr) return;
+    WebPAnimDecoderDelete(handle->decoder);
+    delete handle;
 #endif
 }
 

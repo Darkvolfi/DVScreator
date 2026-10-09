@@ -25,6 +25,7 @@ dependencies {
     api(project(":core:model"))
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.exifinterface)
+    implementation(libs.glide.gifdecoder)   // BSD/Apache-2.0, GPL uyumlu; kare süreleri doğru
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

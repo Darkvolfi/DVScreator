@@ -28,3 +28,47 @@ Sonuçlar `files/probe_results.txt` ve logcat `WSC_WA` etiketinden okundu.
 - Gönderim testi: sticker sohbete gönderildiğinde WhatsApp yeniden sıkıştırıyor mu? Alıcı tarafta
   (özellikle 2 kareli sticker) doğru ve hareketsiz görünüyor mu? Eski WhatsApp sürümleri / iOS alıcı?
 - WhatsApp Business ile test edilmedi (cihazda yüklü değil).
+
+---
+
+# M2 Hareketli sticker hattı — ölçümler (2026-10-10)
+
+## Sentetik klipler (`AnimationEncoderDeviceTest`, logcat `WSC_ANIM`)
+
+Zamansal sabitleme taraması (30 kare, ±3 video gürültüsü, q80):
+
+| Blok ortalama eşiği | Boyut | Not |
+|---|---|---|
+| yok | 303 KB | Gürültü fark kodlamasını boşa çıkarıyor |
+| 2 | 316 KB | Eşik gürültünün altında, etkisiz |
+| 3 | 61 KB | 5 kat küçük |
+| **4 (varsayılan)** | **51 KB** | **6 kat küçük** |
+
+İlk denenen piksel bazlı eşik (4) yalnızca %0.5 kazandırdı → 8×8 blok kararına geçildi.
+Not: Sabitlemenin orijinal karelere göre SSIM'i 0.93 çıkıyor; bu "bir gürültünün yerine başka gürültü"
+geçmesinin SSIM'deki yanıltıcı cezası (düz alanlarda), gözle görülür bir fark değil.
+
+BEST_FIT (hız iyileştirmesi sonrası):
+
+| Klip | Sonuç | Boyut | SSIM | Süre (ilk sürüm → şimdi) |
+|---|---|---|---|---|
+| Gürültülü arka plan + top, 30 kare | Kayıpsız | 308 KB | 1.0 | 10.6 → 1.7 sn |
+| Aynısı, 75 kare | Kayıpsız | 417 KB | 1.0 | 25 → 2.9 sn |
+| Tam hareket (kaydırma + gren), 60 kare | Kayıplı q65 | 500 KB | 0.860 | 45.7 → 18 sn |
+| Tam hareket, 120 kare | Kayıplı q65, 60 kareye (15 fps) düşürüldü | 498 KB | 0.860 | 84 → 26 sn |
+
+Hız iyileştirmeleri: kayıpsızda SSIM ölçülmez; kayıplıda ≤10 kare örneklenir; ikili arama yerine
+ln(boyut)–kalite interpolasyonu; önce en düşük kalite denenir (sığmazsa doğrudan FPS düşürme);
+kayıpsız deneme ilk 8 kareden tahminle atlanabilir.
+
+## Gerçek kaynaklar (proje sahibinin telefonu, Kalite laboratuvarı, logcat `WSC_LAB`)
+
+| Kaynak | Sonuç | Boyut | SSIM | Süre |
+|---|---|---|---|---|
+| Fotoğraf 736×736 (maks. kalite modu) | Kayıpsız | 65.9 KB | 1.0000 | 0.3 sn |
+| Hareketli, 11.5 sn @ 10 fps → 10 sn'ye kırpıldı, 100 kare | Kayıplı q73 | 442 KB | ort. 0.9979 / en kötü 0.9976 | 17 sn (kare çıkarma 6.3, kodlama 5.9, ölçüm 3.7) |
+
+Proje sahibinin değerlendirmesi: "baya iyi gözüküyo".
+
+İyileştirme fırsatları: arama 4 adımda durup bütçenin %88'ini kullandı (q biraz daha yükselebilir);
+kare çıkarma `MediaMetadataRetriever` ile 63 ms/kare → `MediaCodec` ile hızlandırılabilir.
