@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Kalite laboratuvarı</string>
+    <string name="lab_subtitle">Bir fotoğraf seç; 512×512 sticker\'a çevrilsin ve ölçümleri görün.</string>
+    <string name="lab_pick">Fotoğraf seç</string>
+    <string name="lab_error">Hata: %1$s</string>
+    <string name="lab_mode_lossless">Kayıpsız — piksel piksel aynı</string>
+    <string name="lab_mode_near_lossless">Neredeyse kayıpsız (seviye %1$d)</string>
+    <string name="lab_mode_lossy">Kayıplı (kalite %1$d)</string>
+    <string name="lab_size">Boyut: %1$s KB / 100 KB</string>
+    <string name="lab_ssim">SSIM: %1$s (1.0 = birebir aynı)</string>
+    <string name="lab_source">Çözülen kaynak: %1$s px</string>
+    <string name="lab_time">Yükleme: %1$d ms · Toplam: %2$d ms</string>
+
+    <string name="tab_lab">Kalite laboratuvarı</string>
+    <string name="tab_probe">WhatsApp testi</string>
+    <string name="probe_title">WhatsApp kabul testi</string>
+    <string name="probe_subtitle">6 test paketi üretir. Her birini WhatsApp\'a ekle ve kabul edilip edilmediğine bak.</string>
+    <string name="probe_no_whatsapp">WhatsApp yüklü değil.</string>
+    <string name="probe_generate">Test paketlerini üret</string>
+    <string name="probe_generating">Üretiliyor: %1$s</string>
+    <string name="probe_add">WhatsApp\'a ekle</string>
+    <string name="probe_add_business">Business\'e ekle</string>
+    <string name="probe_result_added">✅ Eklendi (WhatsApp kabul etti)</string>
+    <string name="probe_result_cancelled">⚪ İptal edildi ya da gerekçesiz reddedildi</string>
+</resources>

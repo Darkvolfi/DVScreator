@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(wscreator_webp C CXX)
+
+add_library(wscreator_webp SHARED webp_jni.cpp)
+target_link_libraries(wscreator_webp android log jnigraphics)
+
+# libwebp, third_party/libwebp altında git submodule olarak tutulur (BSD lisansı).
+set(LIBWEBP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../third_party/libwebp)
+if(EXISTS ${LIBWEBP_DIR}/CMakeLists.txt)
+    # Debug derlemede bile optimizasyon: -O0 ile libwebp 20-100 kat yavaşlıyor ve
+    # kalite/performans testleri gerçekçi olmuyor. Sondaki -O2 öncekini geçersiz kılar.
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -O2")
+    string(APPEND CMAKE_CXX_FLAGS_DEBUG " -O2")
+    set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_CWEBP OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_DWEBP OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_GIF2WEBP OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_IMG2WEBP OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_VWEBP OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_WEBPINFO OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_WEBPMUX OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
+    set(WEBP_BUILD_LIBWEBPMUX ON CACHE BOOL "" FORCE)
+    add_subdirectory(${LIBWEBP_DIR} ${CMAKE_CURRENT_BINARY_DIR}/libwebp)
+    target_include_directories(wscreator_webp PRIVATE ${LIBWEBP_DIR}/src)
+    target_compile_definitions(wscreator_webp PRIVATE HAVE_LIBWEBP=1)
+    target_link_libraries(wscreator_webp webp webpdemux libwebpmux)
+else()
+    message(WARNING "libwebp bulunamadi: ${LIBWEBP_DIR} — 'git submodule update --init' calistirin")
+endif()

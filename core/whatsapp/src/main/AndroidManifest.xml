@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- WhatsApp sticker paketlerini buradan okur. Yetki adı paket adıyla başlamalı (WhatsApp şartı).
+             readPermission WhatsApp tarafından tanımlanır; yalnızca WhatsApp okuyabilir. -->
+        <provider
+            android:name=".StickerContentProvider"
+            android:authorities="${applicationId}.stickers"
+            android:enabled="true"
+            android:exported="true"
+            android:readPermission="com.whatsapp.sticker.READ" />
+    </application>
+</manifest>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bilinçli olarak HİÇBİR izin istenmez (INTERNET dahil). Bkz. agents/00 — İlkeler. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Android 11+: WhatsApp'ın yüklü olup olmadığını ve paketin ekli olup olmadığını görebilmek için -->
+    <queries>
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
+    </queries>
+
+    <application
+        android:name=".WScreatorApp"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WScreator">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- StickerContentProvider M2'de eklenecek (bkz. agents/01 — Entegrasyon mekanizması) -->
+    </application>
+</manifest>
