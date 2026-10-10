@@ -10,7 +10,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [x] Gradle çok modüllü iskelet, version catalog, Compose, Koin (Mimar) — `assembleDebug` başarılı
 - [x] `git init`, `.gitignore`, LICENSE, README (Mimar)
 - [x] libwebp submodule (v1.6.0) + CMake + boş JNI "merhaba" (Görüntü) — Samsung SM-S731B (Android 16) üzerinde "libwebp: 1.6.0" doğrulandı
-- [~] GitHub Actions: derleme + birim testleri + lint (bilgi amaçlı) + debug APK (Release) — ilk çalıştırma bekleniyor
+- [x] GitHub Actions: derleme + birim testleri + lint (bilgi amaçlı) + debug APK (Release) — ilk çalıştırma başarılı (7.5 dk)
 
 ## M1 — Statik kalite hattı (UI'sız, test ile)
 - [~] Decode + EXIF + sRGB dönüşümü (Görüntü) — `ImageLoader` yazıldı, gerçek dosyalarla cihazda henüz denenmedi
@@ -37,7 +37,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [x] "Maksimum kalite modu": statik görsel → 2 kareli animated WebP, 500 KB bütçe (Görüntü) — WhatsApp kabul ediyor
 - [~] Animasyon altın seti + cihaz testleri (QA) — sentetik klipler; eşikler gerçek videolardan sonra kilitlenecek
 - [x] Kalite laboratuvarına video / GIF desteği (Android)
-- [ ] Gerçek video / GIF ile ölçüm ve hız iyileştirmesi (QA)
+- [~] Gerçek video / GIF ile ölçüm ve hız iyileştirmesi (QA) — 81 sn videoda 91 → 43 sn; sıkıştırma (8 deneme, 34 sn) açık iş
 
 ## M3 — WhatsApp entegrasyonu
 - [x] Paket deposu (JSON, Room yerine — bkz. 03) + `PackRepository`; kaynak dosyalar `sources/` altına kopyalanır (Android)

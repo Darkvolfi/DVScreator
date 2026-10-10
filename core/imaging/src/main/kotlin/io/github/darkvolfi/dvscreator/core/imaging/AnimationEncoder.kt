@@ -6,6 +6,7 @@ import io.github.darkvolfi.dvscreator.core.webp.WebpOptions
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlin.math.ceil
+import kotlin.math.exp
 import kotlin.math.floor
 import kotlin.math.ln
 import kotlin.math.roundToInt
@@ -68,6 +69,16 @@ class AnimationEncoder(
             val (tierQuality, tierFps) = tier
             val degraded = tierIndex > 0
             val maxStep = maxOf(1, floor(source.fps / tierFps).toInt())
+            if (degraded && lastFailedSize > 1) {
+                // Önceki kademenin en düşük kalitesindeki boyuttan bu kademenin en düşük kalitesini tahmin et:
+                // aynı kare sayısında da sığmayacağı belliyse o (uzun) denemeyi atla, gereken kare sayısına geç
+                val estimate = estimateSizeAt(lastFailedSize, minQuality, tierQuality)
+                if (estimate > limitBytes) {
+                    val framesNow = stabilized.decimate(step).frames.size
+                    val neededFrames = framesNow * limitBytes / estimate * STEP_PREDICTION_MARGIN
+                    step = ceil(source.frames.size / neededFrames).toInt().coerceIn(step, maxStep)
+                }
+            }
             while (true) {
                 // Sabitlenmiş klipten kare seçmek tutarlıdır: dondurulan pikseller tüm karelerde zaten aynı
                 val clip = stabilized.decimate(step)
@@ -102,13 +113,16 @@ class AnimationEncoder(
     /** Son başarısız (sınırı aşan) en düşük kalite denemesinin boyutu — kare sayısı tahmini için. */
     private var lastFailedSize = 1
 
+    /** Paralel denemelerden çağrılabilir: sayaçlar kilitle güncellenir. */
     private suspend fun tryEncode(clip: AnimationClip, options: WebpOptions): ByteArray {
-        attempts++
-        progress(Progress.Encoding(attempts, clip.frames.size))
+        val attempt = synchronized(this) { ++attempts }
+        progress(Progress.Encoding(attempt, clip.frames.size))
         val t = System.nanoTime()
         val bytes = NativeWebp.encodeAnimation(clip.frames.map { it.pixels }, clip.durationsMs, clip.width, clip.height, options)
-        encodeNs += System.nanoTime() - t
-        smallest = minOf(smallest, bytes.size)
+        synchronized(this) {
+            encodeNs += System.nanoTime() - t
+            smallest = minOf(smallest, bytes.size)
+        }
         currentCoroutineContext().ensureActive()
         return bytes
     }
@@ -132,6 +146,10 @@ class AnimationEncoder(
     /**
      * [minQuality, 100] aralığında sığan en yüksek kalite. ln(boyut) kaliteyle yaklaşık doğrusal
      * olduğundan iki ölçümden aradaki doğru üzerinde interpolasyon yapılır.
+     *
+     * Not (2026-10-10 ölçümü): adayları paralel denemek duvar saatini KISALTMADI (libwebp zaten çok
+     * çekirdekli; 60-150 karelik kodlamalar bellek bant genişliği için yarışıyor) → sıralı.
+     * Arama [SEARCH_PRECISION] hassasiyette durur: q 72 ile 73 arası gözle fark edilmez, deneme 4 sn.
      */
     private suspend fun searchLossy(clip: AnimationClip, minQuality: Int): Pair<ByteArray, Int>? {
         suspend fun encodeAt(q: Int) = tryEncode(clip, WebpOptions.lossy(q.toFloat(), method = SEARCH_METHOD))
@@ -144,7 +162,7 @@ class AnimationEncoder(
         var hiQ = 101                 // henüz sığmayan bilinen bir kalite yok
         var hiSize = Double.NaN
         repeat(MAX_SEARCH_STEPS) {
-            if (hiQ - loQ <= 1 || loQ == 100) return loBytes to loQ
+            if (hiQ - loQ <= SEARCH_PRECISION || loQ == 100) return loBytes to loQ
             val target = ln(limitBytes * SEARCH_TARGET.toDouble())
             val guess = if (hiSize.isNaN()) {
                 loQ + ((target - ln(loBytes.size.toDouble())) / TYPICAL_LN_SIZE_PER_Q).roundToInt()
@@ -158,6 +176,10 @@ class AnimationEncoder(
         }
         return loBytes to loQ
     }
+
+    /** Boyut ≈ e^(k·q) varsayımıyla [fromQ]'da ölçülen boyuttan [toQ]'daki boyut tahmini. */
+    private fun estimateSizeAt(sizeAtFromQ: Int, fromQ: Int, toQ: Int): Double =
+        sizeAtFromQ * exp(TYPICAL_LN_SIZE_PER_Q * (toQ - fromQ))
 
     /** Tüm kareler sabitlemeden sonra aynıysa (hareketsiz video) kodlayıcı tek kareye indirir. */
     private fun isStill(clip: AnimationClip): Boolean {
@@ -226,6 +248,8 @@ class AnimationEncoder(
         private const val LOSSLESS_ESTIMATE_SLACK = 1.3
         private const val SEARCH_METHOD = 4
         private const val MAX_SEARCH_STEPS = 4
+        /** Bu kadar yakın kaliteler arasında aramayı sürdürme (fark gözle görülmez). */
+        private const val SEARCH_PRECISION = 2
         /** Hedef sınırın biraz altı: interpolasyon hatası sınırı aşan tahminleri azaltır. */
         private const val SEARCH_TARGET = 0.97
         /** İlk tahmin için: kalite +1 → boyut yaklaşık %3 artar. */

@@ -9,7 +9,12 @@ import android.util.Log
 import com.bumptech.glide.gifdecoder.GifDecoder
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.ensureActive
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -82,9 +87,19 @@ class AnimationLoader(private val context: Context) {
             // Hızlı yol: MediaCodec ile tek geçiş. Desteklenmeyen videoda (ör. 10-bit HDR) eski yönteme dön.
             val frames = ArrayList<ArgbImage>(count)
             val fast = try {
-                VideoFrameExtractor(context).extract(uri, times, targetLongSide = 2 * (STICKER_SIZE - 2 * margin)) { k, image ->
-                    frames += StickerCanvas.fit(image, STICKER_SIZE, margin, fast = true)
-                    onFrame(k + 1, count)
+                // Çözme sürerken önceki kareler paralel küçültülür (Lanczos kare başına onlarca ms);
+                // aynı anda en fazla FIT_WORKERS ham kare bellekte bekler
+                coroutineScope {
+                    val gate = Semaphore(FIT_WORKERS)
+                    val pending = ArrayList<Deferred<ArgbImage>>(count)
+                    VideoFrameExtractor(context).extract(uri, times, targetLongSide = 2 * (STICKER_SIZE - 2 * margin)) { k, image ->
+                        gate.acquire()
+                        pending += async(Dispatchers.Default) {
+                            try { StickerCanvas.fit(image, STICKER_SIZE, margin, fast = true) } finally { gate.release() }
+                        }
+                        onFrame(k + 1, count)
+                    }
+                    pending.forEach { frames += it.await() }
                 }
                 true
             } catch (e: VideoFrameExtractor.UnsupportedVideoException) {
@@ -171,6 +186,8 @@ class AnimationLoader(private val context: Context) {
 
     companion object {
         private const val TAG = "WSC_LOADER"
+        /** Paralel kare küçültme iş parçacığı sayısı. */
+        private const val FIT_WORKERS = 4
 
         /** Kaynak videonun süresi ve kare hızı (kırpma ekranındaki tahmin için de kullanılır). */
         class VideoInfo(val durationMs: Int, val frameCount: Int?, val fps: Double)

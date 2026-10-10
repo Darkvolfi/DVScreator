@@ -72,3 +72,20 @@ Proje sahibinin değerlendirmesi: "baya iyi gözüküyo".
 
 İyileştirme fırsatları: arama 4 adımda durup bütçenin %88'ini kullandı (q biraz daha yükselebilir);
 kare çıkarma `MediaMetadataRetriever` ile 63 ms/kare → `MediaCodec` ile hızlandırılabilir.
+
+## Hız iyileştirmesi — gerçek video (2026-10-10)
+
+Kaynak: 81 sn, 24 fps video; 10 sn seçim → 150 kare, sonuç düşük kalite kademesi (q40, 7.5 fps, 474 KB).
+Debug derleme, Samsung SM-S731B.
+
+| Aşama | İlk | MediaCodec | + paralel küçültme |
+|---|---|---|---|
+| Kare çıkarma | 52.7 sn | 12.9 sn | **3.9 sn** |
+| Sıkıştırma (8 deneme) | 32.4 sn | 32.4 sn | 33.6 sn |
+| Toplam | 91 sn | 52 sn | **43 sn** |
+
+- Kare çıkarma: `MediaCodec` tek geçiş + C'de YUV→RGB (13.5 kat). Test videosunda SSIM 0.9997 (eski yöntemle aynı).
+- Denenip geri alınan: sıkıştırma adaylarını paralel denemek → duvar saati kısalmadı (libwebp zaten çok
+  çekirdekli, bellek bant genişliği darboğaz).
+- **Açık iş:** düşük kademeye geçişte "sığmayacağı belli denemeyi atla" mantığı bu videoda deneme sayısını
+  düşürmedi (hâlâ 8). Proje sahibi 43 sn'yi şimdilik yeterli buldu; ileride incelenecek.
