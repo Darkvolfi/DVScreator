@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "WScreator"
+rootProject.name = "DVScreator"
 
 include(":app")
 include(":core:model")

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trim_title">Videonun hangi kısmı?</string>
+    <string name="trim_selection">%1$s sn – %2$s sn (%3$s sn)</string>
+    <string name="trim_estimate">≈ %1$s fps, %2$d kare</string>
+    <string name="trim_hint_short">Kısa seçim = 500 KB sınırında daha yüksek kalite.</string>
+    <string name="trim_hint_long">Uzun seçim: 500 KB\'a sığması için kalite ya da kare hızı düşebilir. Daha kısa = daha net.</string>
+    <string name="trim_skip">Bu videoyu atla</string>
+    <string name="trim_confirm">Sticker yap</string>
+</resources>

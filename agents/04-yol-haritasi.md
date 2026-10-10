@@ -52,7 +52,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [ ] Paket listesi / paket detay ekranları (Android)
 - [ ] Photo Picker (görsel + video), çoklu seçim (Android)
 - [ ] Editör: kırp, döndür, kenar boşluğu (Android)
-- [ ] Video editörü: başlangıç/bitiş kırpma (≤ 10 sn), FPS / hız seçimi, önizleme (Android)
+- [~] Video editörü: başlangıç/bitiş kırpma (≤ 10 sn) + döngülü önizleme + küçük resim şeridi + kare hızı tahmini ✅ (aralık tarife kaydedilir); FPS / hız seçimi ve GIF kırpma arayüzü eksik (Android) — cihazda proje sahibinin testi bekleniyor
 - [ ] Editör: silgi + geri al/yinele (maske orijinal çözünürlükte) (Android + Görüntü)
 - [ ] Editör: metin ekleme (Android)
 - [ ] Kalite sonuç ekranı (mod, boyut, SSIM, önce/sonra büyüteç) (Android)

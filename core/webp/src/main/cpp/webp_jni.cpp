@@ -14,7 +14,7 @@
 // Android (little-endian) belleğinde bu bayt dizilimi B,G,R,A'dır → libwebp'nin BGRA fonksiyonları.
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_encoderVersion(JNIEnv *env, jobject) {
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_encoderVersion(JNIEnv *env, jobject) {
 #ifdef HAVE_LIBWEBP
     const int v = WebPGetEncoderVersion();
     char buf[16];
@@ -110,7 +110,7 @@ jbyteArray toByteArray(JNIEnv *env, const uint8_t *data, size_t size) {
  * @param nearLossless   0..100 (100 = kapalı), yalnızca kayıpsızda
  */
 extern "C" JNIEXPORT jbyteArray JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeEncode(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeEncode(
         JNIEnv *env, jobject, jintArray argb, jint width, jint height,
         jboolean lossless, jint losslessLevel, jfloat quality, jint method,
         jint nearLossless, jint alphaQuality, jint alphaFiltering, jboolean sharpYuv, jboolean exact) {
@@ -155,7 +155,7 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeEncode(
  * @param loopCount  0 = sonsuz döngü
  */
 extern "C" JNIEXPORT jbyteArray JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeEncodeAnimation(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeEncodeAnimation(
         JNIEnv *env, jobject, jobjectArray frames, jintArray durations, jint width, jint height,
         jint loopCount, jboolean lossless, jint losslessLevel, jfloat quality, jint method,
         jint nearLossless, jint alphaQuality, jint alphaFiltering, jboolean sharpYuv, jboolean exact) {
@@ -231,7 +231,7 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeEncodeAnimation(
  * WebPAnimEncoder aynı kareleri tek kareye birleştirirdi.
  */
 extern "C" JNIEXPORT jbyteArray JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeStaticAsAnimation(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeStaticAsAnimation(
         JNIEnv *env, jobject, jbyteArray staticWebp, jint canvasWidth, jint canvasHeight,
         jint firstDurationMs, jint secondDurationMs) {
 #ifdef HAVE_LIBWEBP
@@ -290,7 +290,7 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeStaticAsAnimation(
 
 /** Dönüş: [genişlik, yükseklik, piksel0, piksel1, ...] — pikseller non-premultiplied ARGB. */
 extern "C" JNIEXPORT jintArray JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeDecode(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeDecode(
         JNIEnv *env, jobject, jbyteArray data) {
 #ifdef HAVE_LIBWEBP
     const jsize size = env->GetArrayLength(data);
@@ -335,7 +335,7 @@ struct AnimDecoderHandle {
 
 /** Dönüş: tutamaç (0 = hata). Bilgi `info` dizisine yazılır: [genişlik, yükseklik, kareSayısı]. */
 extern "C" JNIEXPORT jlong JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderOpen(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeAnimDecoderOpen(
         JNIEnv *env, jobject, jbyteArray data, jintArray info) {
 #ifdef HAVE_LIBWEBP
     auto *handle = new AnimDecoderHandle();
@@ -368,7 +368,7 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderOpen(
 
 /** Sonraki kareyi (tam tuval, kompozit) `out`'a yazar. Dönüş: karenin bitiş zaman damgası (ms), -1 = bitti. */
 extern "C" JNIEXPORT jint JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderNext(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeAnimDecoderNext(
         JNIEnv *env, jobject, jlong ptr, jintArray out) {
 #ifdef HAVE_LIBWEBP
     auto *handle = reinterpret_cast<AnimDecoderHandle *>(ptr);
@@ -387,7 +387,7 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderNext(
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderClose(JNIEnv *, jobject, jlong ptr) {
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeAnimDecoderClose(JNIEnv *, jobject, jlong ptr) {
 #ifdef HAVE_LIBWEBP
     auto *handle = reinterpret_cast<AnimDecoderHandle *>(ptr);
     if (handle == nullptr) return;
@@ -398,7 +398,7 @@ Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeAnimDecoderClose(J
 
 /** Dönüş: [tuvalGenişlik, tuvalYükseklik, kareSayısı, döngüSayısı, süre1, süre2, ...] (ms). */
 extern "C" JNIEXPORT jintArray JNICALL
-Java_io_github_darkvolfi_wscreator_core_webp_NativeWebp_nativeInfo(
+Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeInfo(
         JNIEnv *env, jobject, jbyteArray data) {
 #ifdef HAVE_LIBWEBP
     const jsize size = env->GetArrayLength(data);

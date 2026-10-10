@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator"
+    namespace = "io.github.darkvolfi.dvscreator"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.github.darkvolfi.wscreator"
+        applicationId = "io.github.darkvolfi.dvscreator"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1

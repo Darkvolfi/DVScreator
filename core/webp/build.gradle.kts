@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator.core.webp"
+    namespace = "io.github.darkvolfi.dvscreator.core.webp"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndk.get()
     defaultConfig {

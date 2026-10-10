@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator.core.imaging"
+    namespace = "io.github.darkvolfi.dvscreator.core.imaging"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()

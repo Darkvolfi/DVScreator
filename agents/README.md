@@ -1,4 +1,4 @@
-# WScreator — Proje Planı (agents/)
+# DVScreator — Proje Planı (agents/)
 
 Android için **açık kaynaklı**, görüntü kalitesini mümkün olan en yüksek seviyede koruyarak
 WhatsApp çıkartması (sticker) üreten uygulama.

@@ -15,7 +15,7 @@
 | Build | Gradle Kotlin DSL + version catalog (`libs.versions.toml`) | |
 | minSdk / compileSdk / targetSdk | 24 / 37 / 37 (Android 7.0 → Android 17) | Photo Picker 24+'da backport ile çalışır |
 | Araç zinciri | AGP 9.4, Gradle 9.8, Kotlin 2.4, NDK 28 | AGP 9 Kotlin'i kendi içinde getirir → Android modüllerinde `kotlin-android` eklentisi **yok** |
-| Paket adı | `io.github.darkvolfi.wscreator` | |
+| Paket adı | `io.github.darkvolfi.dvscreator` | |
 
 ## Modüller
 ```

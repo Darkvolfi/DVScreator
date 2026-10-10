@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator.feature.export"
+    namespace = "io.github.darkvolfi.dvscreator.feature.export"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
     compileOptions {

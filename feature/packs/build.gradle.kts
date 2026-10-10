@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator.feature.packs"
+    namespace = "io.github.darkvolfi.dvscreator.feature.packs"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
     compileOptions {
@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:imaging"))
     implementation(project(":core:whatsapp"))
+    implementation(project(":feature:editor"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(platform(libs.androidx.compose.bom))

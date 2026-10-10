@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator.feature.editor"
+    namespace = "io.github.darkvolfi.dvscreator.feature.editor"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
     compileOptions {
@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:imaging"))
+    implementation(libs.kotlinx.coroutines.android)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)

@@ -1,4 +1,4 @@
-# WScreator
+# DVScreator
 
 Açık kaynaklı, kalite odaklı Android WhatsApp sticker oluşturucu (Kotlin + Jetpack Compose + libwebp).
 

@@ -18,6 +18,11 @@
     <string name="pack_added_video">%1$d frames, %2$s fps.</string>
     <string name="pack_added_reduced">Frame rate reduced to fit 500 KB.</string>
     <string name="pack_added_trimmed">Trimmed to 10 s.</string>
+    <string name="pack_added_degraded">⚠️ Low quality: this part did not fit 500 KB at good quality. Delete it and pick a shorter part for a sharper sticker.</string>
+    <string name="pack_results_dismiss">Clear results</string>
+    <string name="progress_extracting">Reading frames: %1$d / %2$d</string>
+    <string name="progress_encoding">Compressing: attempt %1$d (%2$d frames)</string>
+    <string name="progress_measuring">Measuring quality…</string>
     <string name="pack_rename">Rename pack</string>
     <string name="pack_delete">Delete</string>
     <string name="pack_delete_title">Delete this pack?</string>

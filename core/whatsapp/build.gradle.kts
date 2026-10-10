@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.darkvolfi.wscreator.core.whatsapp"
+    namespace = "io.github.darkvolfi.dvscreator.core.whatsapp"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
     compileOptions {

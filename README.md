@@ -1,4 +1,4 @@
-# WScreator
+# DVScreator
 
 Görüntü kalitesini koruyarak WhatsApp sticker'ı oluşturan, açık kaynaklı Android uygulaması.
 

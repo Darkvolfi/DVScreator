@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">WScreator</string>
+    <string name="app_name" translatable="false">DVScreator</string>
 
     <!-- Geçici geliştirici ekranı (M1) -->
     <string name="lab_title">Quality lab</string>

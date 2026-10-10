@@ -18,6 +18,11 @@
     <string name="pack_added_video">%1$d kare, %2$s fps.</string>
     <string name="pack_added_reduced">500 KB\'a sığması için kare hızı düşürüldü.</string>
     <string name="pack_added_trimmed">10 sn\'ye kırpıldı.</string>
+    <string name="pack_added_degraded">⚠️ Düşük kalite: bu bölüm iyi kalitede 500 KB\'a sığmadı. Daha net bir sticker için silip daha kısa bir bölüm seç.</string>
+    <string name="pack_results_dismiss">Sonuçları temizle</string>
+    <string name="progress_extracting">Kareler çıkarılıyor: %1$d / %2$d</string>
+    <string name="progress_encoding">Sıkıştırılıyor: deneme %1$d (%2$d kare)</string>
+    <string name="progress_measuring">Kalite ölçülüyor…</string>
     <string name="pack_rename">Paketi yeniden adlandır</string>
     <string name="pack_delete">Sil</string>
     <string name="pack_delete_title">Bu paket silinsin mi?</string>
