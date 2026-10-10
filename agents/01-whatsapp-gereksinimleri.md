@@ -60,3 +60,6 @@ Not: Bu, örnek projenin doğrulayıcısıdır; WhatsApp uygulamasının kendi k
 - Aynı `ENABLE_STICKER_PACK` isteği ekli paket için tekrar gönderilince WhatsApp paketi yeniden okuyor,
   **hemen güncelliyor** ve `RESULT_OK` döndürüyor → uygulamada ekli paketler için "WhatsApp'ta güncelle" düğmesi.
 - `avoid_cache` alanı WhatsApp 2.25.9.78'den beri yok sayılıyor (resmi README).
+- **Paket başına en fazla 30 sticker** gerçek cihazda doğrulandı: 60 stickerlık paket
+  `handleStickerPackPreviewResult/failed` ile reddedildi (2026-10-10). WhatsApp'ın kendi içinde oluşturulan
+  paketlerdeki daha yüksek sınır, uygulamalardan eklenen paketlere uygulanmıyor.

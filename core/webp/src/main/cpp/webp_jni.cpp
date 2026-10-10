@@ -236,8 +236,28 @@ Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeStaticAsAnimation
         jint firstDurationMs, jint secondDurationMs) {
 #ifdef HAVE_LIBWEBP
     const jsize size = env->GetArrayLength(staticWebp);
-    std::vector<uint8_t> first(static_cast<size_t>(size));
-    env->GetByteArrayRegion(staticWebp, 0, size, reinterpret_cast<jbyte *>(first.data()));
+    std::vector<uint8_t> input(static_cast<size_t>(size));
+    env->GetByteArrayRegion(staticWebp, 0, size, reinterpret_cast<jbyte *>(input.data()));
+
+    // Dosyadan yalnızca görüntü verisini (VP8/VP8L + ALPH) al: EXIF/XMP gibi ek bölümler
+    // (WhatsApp stickerlarında paket kimliği ve emojiler) ANMF karesine konamaz. Veri kopyalanır, yeniden kodlanmaz.
+    WebPData inputData = {input.data(), input.size()};
+    WebPMux *source = WebPMuxCreate(&inputData, 0);
+    if (source == nullptr) {
+        throwIllegalState(env, "WebP okunamadi");
+        return nullptr;
+    }
+    WebPMuxFrameInfo sourceFrame;
+    std::memset(&sourceFrame, 0, sizeof(sourceFrame));
+    const WebPMuxError getErr = WebPMuxGetFrame(source, 1, &sourceFrame);
+    if (getErr != WEBP_MUX_OK) {
+        WebPMuxDelete(source);
+        throwIllegalState(env, "WebP karesi alinamadi");
+        return nullptr;
+    }
+    std::vector<uint8_t> first(sourceFrame.bitstream.bytes, sourceFrame.bitstream.bytes + sourceFrame.bitstream.size);
+    WebPDataClear(&sourceFrame.bitstream);
+    WebPMuxDelete(source);
 
     const uint8_t transparent[2 * 2 * 4] = {0};
     uint8_t *secondData = nullptr;

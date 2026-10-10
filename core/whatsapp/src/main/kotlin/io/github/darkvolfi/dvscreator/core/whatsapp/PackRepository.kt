@@ -86,6 +86,50 @@ class PackRepository(context: Context) {
         return created
     }
 
+    /**
+     * WhatsApp'ta alınmış stickerları pakete ekler (yeniden kodlamadan, bkz. [StickerImport]).
+     * @return eklenen sayı ve reddedilenlerin nedenleri
+     */
+    suspend fun importReceived(
+        packId: String,
+        items: List<Pair<String, ByteArray>>,
+        /** (işlenen, toplam, yeniden sıkıştırılan) — yeniden sıkıştırma sticker başına birkaç saniye sürer. */
+        onProgress: (Int, Int, Int) -> Unit = { _, _, _ -> },
+    ): ImportOutcome {
+        val room = WhatsAppLimits.PACK_MAX_STICKERS - (requireNotNull(store.pack(packId)) { "paket bulunamadı" }.stickers.size)
+        val rejected = mutableListOf<String>()
+        val ready = mutableListOf<StickerImport.Result.Ok>()
+        var reencoded = 0
+        // Hazırlık (gerekirse yeniden sıkıştırma) kilit DIŞINDA: uzun sürebilir
+        for ((i, item) in items.withIndex()) {
+            val (name, bytes) = item
+            onProgress(i, items.size, reencoded)
+            if (ready.size >= room) { rejected += "$name: paket dolu (en fazla ${WhatsAppLimits.PACK_MAX_STICKERS})"; continue }
+            when (val r = StickerImport.prepare(bytes)) {
+                is StickerImport.Result.Rejected -> rejected += "$name: ${r.reason}"
+                is StickerImport.Result.Ok -> ready += r
+                is StickerImport.Result.NeedsReencode -> runCatching<StickerImport.Result.Ok> { withContext(Dispatchers.Default) { StickerImport.reencode(bytes) } }
+                    .onSuccess { ready += it; reencoded++ }
+                    .onFailure { e -> rejected += "$name: ${r.reason}, sığdırılamadı (${e.message})" }
+            }
+        }
+        onProgress(items.size, items.size, reencoded)
+        return edit {
+            val pack = requireNotNull(store.pack(packId)) { "paket bulunamadı" }
+            val fits = ready.take(WhatsAppLimits.PACK_MAX_STICKERS - pack.stickers.size)
+            val added = fits.map { r ->
+                val fileName = "s_" + UUID.randomUUID().toString().replace("-", "").take(12) + ".webp"
+                store.writeFile(packId, fileName, r.webp)
+                StickerEntry(fileName, r.emojis.ifEmpty { listOf(DEFAULT_EMOJI) })
+            }
+            if (added.isNotEmpty()) {
+                if (pack.stickers.isEmpty()) store.writeFile(packId, TRAY_FILE, StickerFactory.trayIcon(fits.first().webp))
+                store.saveManifest(pack.copy(stickers = pack.stickers + added, imageDataVersion = pack.imageDataVersion + 1))
+            }
+            ImportOutcome(added.size, reencoded.coerceAtMost(added.size), rejected)
+        }
+    }
+
     suspend fun removeSticker(packId: String, imageFile: String) = edit {
         val pack = store.pack(packId) ?: return@edit
         val entry = pack.stickers.firstOrNull { it.imageFile == imageFile } ?: return@edit
@@ -141,3 +185,6 @@ class PackRepository(context: Context) {
         const val DEFAULT_EMOJI = "😀"
     }
 }
+
+/** İçe aktarma sonucu: eklenen sayı, bunlardan 500 KB'a sığdırmak için yeniden sıkıştırılanlar, atlananlar. */
+class ImportOutcome(val added: Int, val reencoded: Int, val rejected: List<String>)

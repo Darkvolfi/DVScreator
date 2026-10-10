@@ -16,6 +16,7 @@ object WhatsAppLimits {
     const val TRAY_ICON_MAX_BYTES = 50 * 1024
 
     const val PACK_MIN_STICKERS = 3
+    /** 30 üstü WhatsApp tarafından reddediliyor (60 ile denendi, 2026-10-10); WhatsApp'ın kendi içinde yapılan paketler farklı. */
     const val PACK_MAX_STICKERS = 30
     const val MIN_EMOJIS_PER_STICKER = 1
     const val MAX_EMOJIS_PER_STICKER = 3

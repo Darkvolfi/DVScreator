@@ -47,4 +47,31 @@
     <string name="sticker_emojis_title">Sticker emojileri</string>
     <string name="sticker_emojis_hint">1–3 emoji seç. WhatsApp bu stickerı önermek için bunları kullanır.</string>
     <string name="sticker_delete">Stickerı sil</string>
+
+    <string name="pack_import_whatsapp">WhatsApp\'tan içe aktar</string>
+    <string name="import_title">WhatsApp\'ta aldığın stickerlar</string>
+    <string name="import_explain">WhatsApp, sohbetlerde aldığın stickerları bir klasörde saklar. Bu klasöre bir kez erişim izni ver: sonraki ekranda “Bu klasörü kullan”a dokun.</string>
+    <string name="import_privacy">Uygulama bu klasörü yalnızca okur. Stickerlar olduğu gibi kopyalanır — yeniden sıkıştırma ve kalite kaybı yok.</string>
+    <string name="import_grant">WhatsApp sticker klasörünü seç</string>
+    <string name="import_wrong_folder">Bu, WhatsApp sticker klasörü gibi görünmüyor; bazı stickerlar eksik olabilir.</string>
+    <string name="import_change_folder">Başka bir klasör seç</string>
+    <string name="import_empty">Bu klasörde sticker bulunamadı.</string>
+    <string name="import_selected">%1$d seçildi (en fazla %2$d) · %3$d sticker</string>
+    <string name="import_add">Pakete ekle</string>
+    <string name="import_result">%1$d sticker içe aktarıldı.</string>
+    <string name="import_rejected">Atlananlar:</string>
+    <string name="import_view_all">Tümü</string>
+    <string name="import_view_packs">Paketlere göre</string>
+    <string name="import_scanning">Paket adları okunuyor: %1$d / %2$d</string>
+    <string name="import_no_pack">Paketi bilinmeyen</string>
+    <string name="import_select_all">Tümünü seç</string>
+    <string name="import_new_pack">Yeni paket yap</string>
+    <string name="import_new_packs_split">%1$d yeni paket yap (her biri en fazla 30)</string>
+    <string name="import_progress">İçe aktarılıyor: %1$d / %2$d</string>
+    <string name="import_reencoding_note">500 KB\'tan büyük stickerlar yeniden sıkıştırılıyor (her biri birkaç saniye).</string>
+    <string name="import_reencoded">%1$d sticker 500 KB sınırına sığması için yeniden sıkıştırıldı.</string>
+    <string name="import_shared_title">Paylaşılan tam paketler</string>
+    <string name="import_shared_explain">Bir paket sohbette bütün olarak paylaşıldığında WhatsApp onu ayrı bir klasöre kaydeder. Paketlerin tamamını görmek için bu klasöre de izin ver.</string>
+    <string name="import_shared_grant">Paylaşılan paketler klasörünü seç</string>
+    <string name="import_shared_badge">tam paket</string>
 </resources>

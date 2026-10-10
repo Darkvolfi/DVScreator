@@ -10,20 +10,36 @@ import io.github.darkvolfi.dvscreator.core.imaging.CreatedSticker
 import io.github.darkvolfi.dvscreator.core.imaging.StickerFactory
 import io.github.darkvolfi.dvscreator.core.imaging.StickerTooLargeException
 import io.github.darkvolfi.dvscreator.core.model.EditRecipe
+import io.github.darkvolfi.dvscreator.core.whatsapp.ImportOutcome
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackManifest
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackRepository
+import io.github.darkvolfi.dvscreator.core.whatsapp.ReceivedSticker
+import io.github.darkvolfi.dvscreator.core.whatsapp.ReceivedStickers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 /** Galeriden seçilmiş bir kaynak ve düzenleme ekranında seçilen tarif (kırpma, süre aralığı). */
 data class StickerSource(val uri: Uri, val mimeType: String, val recipe: EditRecipe = EditRecipe())
 
-/** Bir pakete sticker eklenirken (videolarda 5-30 sn) ve sonrasında gösterilen durum. */
+/**
+ * WhatsApp'tan içe aktarma durumu: [outcome] null iken sürüyor ([done]/[total], yeniden sıkıştırılan sayısı).
+ * [newPacks]: "Yeni paket yap" ile oluşturulan paketlerin adları.
+ */
+data class ImportStatus(
+    val done: Int,
+    val total: Int,
+    val reencoded: Int = 0,
+    val outcome: ImportOutcome? = null,
+    val newPacks: List<String> = emptyList(),
+)
+
 /** Tek bir kaynağın sonucu: üretilen sticker ya da hata mesajı. */
 class ItemResult(val sticker: CreatedSticker? = null, val error: String? = null)
 
@@ -127,13 +143,81 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
 
     fun dismissAddState(packId: String) = _addState.update { it - packId }
 
+    /** WhatsApp'tan içe aktarma sonucu (paket kimliği → eklenen sayı, reddedilenler). */
+    private val _importResult = MutableStateFlow<Map<String, ImportStatus>>(emptyMap())
+    val importResult: StateFlow<Map<String, ImportStatus>> = _importResult.asStateFlow()
+
+    fun importReceived(packId: String, stickers: List<ReceivedSticker>) {
+        viewModelScope.launch {
+            _importResult.update { it + (packId to ImportStatus(0, stickers.size)) }
+            val outcome = importInto(packId, stickers) { done, total, re ->
+                _importResult.update { it + (packId to ImportStatus(done, total, re)) }
+            }
+            _importResult.update { it + (packId to ImportStatus(stickers.size, stickers.size, outcome.reencoded, outcome)) }
+        }
+    }
+
+    private suspend fun importInto(packId: String, stickers: List<ReceivedSticker>, onProgress: (Int, Int, Int) -> Unit): ImportOutcome {
+        val folder = ReceivedStickers(getApplication())
+        val items = withContext(Dispatchers.IO) { stickers.mapNotNull { s -> folder.read(s)?.let { s.name to it } } }
+        return runCatching { repository.importReceived(packId, items, onProgress) }
+            .getOrElse { e -> ImportOutcome(0, 0, listOf(e.message ?: e.toString())) }
+    }
+
+    fun dismissImportResult(packId: String) = _importResult.update { it - packId }
+
+    /**
+     * Alınan bir paketin stickerlarından yeni paket(ler) oluşturur. WhatsApp paket başına en fazla 30
+     * sticker kabul ediyor (60 ile denendi, reddetti) → fazlası eşit parçalara bölünür ("Kediler 1", "Kediler 2").
+     * Sonuç, ekranın açıldığı [resultPackId] paketinde gösterilir.
+     */
+    fun importAsNewPacks(resultPackId: String, name: String, stickers: List<ReceivedSticker>) {
+        viewModelScope.launch {
+            val chunks = splitForPacks(stickers)
+            val names = chunks.indices.map { i -> if (chunks.size > 1) "$name ${i + 1}" else name }
+            var added = 0
+            var reencoded = 0
+            val rejected = mutableListOf<String>()
+            var offset = 0
+            _importResult.update { it + (resultPackId to ImportStatus(0, stickers.size, newPacks = names)) }
+            for ((i, chunk) in chunks.withIndex()) {
+                val pack = repository.createPack(names[i])
+                val before = offset
+                val r = importInto(pack.identifier, chunk) { done, _, re ->
+                    _importResult.update { it + (resultPackId to ImportStatus(before + done, stickers.size, reencoded + re, newPacks = names)) }
+                }
+                added += r.added
+                reencoded += r.reencoded
+                rejected += r.rejected
+                offset += chunk.size
+            }
+            _importResult.update {
+                it + (resultPackId to ImportStatus(stickers.size, stickers.size, reencoded, ImportOutcome(added, reencoded, rejected), names))
+            }
+        }
+    }
+
+    companion object {
+        private const val TAG = "WSC_PACKS"
+
+        /** En az 3, en fazla 30'luk, olabildiğince eşit parçalar. */
+        fun <T> splitForPacks(items: List<T>, max: Int = 30): List<List<T>> {
+            if (items.isEmpty()) return emptyList()
+            val parts = (items.size + max - 1) / max
+            val base = items.size / parts
+            val extra = items.size % parts
+            var start = 0
+            return List(parts) { i ->
+                val size = base + if (i < extra) 1 else 0
+                items.subList(start, start + size).also { start += size }
+            }
+        }
+    }
+
     fun removeSticker(packId: String, imageFile: String) = viewModelScope.launch { repository.removeSticker(packId, imageFile) }
     fun setEmojis(packId: String, imageFile: String, emojis: List<String>) =
         viewModelScope.launch { repository.setEmojis(packId, imageFile, emojis) }
     fun rename(packId: String, name: String) = viewModelScope.launch { repository.rename(packId, name) }
     fun deletePack(packId: String) = viewModelScope.launch { repository.deletePack(packId) }
 
-    private companion object {
-        const val TAG = "WSC_PACKS"
-    }
 }

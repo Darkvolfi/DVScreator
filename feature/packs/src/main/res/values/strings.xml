@@ -47,4 +47,31 @@
     <string name="sticker_emojis_title">Sticker emojis</string>
     <string name="sticker_emojis_hint">Choose 1–3 emojis. WhatsApp uses them to suggest this sticker.</string>
     <string name="sticker_delete">Delete sticker</string>
+
+    <string name="pack_import_whatsapp">Import from WhatsApp</string>
+    <string name="import_title">Stickers received in WhatsApp</string>
+    <string name="import_explain">WhatsApp keeps the stickers you receive in chats in a folder. Allow access to that folder once: on the next screen tap “Use this folder”.</string>
+    <string name="import_privacy">The app only reads this folder. Stickers are copied as they are — no recompression, no quality loss.</string>
+    <string name="import_grant">Choose the WhatsApp sticker folder</string>
+    <string name="import_wrong_folder">This does not look like the WhatsApp sticker folder; stickers may be missing.</string>
+    <string name="import_change_folder">Choose another folder</string>
+    <string name="import_empty">No stickers found in this folder.</string>
+    <string name="import_selected">%1$d selected (max %2$d) · %3$d stickers</string>
+    <string name="import_add">Add to pack</string>
+    <string name="import_result">Imported %1$d stickers.</string>
+    <string name="import_rejected">Skipped:</string>
+    <string name="import_view_all">All</string>
+    <string name="import_view_packs">By pack</string>
+    <string name="import_scanning">Reading pack names: %1$d / %2$d</string>
+    <string name="import_no_pack">Unknown pack</string>
+    <string name="import_select_all">Select all</string>
+    <string name="import_new_pack">Make a new pack</string>
+    <string name="import_new_packs_split">Make %1$d new packs (max 30 each)</string>
+    <string name="import_progress">Importing: %1$d / %2$d</string>
+    <string name="import_reencoding_note">Stickers over 500 KB are being recompressed (a few seconds each).</string>
+    <string name="import_reencoded">%1$d stickers were recompressed to fit the 500 KB limit.</string>
+    <string name="import_shared_title">Shared full packs</string>
+    <string name="import_shared_explain">When a whole pack is shared in a chat, WhatsApp saves it in a separate folder. Allow that folder too to see complete packs.</string>
+    <string name="import_shared_grant">Choose the shared packs folder</string>
+    <string name="import_shared_badge">full pack</string>
 </resources>

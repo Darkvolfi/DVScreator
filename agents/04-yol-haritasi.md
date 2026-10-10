@@ -60,6 +60,16 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [ ] TR + EN çeviriler (Android)
 - [ ] Ekran görüntüsü testleri (QA)
 
+## M4b — WhatsApp'tan içe aktar (proje sahibi isteği, 2026-10-10)
+- [x] SAF klasör erişimi: `Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Stickers` (klasörde `.nomedia` var → galeri izniyle görünmüyor; kalıcı izin) (Android)
+- [x] Alınan stickerları ızgarada göster (tembel yükleme, ~2700 dosya; hareketliler oynar), çoklu seçim; "Paketlere göre" gruplama (EXIF, dosya sonundan 8 KB) (Android)
+- [x] Seçilenleri pakete **yeniden kodlamadan** ekle; alınan bir paketten yeni paket(ler) — 30 üstü eşit bölünür: geçerli hareketli → birebir kopya; statik → kayıpsız 2 kareli sarma; geçersizler (boyut / çözünürlük) için açıklama (Görüntü + WhatsApp)
+- [x] Paylaşılan tam paketler: `WhatsApp Sticker Packs` klasöründe her paket bir zip (`.zip`/`.enc`, ikisi de düz zip: stickerlar + tepsi PNG). Ayrı SAF izni; önbelleğe bir kez çıkarılır; aynı paket birden çok kez varsa en kalabalığı. Alınanlar klasöründe aynı paketin yalnızca bir kısmı olur → tam paket onun yerine gösterilir (Android)
+- [x] 500 KB üstü ya da kare süreleri bozuk stickerlar atlanmaz, `AnimationEncoder` ile yeniden sıkıştırılır (WhatsApp'ın kendi oluşturucusu sınırı uygulamıyor: paylaşılan paketlerde 15 tane 500 KB+, en büyüğü 827 KB) (Görüntü)
+- Not: `WhatsApp Backup Excluded Stickers` = WhatsApp mağaza paketleri (çoğu Lottie) → içe aktarılmaz. `.was` dosyaları da Lottie → atlanır.
+- Not: WhatsApp'ın kendi verisi (favoriler, son kullanılanlar, başka uygulamaların paketleri) Android güvenliği gereği erişilemez.
+- Not: Paket başına 30 sınırı gerçek WhatsApp'ta doğrulandı (60 reddedildi). Proje sahibi cihazda onayladı (2026-10-10).
+
 ## M5 — Yayın v1.0
 - [~] Uygulama simgesi: sticker + ":3" yüzü (dikey), temalı ikon için tek renkli sürüm ✅; mağaza görselleri eksik (Android)
 - [ ] İmzalı release build, reproducible build kontrolü (Release)

@@ -40,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,6 +81,9 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
     var editing by remember { mutableStateOf<StickerEntry?>(null) }
     var renaming by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf(false) }
+    var importing by rememberSaveable { mutableStateOf(false) }
+    val importResults by vm.importResult.collectAsState()
+    val importResult = importResults[pack.identifier]
     var waResult by remember { mutableStateOf<AddToWhatsAppResult?>(null) }
     var pendingPackage by remember { mutableStateOf<String?>(null) }
     var pendingWasAdded by remember { mutableStateOf(false) }
@@ -114,6 +118,18 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
         pendingWasAdded = WhatsAppIntents.isPackAdded(context, pack.identifier, pkg) == true
         pendingPackage = pkg
         waLauncher.launch(WhatsAppIntents.addPack(context, pack.identifier, pack.name, pkg))
+    }
+
+    if (importing) {
+        BackHandler { importing = false }
+        ImportScreen(
+            room = room,
+            onImport = { vm.importReceived(pack.identifier, it); importing = false },
+            onImportAsNewPack = { name, list -> vm.importAsNewPacks(pack.identifier, name, list); importing = false },
+            onClose = { importing = false },
+            modifier = modifier,
+        )
+        return
     }
 
     // Seçilen kaynaklar sırayla düzenleme ekranından geçer (kare kırpma, videoda süre)
@@ -153,13 +169,34 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
                     stringResource(R.string.pack_rules, pack.stickers.size, WhatsAppLimits.PACK_MIN_STICKERS, WhatsAppLimits.PACK_MAX_STICKERS),
                     style = MaterialTheme.typography.bodySmall,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        enabled = room > 0 && addState !is AddState.Working,
-                        onClick = { picker.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo)) },
-                    ) { Text(stringResource(R.string.pack_add_sticker)) }
-                }
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = room > 0 && addState !is AddState.Working,
+                    onClick = { picker.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo)) },
+                ) { Text(stringResource(R.string.pack_add_sticker)) }
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = room > 0,
+                    onClick = { importing = true },
+                ) { Text(stringResource(R.string.pack_import_whatsapp)) }
                 AddStatusCard(addState, onDismiss = { vm.dismissAddState(pack.identifier) })
+                importResult?.let { status ->
+                    val outcome = status.outcome
+                    Card(Modifier.fillMaxWidth().clickable(enabled = outcome != null) { vm.dismissImportResult(pack.identifier) }) {
+                        val text = buildString {
+                            if (status.newPacks.isNotEmpty()) append("→ ").append(status.newPacks.joinToString()).append("\n")
+                            if (outcome == null) {
+                                append(stringResource(R.string.import_progress, status.done, status.total))
+                                if (status.reencoded > 0) append("\n").append(stringResource(R.string.import_reencoding_note))
+                            } else {
+                                append(stringResource(R.string.import_result, outcome.added))
+                                if (outcome.reencoded > 0) append("\n").append(stringResource(R.string.import_reencoded, outcome.reencoded))
+                                if (outcome.rejected.isNotEmpty()) append("\n").append(stringResource(R.string.import_rejected)).append("\n• ").append(outcome.rejected.joinToString("\n• "))
+                            }
+                        }
+                        Text(text, Modifier.padding(12.dp), style = MaterialTheme.typography.bodySmall)
+                    }
+                }
             }
         }
 
