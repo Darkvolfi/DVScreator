@@ -12,7 +12,7 @@
     <string name="editor_tool_erase">Sil</string>
     <string name="editor_tool_restore">Geri getir</string>
     <string name="editor_brush">Fırça</string>
-    <string name="editor_erase_hint">Resmin üzerine çiz. Silinen yerler şeffaf olur; “Geri getir” orijinali geri getirir.</string>
+    <string name="editor_erase_hint">Tek parmakla çiz, iki parmakla yakınlaştır ve kaydır. Silinen yerler şeffaf olur; “Geri getir” orijinali geri getirir.</string>
     <string name="editor_undo">↶ Geri al</string>
     <string name="editor_redo">↷ Yinele</string>
     <string name="editor_clear_strokes">Hepsini temizle</string>

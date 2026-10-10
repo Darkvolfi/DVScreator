@@ -12,7 +12,7 @@
     <string name="editor_tool_erase">Erase</string>
     <string name="editor_tool_restore">Restore</string>
     <string name="editor_brush">Brush</string>
-    <string name="editor_erase_hint">Draw on the picture. Erased parts become transparent; “Restore” brings the original back.</string>
+    <string name="editor_erase_hint">Draw with one finger, zoom and move with two. Erased parts become transparent; “Restore” brings the original back.</string>
     <string name="editor_undo">↶ Undo</string>
     <string name="editor_redo">↷ Redo</string>
     <string name="editor_clear_strokes">Clear all</string>

@@ -6,8 +6,16 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Shader
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,34 +64,69 @@ fun MaskCanvas(
     val latestOnStroke by rememberUpdatedState(onStroke)
     val drawing = tool != EditorTool.CROP
 
+    // Yakınlaştırma (yalnızca silgi araçlarında): içerik = (ekran - offset) / scale
+    var scale by remember { mutableStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    LaunchedEffect(drawing) { if (!drawing) { scale = 1f; offset = Offset.Zero } }
+
     val gestures = if (!drawing) Modifier else Modifier
         .pointerInput(Unit) {
-            fun norm(o: Offset, size: IntSize) = listOf(o.x / size.width, o.y / size.height)
-            detectDragGestures(
-                onDragStart = { o ->
-                    cursor = o
-                    current = MaskStroke(latestTool == EditorTool.RESTORE, latestBrush, norm(o, size))
-                },
-                onDrag = { change, _ ->
-                    cursor = change.position
-                    current = current?.let { it.copy(points = it.points + norm(change.position, size)) }
-                },
-                onDragEnd = { current?.let(latestOnStroke); current = null; cursor = null },
-                onDragCancel = { current?.let(latestOnStroke); current = null; cursor = null },
-            )
-        }
-        .pointerInput(Unit) {
-            detectTapGestures { o ->
-                latestOnStroke(MaskStroke(latestTool == EditorTool.RESTORE, latestBrush, listOf(o.x / size.width, o.y / size.height)))
+            fun content(o: Offset) = (o - offset) / scale
+            fun norm(o: Offset) = content(o).let { listOf(it.x / size.width, it.y / size.height) }
+            awaitEachGesture {
+                val down = awaitFirstDown(requireUnconsumed = false)
+                down.consume()
+                // Fırça ekranda aynı boyutta kalsın: yakınlaştırınca kaynakta incelir
+                var stroke = MaskStroke(latestTool == EditorTool.RESTORE, latestBrush / scale, norm(down.position))
+                current = stroke
+                cursor = content(down.position)
+                var multi = false
+                while (true) {
+                    val event = awaitPointerEvent()
+                    val pressed = event.changes.filter { it.pressed }
+                    if (pressed.isEmpty()) break
+                    if (pressed.size >= 2) {
+                        // İki parmak: çizimi iptal et, yakınlaştır / kaydır
+                        multi = true
+                        current = null
+                        cursor = null
+                        val zoom = event.calculateZoom()
+                        val pan = event.calculatePan()
+                        val centroid = event.calculateCentroid(useCurrent = true)
+                        val newScale = (scale * zoom).coerceIn(1f, MAX_ZOOM)
+                        val k = newScale / scale
+                        val o = (offset - centroid) * k + centroid + pan
+                        scale = newScale
+                        offset = Offset(
+                            o.x.coerceIn(size.width * (1 - scale), 0f),
+                            o.y.coerceIn(size.height * (1 - scale), 0f),
+                        )
+                    } else if (!multi) {
+                        val c = pressed[0]
+                        stroke = stroke.copy(points = stroke.points + norm(c.position))
+                        current = stroke
+                        cursor = content(c.position)
+                    }
+                    event.changes.forEach { it.consume() }
+                }
+                if (!multi) latestOnStroke(stroke)   // dokunma da tek noktalık iz
+                current = null
+                cursor = null
             }
         }
 
     val originalBitmap = remember(original) { original.asAndroidBitmap() }
+    Box(modifier.clipToBounds().then(gestures)) {
     Canvas(
-        modifier
-            .then(gestures)
-            // Silme (CLEAR) yalnızca bu katmanı etkilesin, arkadaki dama desenini değil
-            .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen },
+        Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                // Silme (CLEAR) yalnızca bu katmanı etkilesin, arkadaki dama desenini değil
+                compositingStrategy = CompositingStrategy.Offscreen
+                transformOrigin = TransformOrigin(0f, 0f)
+                scaleX = scale; scaleY = scale
+                translationX = offset.x; translationY = offset.y
+            },
     ) {
         drawImage(base, dstSize = androidx.compose.ui.unit.IntSize(size.width.toInt(), size.height.toInt()))
         val all = if (current != null) strokes + current!! else strokes
@@ -117,8 +160,12 @@ fun MaskCanvas(
         }
         // Fırçanın boyutunu göster
         cursor?.let { c ->
-            drawCircle(Color.White, radius = brush * size.width, center = c, style = Stroke(width = 2f))
-            drawCircle(Color.Black, radius = brush * size.width + 2f, center = c, style = Stroke(width = 1f))
+            val r = brush / scale * size.width
+            drawCircle(Color.White, radius = r, center = c, style = Stroke(width = 2f / scale))
+            drawCircle(Color.Black, radius = r + 2f / scale, center = c, style = Stroke(width = 1f / scale))
         }
     }
+    }
 }
+
+private const val MAX_ZOOM = 8f

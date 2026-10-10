@@ -59,6 +59,7 @@ import io.github.darkvolfi.dvscreator.core.imaging.AnimationLoader
 import io.github.darkvolfi.dvscreator.core.imaging.ImageLoader
 import io.github.darkvolfi.dvscreator.core.imaging.Matte
 import io.github.darkvolfi.dvscreator.core.imaging.toBitmap
+import io.github.darkvolfi.dvscreator.core.imaging.toArgbImage
 import io.github.darkvolfi.dvscreator.core.model.EditRecipe
 import io.github.darkvolfi.dvscreator.core.model.MaskStroke
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
@@ -121,19 +122,30 @@ fun StickerEditor(
     var strokes by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
     var redo by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
     var brush by remember(uri) { mutableStateOf(DEFAULT_BRUSH) }
-    // Fotoğrafta sonucu hemen göster (önizleme çözünürlüğünde ~1 sn); videoda yalnızca tahmini süre
-    val mattedPreview by produceState<ImageBitmap?>(null, uri, removeBackground) {
-        value = null
-        val still = m as? SourceMeta.Still
-        if (!removeBackground || still == null) return@produceState
-        value = withContext(Dispatchers.Default) {
-            runCatching { BackgroundRemover.open(context).use { it.matte().apply(still.previewImage, Matte.Region.FULL).toBitmap().asImageBitmap() } }.getOrNull()
-        }
-    }
     val maxMs = AnimationLoader.MAX_DURATION_MS.toFloat()
     val video = m as? SourceMeta.Video
     val currentRange = video?.let { range ?: (0f..min(it.durationMs.toFloat(), maxMs)) }
     val latestRange by rememberUpdatedState(currentRange)
+
+    // Videoda silgi / arka plan önizlemesi oynayan video üzerinde değil, seçilen aralığın ilk karesinde yapılır;
+    // izler sticker üretilirken her kareye uygulanır
+    val needFrame = video != null && (tool != EditorTool.CROP || removeBackground)
+    val frameMs = ((currentRange?.start ?: 0f) / 100f).roundToInt() * 100
+    val videoFrame by produceState<StillFrame?>(null, uri, needFrame, frameMs) {
+        if (!needFrame) return@produceState
+        delay(300)   // aralık sürüklenirken her adımda kare okuma
+        value = withContext(Dispatchers.IO) { runCatching { readVideoFrame(context, uri, frameMs) }.getOrNull() } ?: value
+    }
+    val frame: StillFrame? = (m as? SourceMeta.Still)?.let { StillFrame(it.previewImage, it.preview) } ?: videoFrame
+    // Arka plan kaldırmanın sonucu hemen gösterilir (önizleme çözünürlüğünde ~1 sn)
+    val mattedPreview by produceState<ImageBitmap?>(null, removeBackground, frame) {
+        value = null
+        val f = frame
+        if (!removeBackground || f == null) return@produceState
+        value = withContext(Dispatchers.Default) {
+            runCatching { BackgroundRemover.open(context).use { it.matte().apply(f.image, Matte.Region.FULL).toBitmap().asImageBitmap() } }.getOrNull()
+        }
+    }
 
     // Videoda önizlemeyi seçili aralıkta döngüde tut
     LaunchedEffect(player) {
@@ -159,13 +171,14 @@ fun StickerEditor(
         Box(Modifier.fillMaxWidth().aspectRatio(1f).background(Color.Black), contentAlignment = Alignment.Center) {
             val ratio = m.width.toFloat() / m.height
             Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f)) {
-                when (m) {
-                    is SourceMeta.Still -> {
-                        val shown = if (removeBackground) mattedPreview else m.preview
-                        if (shown != null) {
+                when {
+                    m is SourceMeta.Still || needFrame -> {
+                        val shown = if (removeBackground) mattedPreview else frame?.bitmap
+                        val original = frame?.bitmap
+                        if (shown != null && original != null) {
                             val transparent = removeBackground || strokes.isNotEmpty()
                             MaskCanvas(
-                                base = shown, original = m.preview, strokes = strokes, tool = tool, brush = brush,
+                                base = shown, original = original, strokes = strokes, tool = tool, brush = brush,
                                 onStroke = { strokes = strokes + it; redo = emptyList() },
                                 modifier = Modifier.fillMaxSize().then(if (transparent) Modifier.checkerboard() else Modifier),
                             )
@@ -173,7 +186,7 @@ fun StickerEditor(
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
                         }
                     }
-                    is SourceMeta.Video -> AndroidView(
+                    else -> AndroidView(
                         modifier = Modifier.fillMaxSize(),
                         factory = { ctx ->
                             VideoView(ctx).apply {
@@ -194,8 +207,8 @@ fun StickerEditor(
             }
         }
 
-        if (m is SourceMeta.Still) {
-            // Araçlar: kırp / sil / geri getir (fotoğraf ve GIF; GIF'te izler her kareye uygulanır)
+        run {
+            // Araçlar: kırp / sil / geri getir. GIF ve videoda izler her kareye uygulanır
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 FilterChip(selected = tool == EditorTool.CROP, onClick = { tool = EditorTool.CROP }, label = { Text(stringResource(R.string.editor_tool_crop)) })
                 FilterChip(selected = tool == EditorTool.ERASE, onClick = { tool = EditorTool.ERASE }, label = { Text(stringResource(R.string.editor_tool_erase)) })
@@ -372,6 +385,24 @@ private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {
             bmp?.asImageBitmap()
         }
         return SourceMeta.Video(info.displayWidth, info.displayHeight, info.durationMs, info.fps, thumbs)
+    } finally {
+        retriever.release()
+    }
+}
+
+/** Silgi / arka plan önizlemesi için hareketsiz kare: işlenecek pikseller ve gösterilecek bitmap. */
+private class StillFrame(val image: ArgbImage, val bitmap: ImageBitmap)
+
+/** Videonun [ms] anındaki karesi (döndürme uygulanmış), en fazla [PREVIEW_LONG_SIDE] px. */
+private fun readVideoFrame(context: Context, uri: Uri, ms: Int): StillFrame? {
+    val retriever = MediaMetadataRetriever()
+    try {
+        retriever.setDataSource(context, uri)
+        val raw = retriever.getFrameAtTime(ms * 1000L, MediaMetadataRetriever.OPTION_CLOSEST) ?: return null
+        val k = minOf(1f, PREVIEW_LONG_SIDE.toFloat() / maxOf(raw.width, raw.height))
+        val bmp = if (k < 1f) Bitmap.createScaledBitmap(raw, (raw.width * k).roundToInt(), (raw.height * k).roundToInt(), true).also { raw.recycle() } else raw
+        val image = bmp.copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
+        return StillFrame(image, image.toBitmap().asImageBitmap())
     } finally {
         retriever.release()
     }

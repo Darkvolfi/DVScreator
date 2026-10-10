@@ -6,6 +6,7 @@ import ai.onnxruntime.OrtSession
 import android.content.Context
 import android.util.Log
 import io.github.darkvolfi.dvscreator.core.imaging.ArgbImage
+import io.github.darkvolfi.dvscreator.core.imaging.EdgeCleanup
 import io.github.darkvolfi.dvscreator.core.imaging.Matte
 import java.io.Closeable
 import java.io.FileInputStream
@@ -65,8 +66,12 @@ class BackgroundRemover private constructor(
             val a = (p ushr 24) * (mask[i].toInt() and 0xFF) / 255
             out.pixels[i] = (a shl 24) or (p and 0xFFFFFF)
         }
+        if (cleanEdges) EdgeCleanup.decontaminate(out)
         out
     }
+
+    /** Kenardaki eski arka plan rengini temizle (bkz. [EdgeCleanup]). */
+    @Volatile var cleanEdges: Boolean = true
 
     /** Teşhis: son çıkarımın süresi (ön/son işlem hariç). */
     @Volatile var lastInferenceMs: Long = 0

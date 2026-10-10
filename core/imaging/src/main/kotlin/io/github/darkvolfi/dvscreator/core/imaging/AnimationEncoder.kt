@@ -52,6 +52,15 @@ class AnimationEncoder(
     private var attempts = 0
     private var encodeNs = 0L
     private var smallest = Int.MAX_VALUE
+    /** Klipte yumuşak (yarı saydam) kenar var: kayıplı denemelerde alfa da kayıplı sıkıştırılır. */
+    private var softAlpha = false
+
+    /**
+     * Kayıplı ayar. Arka planı kaldırılmış kliplerde alfa kanalı da kayıplı (kalite q+30): kayıpsız alfa
+     * yumuşak kenarlarda boyutun büyük kısmını tutuyordu. Kenarı keskin (normal) kliplerde etkisiz.
+     */
+    private fun lossy(q: Int, method: Int) = WebpOptions.lossy(q.toFloat(), method = method)
+        .let { if (softAlpha) it.copy(alphaQuality = (q + 30).coerceAtMost(100)) else it }
 
     /**
      * DİKKAT: [source] kareleri bellek için **yerinde** sabitlenir (10 sn klip ~150 MB; kopyası sığmayabilir).
@@ -60,6 +69,8 @@ class AnimationEncoder(
     suspend fun encode(source: AnimationClip, onProgress: (Progress) -> Unit = {}): EncodedAnimation {
         attempts = 0; encodeNs = 0; smallest = Int.MAX_VALUE
         progress = onProgress
+        // Önce saydamlık (arka planı kaldırılmış videolarda maske titremesi), sonra renk gürültüsü
+        softAlpha = AlphaStabilizer.stabilize(source)
         val stabilized = TemporalStabilizer.stabilize(source, stabilizeThreshold, inPlace = true)
         // Kademe 1: iyi kalite (q ≥ minQuality, ≥ minFps). Kademe 2: hiç sticker olmamasındansa
         // düşük kalite — sonuç "degraded" işaretlenir ve kullanıcıya daha kısa seçim önerilir.
@@ -114,14 +125,15 @@ class AnimationEncoder(
     private var lastFailedSize = 1
 
     /** Paralel denemelerden çağrılabilir: sayaçlar kilitle güncellenir. */
-    private suspend fun tryEncode(clip: AnimationClip, options: WebpOptions): ByteArray {
+    /** [probe]: klibin bir kısmı (kayıpsız tahmini) — "en küçük boyut" hata mesajına girmez. */
+    private suspend fun tryEncode(clip: AnimationClip, options: WebpOptions, probe: Boolean = false): ByteArray {
         val attempt = synchronized(this) { ++attempts }
         progress(Progress.Encoding(attempt, clip.frames.size))
         val t = System.nanoTime()
         val bytes = NativeWebp.encodeAnimation(clip.frames.map { it.pixels }, clip.durationsMs, clip.width, clip.height, options)
         synchronized(this) {
             encodeNs += System.nanoTime() - t
-            smallest = minOf(smallest, bytes.size)
+            if (!probe) smallest = minOf(smallest, bytes.size)
         }
         currentCoroutineContext().ensureActive()
         return bytes
@@ -135,7 +147,7 @@ class AnimationEncoder(
     private suspend fun losslessMightFit(clip: AnimationClip): Boolean {
         if (clip.frames.size <= LOSSLESS_PROBE_FRAMES * 2) return true
         val probe = AnimationClip(clip.frames.take(LOSSLESS_PROBE_FRAMES), clip.durationsMs.copyOf(LOSSLESS_PROBE_FRAMES))
-        val probeSize = tryEncode(probe, WebpOptions.lossless(LOSSLESS_LEVEL)).size
+        val probeSize = tryEncode(probe, WebpOptions.lossless(LOSSLESS_LEVEL), probe = true).size
         val first = clip.frames[0]
         val keySize = NativeWebp.encode(first.pixels, first.width, first.height, WebpOptions.lossless(LOSSLESS_LEVEL)).size
         val perDelta = (probeSize - keySize).coerceAtLeast(0).toDouble() / (LOSSLESS_PROBE_FRAMES - 1)
@@ -152,7 +164,7 @@ class AnimationEncoder(
      * Arama [SEARCH_PRECISION] hassasiyette durur: q 72 ile 73 arası gözle fark edilmez, deneme 4 sn.
      */
     private suspend fun searchLossy(clip: AnimationClip, minQuality: Int): Pair<ByteArray, Int>? {
-        suspend fun encodeAt(q: Int) = tryEncode(clip, WebpOptions.lossy(q.toFloat(), method = SEARCH_METHOD))
+        suspend fun encodeAt(q: Int) = tryEncode(clip, lossy(q, SEARCH_METHOD))
         var loQ = minQuality
         var loBytes = encodeAt(loQ)
         if (loBytes.size > limitBytes) {

@@ -243,6 +243,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     androidTestImplementation(project(":core:webp"))
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.test.runner)

@@ -87,3 +87,51 @@ object TemporalStabilizer {
         maxOf(abs(greenOf(a) - greenOf(b)), abs(blueOf(a) - blueOf(b))),
     )
 }
+
+/**
+ * Saydamlık sabitleme — arka planı kaldırılmış videolar için, [TemporalStabilizer]'dan ÖNCE.
+ *
+ * Maske her karede ayrı hesaplandığı için kenarlar kareden kareye biraz oynar ve tamamen saydam
+ * piksellerin görünmeyen renkleri (videonun eski arka planı) her karede farklıdır. İkisi de kareler
+ * arası fark kodlamasını boşa çıkarıyordu: arka planı kaldırılmış 3 video en düşük ayarda bile
+ * 650–920 KB çıktı (2026-10-10). Bu adım:
+ * - yarı saydam geçişi [steepness] kat daraltır (ölçüm, gerçek GIF 50 kare q50: yumuşak maske 697 KB,
+ *   4 kat dik 353 KB, tamamen ikili 261 KB, arka plan duruyorken 203 KB — 4 kat kenarı hâlâ 1-2 px yumuşak bırakır),
+ * - önceki çıktıya göre [hysteresis]'ten az değişen alfayı önceki değerde tutar (titreme gider,
+ *   gerçek hareket 255'e yakın sıçradığı için korunur),
+ * - tamamen saydam piksellerin rengini 0 yapar (görünmez; artık karelerde aynı).
+ */
+object AlphaStabilizer {
+    private const val LOW = 16
+    private const val HIGH = 240
+
+    /** Kareleri yerinde değiştirir. @return klipte yarı saydam piksel var mı (maske uygulanmış mı) */
+    fun stabilize(clip: AnimationClip, hysteresis: Int = DEFAULT_HYSTERESIS, steepness: Int = DEFAULT_STEEPNESS): Boolean {
+        var partial = false
+        var prev: IntArray? = null
+        for (frame in clip.frames) {
+            val px = frame.pixels
+            for (i in px.indices) {
+                val p = px[i]
+                var a = p ushr 24
+                if (a in 1 until 255) partial = true
+                a = ((a - 128) * steepness + 128).coerceIn(0, 255)
+                a = when {
+                    a < LOW -> 0
+                    a > HIGH -> 255
+                    else -> a
+                }
+                prev?.let { pp ->
+                    val pa = pp[i] ushr 24
+                    if (kotlin.math.abs(a - pa) <= hysteresis) a = pa
+                }
+                px[i] = if (a == 0) 0 else (a shl 24) or (p and 0xFFFFFF)
+            }
+            prev = px
+        }
+        return partial
+    }
+
+    const val DEFAULT_HYSTERESIS = 40
+    const val DEFAULT_STEEPNESS = 4
+}
