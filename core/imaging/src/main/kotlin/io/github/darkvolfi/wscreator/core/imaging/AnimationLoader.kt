@@ -27,13 +27,18 @@ class LoadedAnimation(
  */
 class AnimationLoader(private val context: Context) {
 
+    /**
+     * @param mimeType bilinmiyorsa null → ContentResolver'dan sorulur (file:// adreslerinde bilinmez,
+     *                 uygulamaya kopyalanmış kaynaklar için açıkça verilmeli)
+     */
     suspend fun load(
         uri: Uri,
+        mimeType: String? = null,
         maxDurationMs: Int = MAX_DURATION_MS,
         maxFps: Double = DEFAULT_MAX_FPS,
         margin: Int = DEFAULT_MARGIN,
     ): LoadedAnimation {
-        val type = context.contentResolver.getType(uri).orEmpty()
+        val type = mimeType ?: context.contentResolver.getType(uri).orEmpty()
         return if (type == "image/gif") loadGif(uri, maxDurationMs, margin) else loadVideo(uri, maxDurationMs, maxFps, margin)
     }
 

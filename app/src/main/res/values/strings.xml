@@ -9,16 +9,6 @@
     <string name="lab_working">Processing… videos can take 5–30 seconds.</string>
     <string name="lab_error">Error: %1$s</string>
 
-    <!-- Sekmeler ve WhatsApp fizibilite testi (geçici) -->
     <string name="tab_lab">Quality lab</string>
-    <string name="tab_probe">WhatsApp test</string>
-    <string name="probe_title">WhatsApp acceptance test</string>
-    <string name="probe_subtitle">Generates 6 test packs. Add each one to WhatsApp and note whether it is accepted.</string>
-    <string name="probe_no_whatsapp">WhatsApp is not installed.</string>
-    <string name="probe_generate">Generate test packs</string>
-    <string name="probe_generating">Generating: %1$s</string>
-    <string name="probe_add">Add to WhatsApp</string>
-    <string name="probe_add_business">Add to Business</string>
-    <string name="probe_result_added">✅ Added (WhatsApp accepted)</string>
-    <string name="probe_result_cancelled">⚪ Cancelled or rejected without a reason</string>
+    <string name="tab_packs">My packs</string>
 </resources>

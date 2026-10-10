@@ -15,6 +15,8 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
+    api(project(":core:imaging"))
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
 }

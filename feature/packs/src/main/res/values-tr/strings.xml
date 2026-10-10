@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+    <string name="back">Geri</string>
+
+    <string name="packs_title">Paketlerim</string>
+    <string name="packs_new">Yeni paket</string>
+    <string name="packs_name">Paket adı</string>
+    <string name="packs_empty">Henüz paket yok. Bir paket oluştur ve içine fotoğraf, video ya da GIF ekle.</string>
+    <string name="packs_count">%1$d / %2$d sticker</string>
+
+    <string name="pack_rules">%1$d sticker · WhatsApp %2$d–%3$d arası istiyor. Emoji seçmek ya da silmek için stickera dokun.</string>
+    <string name="pack_add_sticker">Fotoğraf / video / GIF ekle</string>
+    <string name="pack_working">Sticker hazırlanıyor… (%1$d kaldı — videolar 5–30 sn sürebilir)</string>
+    <string name="pack_add_failed">Sticker eklenemedi: %1$s</string>
+    <string name="pack_added_summary">Eklendi: %1$s · %2$s · SSIM %3$s · %4$s sn</string>
+    <string name="pack_added_video">%1$d kare, %2$s fps.</string>
+    <string name="pack_added_reduced">500 KB\'a sığması için kare hızı düşürüldü.</string>
+    <string name="pack_added_trimmed">10 sn\'ye kırpıldı.</string>
+    <string name="pack_rename">Paketi yeniden adlandır</string>
+    <string name="pack_delete">Sil</string>
+    <string name="pack_delete_title">Bu paket silinsin mi?</string>
+    <string name="pack_delete_text">Paket ve stickerları bu uygulamadan silinir. WhatsApp\'a eklenmiş stickerlar orada da kaybolabilir.</string>
+    <string name="pack_no_whatsapp">WhatsApp yüklü değil.</string>
+    <string name="pack_add_whatsapp">WhatsApp\'a ekle</string>
+    <string name="pack_add_business">WhatsApp Business\'a ekle</string>
+
+    <string name="mode_lossless">Kayıpsız</string>
+    <string name="mode_near_lossless">Neredeyse kayıpsız (%1$d)</string>
+    <string name="mode_lossy">Kayıplı (kalite %1$d)</string>
+
+    <string name="wa_added">✅ WhatsApp\'a eklendi.</string>
+    <string name="wa_already_added">✅ Bu paket zaten WhatsApp\'ta. Değişiklikler orada otomatik görünür.</string>
+    <string name="wa_cancelled">Paket eklenmedi (iptal edildi).</string>
+    <string name="wa_rejected">❌ WhatsApp paketi reddetti: %1$s</string>
+    <string name="wa_invalid">WhatsApp\'a eklemeden önce bunları düzelt:</string>
+
+    <string name="sticker_emojis_title">Sticker emojileri</string>
+    <string name="sticker_emojis_hint">1–3 emoji seç. WhatsApp bu stickerı önermek için bunları kullanır.</string>
+    <string name="sticker_delete">Stickerı sil</string>
+</resources>

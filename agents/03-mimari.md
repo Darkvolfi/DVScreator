@@ -7,7 +7,7 @@
 | UI | Jetpack Compose + Material 3 | Dinamik renk (Material You) |
 | Mimari | MVVM + tek yönlü veri akışı (UiState / Event) | |
 | DI | Koin | Hafif; Hilt'e geçiş gerekirse kolay |
-| Veritabanı | Room | Paket ve sticker meta verisi |
+| Veritabanı | **JSON dosyaları** (`wa_packs/<id>/pack.json`) | Room yerine (2026-10-10): WhatsApp zaten dosya istiyor, ContentProvider doğrudan okuyor; ek katman gereksizdi |
 | Asenkron | Coroutines + Flow | |
 | Görsel gösterimi | Coil 3 | |
 | Native | CMake + NDK, **libwebp** (git submodule) | Kodlama, Lanczos |

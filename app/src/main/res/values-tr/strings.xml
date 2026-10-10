@@ -7,14 +7,5 @@
     <string name="lab_error">Hata: %1$s</string>
 
     <string name="tab_lab">Kalite laboratuvarı</string>
-    <string name="tab_probe">WhatsApp testi</string>
-    <string name="probe_title">WhatsApp kabul testi</string>
-    <string name="probe_subtitle">6 test paketi üretir. Her birini WhatsApp\'a ekle ve kabul edilip edilmediğine bak.</string>
-    <string name="probe_no_whatsapp">WhatsApp yüklü değil.</string>
-    <string name="probe_generate">Test paketlerini üret</string>
-    <string name="probe_generating">Üretiliyor: %1$s</string>
-    <string name="probe_add">WhatsApp\'a ekle</string>
-    <string name="probe_add_business">Business\'e ekle</string>
-    <string name="probe_result_added">✅ Eklendi (WhatsApp kabul etti)</string>
-    <string name="probe_result_cancelled">⚪ İptal edildi ya da gerekçesiz reddedildi</string>
+    <string name="tab_packs">Paketlerim</string>
 </resources>

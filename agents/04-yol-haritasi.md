@@ -40,12 +40,13 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [ ] Gerçek video / GIF ile ölçüm ve hız iyileştirmesi (QA)
 
 ## M3 — WhatsApp entegrasyonu
-- [ ] Room şeması, StickerStorage, repository'ler (Android)
-- [ ] ContentProvider (örnek projeyle birebir uyumlu; M2 fizibilite kodundan büyütülür) (WhatsApp)
-- [ ] PackValidator + kullanıcı dostu hata mesajları (WhatsApp)
-- [ ] ENABLE_STICKER_PACK intent'i, WhatsApp / Business seçimi, "zaten ekli" kontrolü (WhatsApp)
-- [ ] Tray icon üretimi (Görüntü)
-- [ ] Gerçek cihazda uçtan uca test: uygulamada oluşturulan paket WhatsApp'ta görünüyor ve gönderilebiliyor (QA)
+- [x] Paket deposu (JSON, Room yerine — bkz. 03) + `PackRepository`; kaynak dosyalar `sources/` altına kopyalanır (Android)
+- [x] ContentProvider (örnek projeyle birebir uyumlu) (WhatsApp)
+- [x] PackValidator + Türkçe, anlaşılır hata mesajları (WhatsApp) — cihazda doğrulandı
+- [x] ENABLE_STICKER_PACK intent'i, WhatsApp / Business seçimi, "zaten ekli" kontrolü (WhatsApp)
+- [x] Tray icon üretimi: ilk stickerın ilk karesi, 96×96 PNG (Görüntü)
+- [x] Gerçek cihazda uçtan uca test: proje sahibi kendi paketini oluşturup WhatsApp'a ekledi (2026-10-10) (QA)
+- [x] "Paketlerim" ekranı (erken, basit sürüm): paket oluştur/sil/adlandır, çoklu seçimle sticker ekle, emoji seç, sticker sil (Android)
 
 ## M4 — Arayüz (MVP)
 - [ ] Paket listesi / paket detay ekranları (Android)
@@ -60,7 +61,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [ ] Ekran görüntüsü testleri (QA)
 
 ## M5 — Yayın v1.0
-- [ ] Uygulama simgesi, mağaza görselleri (Android)
+- [~] Uygulama simgesi: sticker + ":3" yüzü (dikey), temalı ikon için tek renkli sürüm ✅; mağaza görselleri eksik (Android)
 - [ ] İmzalı release build, reproducible build kontrolü (Release)
 - [ ] GitHub Releases (Release)
 - [ ] F-Droid metadata (`fastlane/metadata`) — ertelendi, ilgi görürse (Release)

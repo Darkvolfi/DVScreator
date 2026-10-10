@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Geçici simge: kıvrık köşeli sticker. M4'te gerçek simgeyle değiştirilecek. -->
+<!-- Kıvrık köşeli sticker üzerinde ":3" yüzü, yukarıdan aşağı (":" gözler, "3" ağız → • • / ω).
+     Adaptive icon güvenli alanı: 108 dp içinde merkezdeki 66 dp (21..87). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Sticker -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M36,32h36a4,4 0,0 1,4 4v24l-16,16h-24a4,4 0,0 1,-4 -4v-36a4,4 0,0 1,4 -4z" />
+        android:pathData="M32,28h44a4,4 0,0 1,4 4v28l-20,20h-28a4,4 0,0 1,-4 -4v-44a4,4 0,0 1,4 -4z" />
+    <!-- Kıvrık köşe -->
     <path
         android:fillColor="#C8EBD9"
-        android:pathData="M76,60h-12a4,4 0,0 0,-4 4v12z" />
+        android:pathData="M80,60h-16a4,4 0,0 0,-4 4v16z" />
+    <!-- ":" → gözler -->
+    <path
+        android:fillColor="#1B8A5A"
+        android:pathData="M45,46m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <path
+        android:fillColor="#1B8A5A"
+        android:pathData="M63,46m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <!-- "3" → ω ağız -->
+    <path
+        android:pathData="M43,56q5,9 11,0q6,9 11,0"
+        android:strokeWidth="3.5"
+        android:strokeColor="#1B8A5A"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>

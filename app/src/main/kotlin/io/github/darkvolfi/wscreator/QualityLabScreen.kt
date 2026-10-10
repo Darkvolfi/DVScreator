@@ -5,7 +5,6 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.os.SystemClock
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,15 +39,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import io.github.darkvolfi.wscreator.core.imaging.AnimationEncoder
-import io.github.darkvolfi.wscreator.core.imaging.AnimationLoader
 import io.github.darkvolfi.wscreator.core.imaging.AnimationTooLargeException
-import io.github.darkvolfi.wscreator.core.imaging.ImageLoader
-import io.github.darkvolfi.wscreator.core.imaging.StickerPipeline
+import io.github.darkvolfi.wscreator.core.imaging.CreatedSticker
+import io.github.darkvolfi.wscreator.core.imaging.StickerFactory
 import io.github.darkvolfi.wscreator.core.imaging.StickerTooLargeException
-import io.github.darkvolfi.wscreator.core.model.EditRecipe
 import io.github.darkvolfi.wscreator.core.model.EncodeMode
-import io.github.darkvolfi.wscreator.core.webp.NativeWebp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -74,7 +69,7 @@ fun QualityLabScreen() {
             state = withContext(Dispatchers.Default) {
                 runCatching {
                     val type = context.contentResolver.getType(uri).orEmpty()
-                    if (type.startsWith("video/") || type == "image/gif") animated(context, uri) else still(context, uri)
+                    describe(StickerFactory.create(context, uri, type))
                 }.getOrElse { e ->
                     Log.e(TAG, "işlem hatası", e)
                     LabState.Failed(
@@ -112,51 +107,20 @@ fun QualityLabScreen() {
     }
 }
 
-/** Statik görsel → maksimum kalite modu: 500 KB bütçe, 2 kareli hareketli WebP. */
-private suspend fun still(context: android.content.Context, uri: Uri): LabState.Done {
-    val start = SystemClock.elapsedRealtime()
-    val loaded = ImageLoader(context.contentResolver).load(uri)
-    val loadMs = SystemClock.elapsedRealtime() - start
-    val pipeline = StickerPipeline(NativeWebp, limitBytes = AnimationEncoder.ANIMATED_LIMIT_BYTES - 512)
-    val result = pipeline.export(loaded.image, EditRecipe(), loaded.scale)
-    val bytes = NativeWebp.staticAsAnimation(result.bytes, 512, 512)
-    val total = SystemClock.elapsedRealtime() - start
-    return LabState.Done(
-        webp = bytes,
-        lines = listOf(
-            "Maksimum kalite modu (statik → 2 kare, 500 KB bütçe)",
-            modeText(result.mode, result.quality),
-            "Boyut: ${kb(bytes.size)} / 500 KB",
-            "SSIM: ${f4(result.ssim)}",
-            "Kaynak: ${loaded.image.width}×${loaded.image.height} px",
-            "Süre: yükleme $loadMs ms · toplam $total ms",
-        ),
-    )
-}
-
-private suspend fun animated(context: android.content.Context, uri: Uri): LabState.Done {
-    val start = SystemClock.elapsedRealtime()
-    val loaded = AnimationLoader(context).load(uri)
-    val loadMs = SystemClock.elapsedRealtime() - start
-    val sourceFrames = loaded.clip.frames.size
-    val sourceFps = loaded.clip.fps
-    val r = AnimationEncoder().encode(loaded.clip)
-    val total = SystemClock.elapsedRealtime() - start
-    return LabState.Done(
-        webp = r.bytes,
-        lines = listOfNotNull(
-            "Hareketli sticker",
-            modeText(r.mode, r.quality),
-            "Boyut: ${kb(r.bytes.size)} / 500 KB",
-            "SSIM: ortalama ${f4(r.ssimMean)} · en kötü kare ${f4(r.ssimMin)}",
-            String.format(Locale.ROOT, "Kareler: %d kare, %.1f fps, %.1f sn", r.frameCount, r.fps, r.durationMs / 1000.0),
-            if (r.frameCount < sourceFrames) String.format(Locale.ROOT, "  (sığdırmak için %d kare / %.1f fps'ten düşürüldü)", sourceFrames, sourceFps) else null,
-            String.format(Locale.ROOT, "Kaynak: %.1f sn, %.1f fps", loaded.sourceDurationMs / 1000.0, loaded.sourceFps),
-            if (loaded.trimmed) "  (10 sn / 150 kare sınırı için kırpıldı)" else null,
-            "Süre: kare çıkarma $loadMs ms · kodlama ${r.encodeMs} ms (${r.attempts} deneme) · ölçüm ${r.measureMs} ms · toplam $total ms",
-        ),
-    )
-}
+private fun describe(s: CreatedSticker) = LabState.Done(
+    webp = s.webp,
+    lines = listOfNotNull(
+        if (s.fromVideo) "Hareketli sticker" else "Maksimum kalite modu (statik → 2 kare, 500 KB bütçe)",
+        modeText(s.mode, s.quality),
+        "Boyut: ${kb(s.webp.size)} / 500 KB",
+        if (s.fromVideo) "SSIM: ortalama ${f4(s.ssimMean)} · en kötü kare ${f4(s.ssimMin)}" else "SSIM: ${f4(s.ssimMean)}",
+        if (s.fromVideo) String.format(Locale.ROOT, "Kareler: %d kare, %.1f fps, %.1f sn", s.frameCount, s.fps, s.durationMs / 1000.0) else null,
+        if (s.framesReduced) "  (500 KB'a sığması için kare hızı düşürüldü)" else null,
+        "Kaynak: ${s.sourceDescription}",
+        if (s.trimmed) "  (10 sn / 150 kare sınırı için kırpıldı)" else null,
+        "Süre: yükleme ${s.loadMs} ms · toplam ${s.totalMs} ms",
+    ),
+)
 
 private fun modeText(mode: EncodeMode, quality: Int) = when (mode) {
     EncodeMode.LOSSLESS -> "Kayıpsız — piksel piksel aynı"

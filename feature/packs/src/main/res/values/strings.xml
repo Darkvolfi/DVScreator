@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+
+    <string name="packs_title">My packs</string>
+    <string name="packs_new">New pack</string>
+    <string name="packs_name">Pack name</string>
+    <string name="packs_empty">No packs yet. Create one and add photos, videos or GIFs to it.</string>
+    <string name="packs_count">%1$d / %2$d stickers</string>
+
+    <string name="pack_rules">%1$d stickers · WhatsApp needs %2$d–%3$d. Tap a sticker to choose emojis or delete it.</string>
+    <string name="pack_add_sticker">Add photo / video / GIF</string>
+    <string name="pack_working">Preparing sticker… (%1$d left — videos can take 5–30 s)</string>
+    <string name="pack_add_failed">Could not add sticker: %1$s</string>
+    <string name="pack_added_summary">Added: %1$s · %2$s · SSIM %3$s · %4$s s</string>
+    <string name="pack_added_video">%1$d frames, %2$s fps.</string>
+    <string name="pack_added_reduced">Frame rate reduced to fit 500 KB.</string>
+    <string name="pack_added_trimmed">Trimmed to 10 s.</string>
+    <string name="pack_rename">Rename pack</string>
+    <string name="pack_delete">Delete</string>
+    <string name="pack_delete_title">Delete this pack?</string>
+    <string name="pack_delete_text">The pack and its stickers are removed from this app. Stickers already added to WhatsApp may disappear there too.</string>
+    <string name="pack_no_whatsapp">WhatsApp is not installed.</string>
+    <string name="pack_add_whatsapp">Add to WhatsApp</string>
+    <string name="pack_add_business">Add to WhatsApp Business</string>
+
+    <string name="mode_lossless">Lossless</string>
+    <string name="mode_near_lossless">Near-lossless (%1$d)</string>
+    <string name="mode_lossy">Lossy (quality %1$d)</string>
+
+    <string name="wa_added">✅ Added to WhatsApp.</string>
+    <string name="wa_already_added">✅ This pack is already in WhatsApp. Changes show up there automatically.</string>
+    <string name="wa_cancelled">The pack was not added (cancelled).</string>
+    <string name="wa_rejected">❌ WhatsApp rejected the pack: %1$s</string>
+    <string name="wa_invalid">Fix these before adding to WhatsApp:</string>
+
+    <string name="sticker_emojis_title">Sticker emojis</string>
+    <string name="sticker_emojis_hint">Choose 1–3 emojis. WhatsApp uses them to suggest this sticker.</string>
+    <string name="sticker_delete">Delete sticker</string>
+</resources>
