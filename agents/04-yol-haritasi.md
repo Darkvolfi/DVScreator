@@ -43,7 +43,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [x] Paket deposu (JSON, Room yerine — bkz. 03) + `PackRepository`; kaynak dosyalar `sources/` altına kopyalanır (Android)
 - [x] ContentProvider (örnek projeyle birebir uyumlu) (WhatsApp)
 - [x] PackValidator + Türkçe, anlaşılır hata mesajları (WhatsApp) — cihazda doğrulandı
-- [x] ENABLE_STICKER_PACK intent'i, WhatsApp / Business seçimi, "zaten ekli" kontrolü (WhatsApp)
+- [x] ENABLE_STICKER_PACK intent'i, WhatsApp / Business seçimi, "zaten ekli" kontrolü, ekli paketi "WhatsApp'ta güncelle" (WhatsApp) — güncelleme cihazda doğrulandı
 - [x] Tray icon üretimi: ilk stickerın ilk karesi, 96×96 PNG (Görüntü)
 - [x] Gerçek cihazda uçtan uca test: proje sahibi kendi paketini oluşturup WhatsApp'a ekledi (2026-10-10) (QA)
 - [x] "Paketlerim" ekranı (erken, basit sürüm): paket oluştur/sil/adlandır, çoklu seçimle sticker ekle, emoji seç, sticker sil (Android)
@@ -51,7 +51,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 ## M4 — Arayüz (MVP)
 - [ ] Paket listesi / paket detay ekranları (Android)
 - [ ] Photo Picker (görsel + video), çoklu seçim (Android)
-- [ ] Editör: kırp, döndür, kenar boşluğu (Android)
+- [~] Editör: kare kırpma (sürükle / iki parmakla / kaydırıcı) veya "tamamını sığdır" — fotoğraf, video, GIF ✅ (kırpma tam çözünürlükte, küçültmeden önce); döndürme ve kenar boşluğu ayarı eksik (Android)
 - [~] Video editörü: başlangıç/bitiş kırpma (≤ 10 sn) + döngülü önizleme + küçük resim şeridi + kare hızı tahmini ✅ (aralık tarife kaydedilir); FPS / hız seçimi ve GIF kırpma arayüzü eksik (Android) — cihazda proje sahibinin testi bekleniyor
 - [ ] Editör: silgi + geri al/yinele (maske orijinal çözünürlükte) (Android + Görüntü)
 - [ ] Editör: metin ekleme (Android)

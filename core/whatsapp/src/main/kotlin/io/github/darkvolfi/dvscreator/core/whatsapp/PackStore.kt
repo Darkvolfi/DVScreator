@@ -1,7 +1,7 @@
 package io.github.darkvolfi.dvscreator.core.whatsapp
 
 import android.content.Context
-import io.github.darkvolfi.dvscreator.core.model.TrimRange
+import io.github.darkvolfi.dvscreator.core.model.EditRecipe
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -28,8 +28,8 @@ data class StickerEntry(
     val accessibilityText: String? = null,
     /** Orijinal kaynak dosyası (`sources/` altında) — tahribatsız düzenleme için saklanır. */
     val sourceFile: String? = null,
-    /** Video / GIF için kullanılan aralık (yeniden üretim için saklanır). */
-    val trim: TrimRange? = null,
+    /** Düzenleme tarifi: kırpma, süre aralığı, kenar boşluğu (orijinalden yeniden üretim için). */
+    val recipe: EditRecipe = EditRecipe(),
 )
 
 /**

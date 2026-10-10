@@ -54,7 +54,7 @@ import io.github.darkvolfi.dvscreator.core.whatsapp.PackManifest
 import io.github.darkvolfi.dvscreator.core.whatsapp.StickerEntry
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppIntents
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppLimits
-import io.github.darkvolfi.dvscreator.feature.editor.VideoTrimEditor
+import io.github.darkvolfi.dvscreator.feature.editor.StickerEditor
 import java.util.Locale
 
 private const val TAG = "WSC_PACKS"
@@ -62,6 +62,7 @@ private const val TAG = "WSC_PACKS"
 /** WhatsApp ekleme sonucu (kullanıcıya gösterilecek). */
 private sealed interface AddToWhatsAppResult {
     data object Added : AddToWhatsAppResult
+    data object Updated : AddToWhatsAppResult
     data object AlreadyAdded : AddToWhatsAppResult
     data object Cancelled : AddToWhatsAppResult
     data class Rejected(val reason: String) : AddToWhatsAppResult
@@ -73,13 +74,15 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
     val context = LocalContext.current
     val addStates by vm.addState.collectAsState()
     val addState = addStates[pack.identifier] ?: AddState.Idle
-    val pendingTrims by vm.pendingTrims.collectAsState()
-    val trimming = pendingTrims[pack.identifier]?.firstOrNull()
+    val pendingEdits by vm.pendingEdits.collectAsState()
+    val queue = pendingEdits[pack.identifier].orEmpty()
+    val nextSource = queue.firstOrNull()
     var editing by remember { mutableStateOf<StickerEntry?>(null) }
     var renaming by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf(false) }
     var waResult by remember { mutableStateOf<AddToWhatsAppResult?>(null) }
     var pendingPackage by remember { mutableStateOf<String?>(null) }
+    var pendingWasAdded by remember { mutableStateOf(false) }
     val whatsApps = remember { WhatsAppIntents.installedWhatsApps(context) }
     val room = WhatsAppLimits.PACK_MAX_STICKERS - pack.stickers.size
 
@@ -91,7 +94,7 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
         val error = WhatsAppIntents.validationError(result.data)
         Log.i(TAG, "${pack.identifier} → resultCode=${result.resultCode} validation_error=$error")
         waResult = when {
-            result.resultCode == Activity.RESULT_OK -> AddToWhatsAppResult.Added
+            result.resultCode == Activity.RESULT_OK -> if (pendingWasAdded) AddToWhatsAppResult.Updated else AddToWhatsAppResult.Added
             error != null -> AddToWhatsAppResult.Rejected(error)
             // WhatsApp zaten ekli pakette de RESULT_CANCELED döndürüyor (M2 fizibilite)
             pendingPackage?.let { WhatsAppIntents.isPackAdded(context, pack.identifier, it) } == true -> AddToWhatsAppResult.AlreadyAdded
@@ -106,22 +109,24 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
             waResult = AddToWhatsAppResult.Invalid(problems)
             return
         }
-        if (WhatsAppIntents.isPackAdded(context, pack.identifier, pkg) == true) {
-            waResult = AddToWhatsAppResult.AlreadyAdded
-            return
-        }
+        // Paket zaten ekli olsa da WhatsApp'a gönderilir: WhatsApp paketi yeniden okuyup yeni
+        // image_data_version'ı görsün (değişiklikleri kendiliğinden hemen almıyor — 2026-10-10)
+        pendingWasAdded = WhatsAppIntents.isPackAdded(context, pack.identifier, pkg) == true
         pendingPackage = pkg
         waLauncher.launch(WhatsAppIntents.addPack(context, pack.identifier, pack.name, pkg))
     }
 
-    // Seçilen videolar sırayla kırpma ekranından geçer
-    if (trimming != null) {
-        BackHandler { vm.onTrimCancelled(pack.identifier) }
-        key(trimming.uri) {
-            VideoTrimEditor(
-                uri = trimming.uri,
-                onConfirm = { vm.onTrimmed(pack.identifier, trimming, it) },
-                onCancel = { vm.onTrimCancelled(pack.identifier) },
+    // Seçilen kaynaklar sırayla düzenleme ekranından geçer (kare kırpma, videoda süre)
+    if (nextSource != null) {
+        BackHandler { vm.onEditSkipped(pack.identifier) }
+        key(nextSource.uri) {
+            StickerEditor(
+                uri = nextSource.uri,
+                mimeType = nextSource.mimeType,
+                remaining = queue.size,
+                onConfirm = { vm.onEdited(pack.identifier, nextSource, it) },
+                onSkip = { vm.onEditSkipped(pack.identifier) },
+                onAddRestAsIs = { vm.onAddRestAsIs(pack.identifier) },
                 modifier = modifier,
             )
         }
@@ -181,12 +186,24 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
                     Text(stringResource(R.string.pack_no_whatsapp), color = MaterialTheme.colorScheme.error)
                 }
                 for (pkg in whatsApps) {
+                    // Ekliyse "güncelle": değişiklikleri WhatsApp'a göndermek için aynı istek
+                    val added = remember(pkg, pack.imageDataVersion, waResult) { WhatsAppIntents.isPackAdded(context, pack.identifier, pkg) == true }
+                    val business = pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         enabled = addState !is AddState.Working && pendingPackage == null,
                         onClick = { addToWhatsApp(pkg) },
                     ) {
-                        Text(stringResource(if (pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE) R.string.pack_add_business else R.string.pack_add_whatsapp))
+                        Text(
+                            stringResource(
+                                when {
+                                    added && business -> R.string.pack_update_business
+                                    added -> R.string.pack_update_whatsapp
+                                    business -> R.string.pack_add_business
+                                    else -> R.string.pack_add_whatsapp
+                                },
+                            ),
+                        )
                     }
                 }
                 waResult?.let { WhatsAppResultCard(it) }
@@ -283,6 +300,7 @@ private fun describe(s: CreatedSticker): String {
 private fun WhatsAppResultCard(result: AddToWhatsAppResult) {
     val (text, isError) = when (result) {
         AddToWhatsAppResult.Added -> stringResource(R.string.wa_added) to false
+        AddToWhatsAppResult.Updated -> stringResource(R.string.wa_updated) to false
         AddToWhatsAppResult.AlreadyAdded -> stringResource(R.string.wa_already_added) to false
         AddToWhatsAppResult.Cancelled -> stringResource(R.string.wa_cancelled) to false
         is AddToWhatsAppResult.Rejected -> stringResource(R.string.wa_rejected, result.reason) to true

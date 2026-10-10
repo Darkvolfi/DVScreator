@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="trim_title">Videonun hangi kısmı?</string>
+    <string name="editor_title">Stickerı düzenle</string>
+    <string name="editor_mode_square">Kare kırp</string>
+    <string name="editor_mode_fit">Tamamını sığdır</string>
+    <string name="editor_crop_hint">Çerçeveyi sürükleyerek taşı; iki parmakla ya da kaydırıcıyla büyüt / küçült.</string>
+    <string name="editor_fit_hint">Görüntünün tamamı korunur; boş kalan kenarlar şeffaf olur.</string>
+    <string name="editor_skip">Atla</string>
+    <string name="editor_confirm">Sticker yap</string>
+    <string name="editor_add_rest">Kalan %1$d dosyayı olduğu gibi ekle</string>
+
     <string name="trim_selection">%1$s sn – %2$s sn (%3$s sn)</string>
     <string name="trim_estimate">≈ %1$s fps, %2$d kare</string>
     <string name="trim_hint_short">Kısa seçim = 500 KB sınırında daha yüksek kalite.</string>
     <string name="trim_hint_long">Uzun seçim: 500 KB\'a sığması için kalite ya da kare hızı düşebilir. Daha kısa = daha net.</string>
-    <string name="trim_skip">Bu videoyu atla</string>
-    <string name="trim_confirm">Sticker yap</string>
 </resources>

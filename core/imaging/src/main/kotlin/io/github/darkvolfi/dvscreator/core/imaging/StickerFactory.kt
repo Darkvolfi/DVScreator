@@ -6,7 +6,6 @@ import android.os.SystemClock
 import android.util.Log
 import io.github.darkvolfi.dvscreator.core.model.EditRecipe
 import io.github.darkvolfi.dvscreator.core.model.EncodeMode
-import io.github.darkvolfi.dvscreator.core.model.TrimRange
 import io.github.darkvolfi.dvscreator.core.webp.NativeWebp
 
 /** Üretilmiş sticker ve kalite/performans bilgisi (arayüzde gösterilmek için). */
@@ -53,22 +52,24 @@ object StickerFactory {
         data object Measuring : Progress
     }
 
-    /** @param trim yalnızca video / GIF için; null = baştan, en fazla 10 sn */
+    /**
+     * @param recipe kırpma (kaynağın görünen çözünürlüğünde), süre aralığı (video / GIF) ve kenar boşluğu
+     */
     suspend fun create(
         context: Context,
         uri: Uri,
         mimeType: String,
-        trim: TrimRange? = null,
+        recipe: EditRecipe = EditRecipe(),
         onProgress: (Progress) -> Unit = {},
     ): CreatedSticker =
-        if (isAnimatedSource(mimeType)) animated(context, uri, mimeType, trim, onProgress) else still(context, uri)
+        if (isAnimatedSource(mimeType)) animated(context, uri, mimeType, recipe, onProgress) else still(context, uri, recipe)
 
-    private suspend fun still(context: Context, uri: Uri): CreatedSticker {
+    private suspend fun still(context: Context, uri: Uri, recipe: EditRecipe): CreatedSticker {
         val start = SystemClock.elapsedRealtime()
         val loaded = ImageLoader(context.contentResolver).load(uri)
         val loadMs = SystemClock.elapsedRealtime() - start
         val result = StickerPipeline(NativeWebp, limitBytes = ANIMATED_LIMIT - MUX_RESERVE)
-            .export(loaded.image, EditRecipe(), loaded.scale)
+            .export(loaded.image, recipe, loaded.scale)
         val bytes = NativeWebp.staticAsAnimation(result.bytes, StickerPipeline.STICKER_SIZE, StickerPipeline.STICKER_SIZE)
         return CreatedSticker(
             webp = bytes, fromVideo = false, mode = result.mode, quality = result.quality,
@@ -80,11 +81,11 @@ object StickerFactory {
     }
 
     private suspend fun animated(
-        context: Context, uri: Uri, mimeType: String, trim: TrimRange?, onProgress: (Progress) -> Unit,
+        context: Context, uri: Uri, mimeType: String, recipe: EditRecipe, onProgress: (Progress) -> Unit,
     ): CreatedSticker {
         val start = SystemClock.elapsedRealtime()
         val loader = AnimationLoader(context)
-        val loaded = loader.load(uri, mimeType, trim, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
+        val loaded = loader.load(uri, mimeType, recipe.trim, recipe.crop, margin = recipe.marginPx, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
         val loadMs = SystemClock.elapsedRealtime() - start
         val sourceFrames = loaded.clip.frames.size
         val r = AnimationEncoder().encode(loaded.clip) { p ->

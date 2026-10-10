@@ -30,13 +30,16 @@
     <string name="pack_no_whatsapp">WhatsApp yüklü değil.</string>
     <string name="pack_add_whatsapp">WhatsApp\'a ekle</string>
     <string name="pack_add_business">WhatsApp Business\'a ekle</string>
+    <string name="pack_update_whatsapp">WhatsApp\'ta güncelle</string>
+    <string name="pack_update_business">WhatsApp Business\'ta güncelle</string>
 
     <string name="mode_lossless">Kayıpsız</string>
     <string name="mode_near_lossless">Neredeyse kayıpsız (%1$d)</string>
     <string name="mode_lossy">Kayıplı (kalite %1$d)</string>
 
     <string name="wa_added">✅ WhatsApp\'a eklendi.</string>
-    <string name="wa_already_added">✅ Bu paket zaten WhatsApp\'ta. Değişiklikler orada otomatik görünür.</string>
+    <string name="wa_updated">✅ WhatsApp\'ta güncellendi.</string>
+    <string name="wa_already_added">Paket zaten WhatsApp\'ta; güncelleme iptal edildi. Değişiklikleri göndermek için “WhatsApp\'ta güncelle”ye tekrar bas.</string>
     <string name="wa_cancelled">Paket eklenmedi (iptal edildi).</string>
     <string name="wa_rejected">❌ WhatsApp paketi reddetti: %1$s</string>
     <string name="wa_invalid">WhatsApp\'a eklemeden önce bunları düzelt:</string>

@@ -5,7 +5,7 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import io.github.darkvolfi.dvscreator.core.imaging.CreatedSticker
 import io.github.darkvolfi.dvscreator.core.imaging.StickerFactory
-import io.github.darkvolfi.dvscreator.core.model.TrimRange
+import io.github.darkvolfi.dvscreator.core.model.EditRecipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,7 +55,7 @@ class PackRepository(context: Context) {
         packId: String,
         source: Uri,
         mimeType: String,
-        trim: TrimRange? = null,
+        recipe: EditRecipe = EditRecipe(),
         onProgress: (StickerFactory.Progress) -> Unit = {},
     ): CreatedSticker {
         val id = UUID.randomUUID().toString().replace("-", "").take(12)
@@ -66,7 +66,7 @@ class PackRepository(context: Context) {
                 ?: error("Dosya açılamadı")
         }
         val created = try {
-            withContext(Dispatchers.Default) { StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, trim, onProgress) }
+            withContext(Dispatchers.Default) { StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, onProgress) }
         } catch (e: Throwable) {
             sourceFile.delete()
             throw e
@@ -77,7 +77,7 @@ class PackRepository(context: Context) {
             val fileName = "s_$id.webp"
             store.writeFile(packId, fileName, created.webp)
             val updated = pack.copy(
-                stickers = pack.stickers + StickerEntry(fileName, listOf(DEFAULT_EMOJI), sourceFile = sourceFile.name, trim = trim),
+                stickers = pack.stickers + StickerEntry(fileName, listOf(DEFAULT_EMOJI), sourceFile = sourceFile.name, recipe = recipe),
                 imageDataVersion = pack.imageDataVersion + 1,
             )
             if (pack.stickers.isEmpty()) store.writeFile(packId, TRAY_FILE, StickerFactory.trayIcon(created.webp))
@@ -123,7 +123,16 @@ class PackRepository(context: Context) {
     fun stickerBytes(packId: String, imageFile: String): ByteArray? = store.readFile(packId, imageFile)
 
     private suspend fun <T> edit(block: () -> T): T = withContext(Dispatchers.IO) {
-        mutex.withLock { block().also { _packs.value = store.packs() } }
+        mutex.withLock { block().also { _packs.value = store.packs(); notifyWhatsApp() } }
+    }
+
+    /**
+     * ContentProvider'ı dinleyenlere (WhatsApp) içeriğin değiştiğini bildirir. Tek başına yetmeyebilir:
+     * WhatsApp yeni image_data_version'ı ne zaman okuyacağına kendisi karar veriyor (2026-10-10 gözlemi).
+     */
+    private fun notifyWhatsApp() {
+        val authority = StickerContentProvider.authorityFor(appContext.packageName)
+        appContext.contentResolver.notifyChange(Uri.parse("content://$authority/metadata"), null)
     }
 
     companion object {

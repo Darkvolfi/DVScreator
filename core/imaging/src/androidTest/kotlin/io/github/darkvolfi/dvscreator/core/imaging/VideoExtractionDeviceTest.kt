@@ -10,6 +10,7 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import io.github.darkvolfi.dvscreator.core.model.CropRect
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -59,6 +60,26 @@ class VideoExtractionDeviceTest {
             fastMs, slowMs, slowMs.toDouble() / fastMs, ssims.average(), ssims.min()))
         // Eski yöntem farklı ölçekleyici (bilinear) kullanıyor → birebir değil ama renk/zaman hatası SSIM'i çok düşürür
         assertTrue("renk ya da zaman uyuşmuyor: min SSIM ${ssims.min()}", ssims.min() > 0.90)
+    }
+
+    @Test
+    fun kirpma_videonun_dogru_bolgesini_alir() = runTest(timeout = 5.minutes) {
+        val video = makeTestVideo(File(context.cacheDir, "crop_test.mp4"), width = 1280, height = 720, frames = 30, fps = 30)
+        val uri = Uri.fromFile(video)
+        fun saturation(img: ArgbImage): Int {
+            val p = img[256, 256]   // sticker merkezi
+            return maxOf(redOf(p), greenOf(p), blueOf(p)) - minOf(redOf(p), greenOf(p), blueOf(p))
+        }
+        // Videonun sol çeyreği (x < 320) renkli blok, gerisi gri (kroma nötr)
+        val left = AnimationLoader(context).load(uri, "video/mp4", crop = CropRect(0, 0, 300, 300))
+        val right = AnimationLoader(context).load(uri, "video/mp4", crop = CropRect(900, 300, 1200, 600))
+        val leftSat = saturation(left.clip.frames[5])
+        val rightSat = saturation(right.clip.frames[5])
+        Log.i(TAG, "Kırpma testi: sol (renkli) doygunluk=$leftSat, sağ (gri) doygunluk=$rightSat")
+        assertTrue("sol kırpma renkli bölgeyi almadı: $leftSat", leftSat > 40)
+        assertTrue("sağ kırpma gri bölgeyi almadı: $rightSat", rightSat < 15)
+        // Kare kırpma → sticker kenar boşlukları dışında tamamen dolu (şeffaf yan boşluk yok)
+        assertEquals(255, alphaOf(left.clip.frames[0][20, 256]))
     }
 
     /**

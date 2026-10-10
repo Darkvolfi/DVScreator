@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import com.bumptech.glide.gifdecoder.GifDecoder
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
+import io.github.darkvolfi.dvscreator.core.model.CropRect
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +47,8 @@ class AnimationLoader(private val context: Context) {
         uri: Uri,
         mimeType: String? = null,
         trim: TrimRange? = null,
+        /** Kaynağın GÖRÜNEN (döndürülmüş) çözünürlüğünde kırpma alanı; null = tamamı. */
+        crop: CropRect? = null,
         maxDurationMs: Int = MAX_DURATION_MS,
         maxFps: Double = DEFAULT_MAX_FPS,
         margin: Int = DEFAULT_MARGIN,
@@ -53,12 +56,13 @@ class AnimationLoader(private val context: Context) {
         onFrame: (Int, Int) -> Unit = { _, _ -> },
     ): LoadedAnimation {
         val type = mimeType ?: context.contentResolver.getType(uri).orEmpty()
-        return if (type == "image/gif") loadGif(uri, trim, maxDurationMs, margin, onFrame)
-        else loadVideo(uri, trim, maxDurationMs, maxFps, margin, onFrame)
+        return if (type == "image/gif") loadGif(uri, trim, crop, maxDurationMs, margin, onFrame)
+        else loadVideo(uri, trim, crop, maxDurationMs, maxFps, margin, onFrame)
     }
 
     private suspend fun loadVideo(
-        uri: Uri, trim: TrimRange?, maxDurationMs: Int, maxFps: Double, margin: Int, onFrame: (Int, Int) -> Unit,
+        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, maxFps: Double, margin: Int,
+        onFrame: (Int, Int) -> Unit,
     ): LoadedAnimation {
         val retriever = MediaMetadataRetriever()
         try {
@@ -84,6 +88,12 @@ class AnimationLoader(private val context: Context) {
                 prevEnd = end
             }
 
+            // Kırpılan bölge küçükse kareler o kadar yüksek çözünürlükte çıkarılır: kırpılmış alan da
+            // Lanczos için hedefin en az 2 katı piksele sahip olsun
+            val displayLong = maxOf(info.displayWidth, info.displayHeight)
+            val cropLong = crop?.let { maxOf(it.right - it.left, it.bottom - it.top) } ?: displayLong
+            val targetLongSide = (2 * (STICKER_SIZE - 2 * margin) * displayLong / cropLong.coerceAtLeast(1)).coerceAtMost(displayLong)
+
             // Hızlı yol: MediaCodec ile tek geçiş. Desteklenmeyen videoda (ör. 10-bit HDR) eski yönteme dön.
             val frames = ArrayList<ArgbImage>(count)
             val fast = try {
@@ -92,10 +102,14 @@ class AnimationLoader(private val context: Context) {
                 coroutineScope {
                     val gate = Semaphore(FIT_WORKERS)
                     val pending = ArrayList<Deferred<ArgbImage>>(count)
-                    VideoFrameExtractor(context).extract(uri, times, targetLongSide = 2 * (STICKER_SIZE - 2 * margin)) { k, image ->
+                    VideoFrameExtractor(context).extract(uri, times, targetLongSide) { k, image ->
                         gate.acquire()
                         pending += async(Dispatchers.Default) {
-                            try { StickerCanvas.fit(image, STICKER_SIZE, margin, fast = true) } finally { gate.release() }
+                            try {
+                                StickerCanvas.fit(cropScaled(image, crop, info.displayWidth), STICKER_SIZE, margin, fast = true)
+                            } finally {
+                                gate.release()
+                            }
                         }
                         onFrame(k + 1, count)
                     }
@@ -117,7 +131,7 @@ class AnimationLoader(private val context: Context) {
                     } else {
                         retriever.getFrameAtTime((timeMs * 1000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
                     } ?: error("Kare okunamadı: ${timeMs.roundToInt()} ms")
-                    frames += toStickerFrame(bitmap, margin)
+                    frames += toStickerFrame(bitmap, margin, crop = crop, displayWidth = info.displayWidth)
                     onFrame(k + 1, count)
                 }
             }
@@ -129,7 +143,9 @@ class AnimationLoader(private val context: Context) {
         }
     }
 
-    private suspend fun loadGif(uri: Uri, trim: TrimRange?, maxDurationMs: Int, margin: Int, onFrame: (Int, Int) -> Unit): LoadedAnimation {
+    private suspend fun loadGif(
+        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, margin: Int, onFrame: (Int, Int) -> Unit,
+    ): LoadedAnimation {
         val data = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: error("GIF okunamadı")
         val decoder = StandardGifDecoder(SimpleBitmapProvider)
         decoder.read(data)
@@ -153,7 +169,7 @@ class AnimationLoader(private val context: Context) {
             val bitmap = decoder.nextFrame ?: break
             val visible = min(sourceTotal, endMs) - maxOf(frameStart, startMs)   // seçimle kesişen süre
             if (visible <= 0) continue
-            frames += toStickerFrame(bitmap, margin, recycle = false)   // çözücü bitmap'i yeniden kullanabilir
+            frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width)   // çözücü bitmap'i yeniden kullanabilir
             onFrame(i + 1, decoder.frameCount)
             val d = min(visible, maxDurationMs - total).coerceAtLeast(MIN_FRAME_MS)
             durations += d
@@ -168,10 +184,22 @@ class AnimationLoader(private val context: Context) {
         return LoadedAnimation(AnimationClip(frames, durations.toIntArray()), sourceTotal, fps, trimmed = total < sourceTotal)
     }
 
-    private fun toStickerFrame(bitmap: Bitmap, margin: Int, recycle: Boolean = true): ArgbImage {
+    private fun toStickerFrame(
+        bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width,
+    ): ArgbImage {
         val image = bitmap.toArgbImage()
         if (recycle) bitmap.recycle()
-        return StickerCanvas.fit(image, STICKER_SIZE, margin, fast = true)
+        return StickerCanvas.fit(cropScaled(image, crop, displayWidth), STICKER_SIZE, margin, fast = true)
+    }
+
+    /**
+     * [crop] kaynağın görünen çözünürlüğünde ([displayWidth] genişlik) verilir; kare daha düşük
+     * çözünürlükte çıkarılmış olabileceği için orana göre ölçeklenir.
+     */
+    private fun cropScaled(image: ArgbImage, crop: CropRect?, displayWidth: Int): ArgbImage {
+        if (crop == null) return image
+        val s = image.width.toDouble() / displayWidth
+        return image.crop((crop.left * s).roundToInt(), (crop.top * s).roundToInt(), (crop.right * s).roundToInt(), (crop.bottom * s).roundToInt())
     }
 
     /** gifdecoder'ın istediği bellek sağlayıcısı — havuz yok, her istekte yeni nesne. */
@@ -190,7 +218,11 @@ class AnimationLoader(private val context: Context) {
         private const val FIT_WORKERS = 4
 
         /** Kaynak videonun süresi ve kare hızı (kırpma ekranındaki tahmin için de kullanılır). */
-        class VideoInfo(val durationMs: Int, val frameCount: Int?, val fps: Double)
+        /** [displayWidth]×[displayHeight]: döndürme uygulanmış (ekranda görünen) çözünürlük. */
+        class VideoInfo(
+            val durationMs: Int, val frameCount: Int?, val fps: Double,
+            val displayWidth: Int, val displayHeight: Int,
+        )
 
         fun readVideoInfo(retriever: MediaMetadataRetriever): VideoInfo {
             val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toIntOrNull()
@@ -201,7 +233,11 @@ class AnimationLoader(private val context: Context) {
             val fps = frameCount?.let { it * 1000.0 / durationMs }
                 ?: retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE)?.toDoubleOrNull()
                 ?: 30.0
-            return VideoInfo(durationMs, frameCount, fps)
+            val w = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
+            val h = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
+            val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
+            val swap = rotation == 90 || rotation == 270
+            return VideoInfo(durationMs, frameCount, fps, if (swap) h else w, if (swap) w else h)
         }
 
         /** Bellek ve 500 KB bütçe için kare sayısı sınırlı: 5 sn → 30 fps, 10 sn → 15 fps. */

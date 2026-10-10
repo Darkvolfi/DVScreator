@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="trim_title">Choose the part of the video</string>
+    <string name="editor_title">Edit sticker</string>
+    <string name="editor_mode_square">Square crop</string>
+    <string name="editor_mode_fit">Fit whole image</string>
+    <string name="editor_crop_hint">Drag the frame to move it; pinch or use the slider to resize.</string>
+    <string name="editor_fit_hint">The whole image is kept; empty sides stay transparent.</string>
+    <string name="editor_skip">Skip</string>
+    <string name="editor_confirm">Make sticker</string>
+    <string name="editor_add_rest">Add the remaining %1$d as they are</string>
+
     <string name="trim_selection">%1$s s – %2$s s (%3$s s)</string>
     <string name="trim_estimate">≈ %1$s fps, %2$d frames</string>
     <string name="trim_hint_short">Shorter selection = higher quality in the 500 KB limit.</string>
     <string name="trim_hint_long">Long selection: the sticker may need lower quality or frame rate to fit 500 KB. Shorter = sharper.</string>
-    <string name="trim_skip">Skip this video</string>
-    <string name="trim_confirm">Make sticker</string>
 </resources>

@@ -9,7 +9,7 @@ import io.github.darkvolfi.dvscreator.core.imaging.AnimationTooLargeException
 import io.github.darkvolfi.dvscreator.core.imaging.CreatedSticker
 import io.github.darkvolfi.dvscreator.core.imaging.StickerFactory
 import io.github.darkvolfi.dvscreator.core.imaging.StickerTooLargeException
-import io.github.darkvolfi.dvscreator.core.model.TrimRange
+import io.github.darkvolfi.dvscreator.core.model.EditRecipe
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackManifest
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +20,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-/** Galeriden seçilmiş bir kaynak; videolarda kırpma ekranında seçilen aralıkla. */
-data class StickerSource(val uri: Uri, val mimeType: String, val trim: TrimRange? = null) {
-    val isVideo get() = mimeType.startsWith("video/")
-}
+/** Galeriden seçilmiş bir kaynak ve düzenleme ekranında seçilen tarif (kırpma, süre aralığı). */
+data class StickerSource(val uri: Uri, val mimeType: String, val recipe: EditRecipe = EditRecipe())
 
 /** Bir pakete sticker eklenirken (videolarda 5-30 sn) ve sonrasında gösterilen durum. */
 /** Tek bir kaynağın sonucu: üretilen sticker ya da hata mesajı. */
@@ -56,26 +54,32 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
     private val _addState = MutableStateFlow<Map<String, AddState>>(emptyMap())
     val addState: StateFlow<Map<String, AddState>> = _addState.asStateFlow()
 
-    /** Kırpma ekranını bekleyen videolar (paket kimliği → sıra). */
-    private val _pendingTrims = MutableStateFlow<Map<String, List<StickerSource>>>(emptyMap())
-    val pendingTrims: StateFlow<Map<String, List<StickerSource>>> = _pendingTrims.asStateFlow()
+    /** Düzenleme ekranını bekleyen kaynaklar (paket kimliği → sıra). */
+    private val _pendingEdits = MutableStateFlow<Map<String, List<StickerSource>>>(emptyMap())
+    val pendingEdits: StateFlow<Map<String, List<StickerSource>>> = _pendingEdits.asStateFlow()
 
-    /**
-     * Galeriden seçilenler: fotoğraf ve GIF'ler hemen işlenir, videolar önce kırpma ekranına sıraya girer.
-     */
+    /** Galeriden seçilenler sırayla düzenleme ekranından geçer (kare kırpma, videoda süre). */
     fun onPicked(packId: String, sources: List<StickerSource>) {
-        val (videos, others) = sources.partition { it.isVideo }
-        if (videos.isNotEmpty()) _pendingTrims.update { it + (packId to (it[packId].orEmpty() + videos)) }
-        addStickers(packId, others)
+        if (sources.isNotEmpty()) _pendingEdits.update { it + (packId to (it[packId].orEmpty() + sources)) }
     }
 
-    /** Kırpma ekranı onaylandı (ya da [trim] = null ile atlandı): sıradaki videoya geç. */
-    fun onTrimmed(packId: String, source: StickerSource, trim: TrimRange?) {
-        _pendingTrims.update { map -> map + (packId to map[packId].orEmpty().drop(1)) }
-        addStickers(packId, listOf(source.copy(trim = trim)))
+    /** Düzenleme onaylandı: işlemeye gönder, sıradakine geç. */
+    fun onEdited(packId: String, source: StickerSource, recipe: EditRecipe) {
+        popEdit(packId)
+        addStickers(packId, listOf(source.copy(recipe = recipe)))
     }
 
-    fun onTrimCancelled(packId: String) = _pendingTrims.update { map -> map + (packId to map[packId].orEmpty().drop(1)) }
+    /** Bu kaynak eklenmeyecek. */
+    fun onEditSkipped(packId: String) = popEdit(packId)
+
+    /** Sırada kalanların hepsi düzenlemeden (tamamı sığdırılarak) eklenir. */
+    fun onAddRestAsIs(packId: String) {
+        val rest = _pendingEdits.value[packId].orEmpty()
+        _pendingEdits.update { it - packId }
+        addStickers(packId, rest)
+    }
+
+    private fun popEdit(packId: String) = _pendingEdits.update { map -> map + (packId to map[packId].orEmpty().drop(1)) }
 
     fun createPack(name: String, onCreated: (String) -> Unit) {
         viewModelScope.launch { onCreated(repository.createPack(name).identifier) }
@@ -92,7 +96,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
                 for (source in sources) {
                     _addState.update { it + (packId to AddState.Working(remaining, it[packId]?.results.orEmpty())) }
                     val item = runCatching {
-                        repository.addSticker(packId, source.uri, source.mimeType, source.trim) { p ->
+                        repository.addSticker(packId, source.uri, source.mimeType, source.recipe) { p ->
                             _addState.update { map ->
                                 val working = map[packId] as? AddState.Working ?: return@update map
                                 map + (packId to working.copy(progress = p))

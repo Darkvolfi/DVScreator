@@ -53,3 +53,10 @@ WhatsApp'ın sessizce reddetmesine asla güvenme.
 `STATIC_STICKER_FILE_LIMIT_KB = 100`, `ANIMATED_STICKER_FILE_LIMIT_KB = 500`, `KB_IN_BYTES = 1024`,
 512×512 zorunlu, kare süresi ≥ 8 ms, toplam ≤ 10 000 ms, emoji 1–3.
 Not: Bu, örnek projenin doğrulayıcısıdır; WhatsApp uygulamasının kendi kontrolleri M2'de gerçek cihazda doğrulanacak.
+
+## Paket güncelleme davranışı (gerçek cihaz, 2026-10-10)
+- Ekli bir pakete sticker eklenip `image_data_version` artırıldığında WhatsApp değişikliği **kendiliğinden
+  hemen almıyor** (`notifyChange` de tek başına yetmedi).
+- Aynı `ENABLE_STICKER_PACK` isteği ekli paket için tekrar gönderilince WhatsApp paketi yeniden okuyor,
+  **hemen güncelliyor** ve `RESULT_OK` döndürüyor → uygulamada ekli paketler için "WhatsApp'ta güncelle" düğmesi.
+- `avoid_cache` alanı WhatsApp 2.25.9.78'den beri yok sayılıyor (resmi README).

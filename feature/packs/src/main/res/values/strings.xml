@@ -30,13 +30,16 @@
     <string name="pack_no_whatsapp">WhatsApp is not installed.</string>
     <string name="pack_add_whatsapp">Add to WhatsApp</string>
     <string name="pack_add_business">Add to WhatsApp Business</string>
+    <string name="pack_update_whatsapp">Update in WhatsApp</string>
+    <string name="pack_update_business">Update in WhatsApp Business</string>
 
     <string name="mode_lossless">Lossless</string>
     <string name="mode_near_lossless">Near-lossless (%1$d)</string>
     <string name="mode_lossy">Lossy (quality %1$d)</string>
 
     <string name="wa_added">✅ Added to WhatsApp.</string>
-    <string name="wa_already_added">✅ This pack is already in WhatsApp. Changes show up there automatically.</string>
+    <string name="wa_updated">✅ Updated in WhatsApp.</string>
+    <string name="wa_already_added">This pack is already in WhatsApp; the update was cancelled. Press “Update in WhatsApp” again to send the changes.</string>
     <string name="wa_cancelled">The pack was not added (cancelled).</string>
     <string name="wa_rejected">❌ WhatsApp rejected the pack: %1$s</string>
     <string name="wa_invalid">Fix these before adding to WhatsApp:</string>
