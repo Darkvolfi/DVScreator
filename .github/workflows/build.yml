@@ -1,4 +1,4 @@
-# Her gönderimde ve PR'da: derleme + birim testleri + debug APK (agents/04 — M0)
+# Her gönderimde ve PR'da: derleme + birim testleri + debug APK
 name: Derleme ve testler
 
 on:

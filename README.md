@@ -6,7 +6,7 @@ Görüntü kalitesini koruyarak WhatsApp sticker'ı oluşturan, açık kaynaklı
 - 🔒 **Gizlilik:** internet izni yok, hiçbir veri toplanmaz; her şey cihazda.
 - 🆓 **Özgür yazılım:** GPL-3.0, kapalı kaynak bağımlılık yok.
 
-> Proje erken geliştirme aşamasında. Plan ve yol haritası: [agents/](agents/README.md)
+> Proje erken geliştirme aşamasında.
 
 ## Derleme
 

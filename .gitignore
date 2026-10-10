@@ -22,3 +22,7 @@ keystore.properties
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Geliştirme notları ve yapay zekâ asistanı talimatları — yalnızca yerelde, uygulamanın parçası değil
+agents/
+CLAUDE.md
