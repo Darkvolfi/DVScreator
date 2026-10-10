@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import com.bumptech.glide.gifdecoder.GifDecoder
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
@@ -27,6 +28,10 @@ class LoadedAnimation(
  * (bellekte tam çözünürlükte yalnızca tek kare tutulur).
  */
 class AnimationLoader(private val context: Context) {
+
+    /** Teşhis: son video MediaCodec hızlı yoluyla mı çıkarıldı? */
+    var lastExtractionWasFast: Boolean? = null
+        private set
 
     /**
      * @param mimeType bilinmiyorsa null → ContentResolver'dan sorulur (file:// adreslerinde bilinmez,
@@ -64,25 +69,44 @@ class AnimationLoader(private val context: Context) {
             val count = (clipMs * fps / 1000).roundToInt().coerceAtLeast(2)
             val frameMs = clipMs.toDouble() / count
 
-            val frames = ArrayList<ArgbImage>(count)
+            val times = DoubleArray(count) { k -> startMs + k * frameMs }
             val durations = IntArray(count)
             var prevEnd = 0
             for (k in 0 until count) {
-                currentCoroutineContext().ensureActive()
-                val timeMs = startMs + k * frameMs
-                val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && frameCount != null) {
-                    val index = (timeMs * sourceFps / 1000).roundToInt().coerceIn(0, frameCount - 1)
-                    retriever.getFrameAtIndex(index)
-                } else {
-                    retriever.getFrameAtTime((timeMs * 1000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
-                } ?: error("Kare okunamadı: ${timeMs.roundToInt()} ms")
-                frames += toStickerFrame(bitmap, margin)
-                onFrame(k + 1, count)
                 // Yuvarlama hatası birikmesin: süreler mutlak zaman çizelgesinden hesaplanır
                 val end = ((k + 1) * frameMs).roundToInt()
                 durations[k] = (end - prevEnd).coerceAtLeast(MIN_FRAME_MS)
                 prevEnd = end
             }
+
+            // Hızlı yol: MediaCodec ile tek geçiş. Desteklenmeyen videoda (ör. 10-bit HDR) eski yönteme dön.
+            val frames = ArrayList<ArgbImage>(count)
+            val fast = try {
+                VideoFrameExtractor(context).extract(uri, times, targetLongSide = 2 * (STICKER_SIZE - 2 * margin)) { k, image ->
+                    frames += StickerCanvas.fit(image, STICKER_SIZE, margin, fast = true)
+                    onFrame(k + 1, count)
+                }
+                true
+            } catch (e: VideoFrameExtractor.UnsupportedVideoException) {
+                Log.w(TAG, "MediaCodec ile çıkarılamadı, yavaş yönteme dönülüyor: ${e.message}")
+                frames.clear()
+                false
+            }
+            if (!fast) {
+                for (k in 0 until count) {
+                    currentCoroutineContext().ensureActive()
+                    val timeMs = times[k]
+                    val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && frameCount != null) {
+                        val index = (timeMs * sourceFps / 1000).roundToInt().coerceIn(0, frameCount - 1)
+                        retriever.getFrameAtIndex(index)
+                    } else {
+                        retriever.getFrameAtTime((timeMs * 1000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
+                    } ?: error("Kare okunamadı: ${timeMs.roundToInt()} ms")
+                    frames += toStickerFrame(bitmap, margin)
+                    onFrame(k + 1, count)
+                }
+            }
+            lastExtractionWasFast = fast
             // "trimmed" = kullanıcının seçimi (ya da tüm video) sınır yüzünden otomatik kısaltıldı
             return LoadedAnimation(AnimationClip(frames, durations), durationMs, sourceFps, trimmed = endMs - startMs > maxDurationMs)
         } finally {
@@ -146,6 +170,8 @@ class AnimationLoader(private val context: Context) {
     }
 
     companion object {
+        private const val TAG = "WSC_LOADER"
+
         /** Kaynak videonun süresi ve kare hızı (kırpma ekranındaki tahmin için de kullanılır). */
         class VideoInfo(val durationMs: Int, val frameCount: Int?, val fps: Double)
 

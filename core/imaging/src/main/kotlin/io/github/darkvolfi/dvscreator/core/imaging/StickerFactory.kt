@@ -83,7 +83,8 @@ object StickerFactory {
         context: Context, uri: Uri, mimeType: String, trim: TrimRange?, onProgress: (Progress) -> Unit,
     ): CreatedSticker {
         val start = SystemClock.elapsedRealtime()
-        val loaded = AnimationLoader(context).load(uri, mimeType, trim, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
+        val loader = AnimationLoader(context)
+        val loaded = loader.load(uri, mimeType, trim, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
         val loadMs = SystemClock.elapsedRealtime() - start
         val sourceFrames = loaded.clip.frames.size
         val r = AnimationEncoder().encode(loaded.clip) { p ->
@@ -97,7 +98,7 @@ object StickerFactory {
         // Teşhis: gerçek videolarda darboğazı ölçmek için (agents/raporlar)
         Log.i(
             TAG,
-            "video ${loaded.sourceDurationMs} ms @ %.1f fps → %d kare çıkarma %d ms | %s q=%d %d kare %.1f fps %d KB | kodlama %d ms (%d deneme) ölçüm %d ms degraded=%s"
+            "video ${loaded.sourceDurationMs} ms @ %.1f fps → %d kare çıkarma %d ms (hızlı yol=${loader.lastExtractionWasFast}) | %s q=%d %d kare %.1f fps %d KB | kodlama %d ms (%d deneme) ölçüm %d ms degraded=%s"
                 .format(loaded.sourceFps, sourceFrames, loadMs, r.mode, r.quality, r.frameCount, r.fps, r.bytes.size / 1024,
                     r.encodeMs, r.attempts, r.measureMs, r.degraded),
         )

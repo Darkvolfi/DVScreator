@@ -10,7 +10,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [x] Gradle çok modüllü iskelet, version catalog, Compose, Koin (Mimar) — `assembleDebug` başarılı
 - [x] `git init`, `.gitignore`, LICENSE, README (Mimar)
 - [x] libwebp submodule (v1.6.0) + CMake + boş JNI "merhaba" (Görüntü) — Samsung SM-S731B (Android 16) üzerinde "libwebp: 1.6.0" doğrulandı
-- [ ] GitHub Actions: build + unit test + lint (Release) — proje GitHub'a yüklenince
+- [~] GitHub Actions: derleme + birim testleri + lint (bilgi amaçlı) + debug APK (Release) — ilk çalıştırma bekleniyor
 
 ## M1 — Statik kalite hattı (UI'sız, test ile)
 - [~] Decode + EXIF + sRGB dönüşümü (Görüntü) — `ImageLoader` yazıldı, gerçek dosyalarla cihazda henüz denenmedi
@@ -29,7 +29,7 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [x] **Fizibilite:** ContentProvider + 6 test paketi → gerçek hareketli ✅, 2 kareli "hareketli" ✅, 500 KB üstü ❌, statik 100 KB üstü ❌ (WhatsApp + QA) — [raporlar/m2-whatsapp-fizibilite.md](raporlar/m2-whatsapp-fizibilite.md)
 - [ ] Gönderim testi: 2 kareli ve gerçek hareketli sticker sohbete gönderildiğinde kalite ve görünüm korunuyor mu? (QA)
 - [x] libwebp `WebPAnimEncoder` + mux (statik→2 kare) + demux + akışlı `WebPAnimDecoder` JNI (Görüntü)
-- [~] Video kaynağı: `MediaMetadataRetriever` ile kare çıkarma, ≤150 kare (Görüntü) — yazıldı, gerçek videolarla denenmedi; yavaşsa `MediaCodec`e geçilecek
+- [x] Video kaynağı: `MediaCodec` tek geçiş + yerel (C) YUV→RGB, desteklenmeyende `MediaMetadataRetriever`e dönüş, ≤150 kare (Görüntü) — test videosunda 6.6 kat hızlı, SSIM 0.9997
 - [~] GIF kaynağı (glide gifdecoder) (Görüntü) — yazıldı, gerçek GIF ile denenmedi; hareketli WebP kaynağı eksik
 - [x] Zamansal sabitleme: 8×8 blok bazlı (Görüntü) — ±3 gürültüde 6 kat küçültme (303 → 50 KB)
 - [x] Animasyon BEST_FIT: sabitleme → kayıpsız (tahminli) → kayıplı interpolasyonlu arama → FPS düşürme (süre korunarak) (Görüntü)

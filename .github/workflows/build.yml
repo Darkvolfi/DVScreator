@@ -1,0 +1,50 @@
+# Her gönderimde ve PR'da: derleme + birim testleri + debug APK (agents/04 — M0)
+name: Derleme ve testler
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive   # third_party/libwebp
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # compileSdk 37 ve NDK 28.2 çalıştırıcıda yoksa AGP lisansları kabul edilmiş SDK'dan otomatik indirir
+      - name: Derle ve birim testlerini çalıştır
+        run: ./gradlew assembleDebug testDebugUnitTest --stacktrace
+
+      - name: Lint (şimdilik bilgi amaçlı)
+        run: ./gradlew lintDebug
+        continue-on-error: true
+
+      - name: Test raporları
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-raporlari
+          path: '**/build/reports/tests/**'
+          if-no-files-found: ignore
+
+      - name: Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DVScreator-debug-apk
+          path: app/build/outputs/apk/debug/*.apk

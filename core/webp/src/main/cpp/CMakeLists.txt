@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(dvscreator_webp C CXX)
 
-add_library(dvscreator_webp SHARED webp_jni.cpp)
+add_library(dvscreator_webp SHARED webp_jni.cpp yuv_jni.cpp)
 target_link_libraries(dvscreator_webp android log jnigraphics)
 
 # libwebp, third_party/libwebp altında git submodule olarak tutulur (BSD lisansı).
