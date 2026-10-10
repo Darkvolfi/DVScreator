@@ -17,19 +17,20 @@ class StickerPipeline(
 ) {
     private val encoder = StickerEncoder(codec, limitBytes)
 
-    fun render(source: ArgbImage, recipe: EditRecipe, sourceScale: Double = 1.0): ArgbImage {
+    fun render(source: ArgbImage, recipe: EditRecipe, sourceScale: Double = 1.0, matte: Matte? = null): ArgbImage {
         var image = source
         recipe.crop?.let { c ->
             fun s(v: Int) = (v * sourceScale).roundToInt()
             image = image.crop(s(c.left), s(c.top), s(c.right), s(c.bottom))
         }
         image = image.rotate(recipe.rotationDegrees)
+        matte?.let { image = it.apply(image, Matte.Region.of(recipe.crop, (source.width / sourceScale).roundToInt(), (source.height / sourceScale).roundToInt())) }
         // TODO(M3): silgi maskesi ve metin katmanları burada, küçültmeden ÖNCE uygulanacak
         return StickerCanvas.fit(image, size, recipe.marginPx.coerceIn(0, MAX_MARGIN))
     }
 
-    suspend fun export(source: ArgbImage, recipe: EditRecipe, sourceScale: Double = 1.0): EncodedSticker =
-        encoder.encode(render(source, recipe, sourceScale))
+    suspend fun export(source: ArgbImage, recipe: EditRecipe, sourceScale: Double = 1.0, matte: Matte? = null): EncodedSticker =
+        encoder.encode(render(source, recipe, sourceScale, matte))
 
     companion object {
         // Değerler core:whatsapp/WhatsAppLimits ile aynı; imaging modülü whatsapp'a bağımlı olmasın diye tekrar

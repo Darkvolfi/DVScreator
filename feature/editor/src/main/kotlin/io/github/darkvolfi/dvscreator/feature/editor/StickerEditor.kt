@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -27,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +43,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -48,11 +54,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import io.github.darkvolfi.dvscreator.core.imaging.ArgbImage
 import io.github.darkvolfi.dvscreator.core.imaging.AnimationLoader
 import io.github.darkvolfi.dvscreator.core.imaging.ImageLoader
+import io.github.darkvolfi.dvscreator.core.imaging.Matte
 import io.github.darkvolfi.dvscreator.core.imaging.toBitmap
 import io.github.darkvolfi.dvscreator.core.model.EditRecipe
+import io.github.darkvolfi.dvscreator.core.model.MaskStroke
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
+import io.github.darkvolfi.dvscreator.core.segmentation.BackgroundRemover
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -66,7 +76,7 @@ private sealed interface SourceMeta {
     val width: Int
     val height: Int
 
-    class Still(override val width: Int, override val height: Int, val preview: ImageBitmap) : SourceMeta
+    class Still(override val width: Int, override val height: Int, val preview: ImageBitmap, val previewImage: ArgbImage) : SourceMeta
     class Video(
         override val width: Int, override val height: Int,
         val durationMs: Int, val fps: Double, val thumbnails: List<ImageBitmap>,
@@ -106,6 +116,20 @@ fun StickerEditor(
     var crop by remember(uri) { mutableStateOf(SquareCrop.largest(m.width, m.height)) }
     var range by remember(uri) { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
     var player by remember(uri) { mutableStateOf<VideoView?>(null) }
+    var removeBackground by remember(uri) { mutableStateOf(false) }
+    var tool by remember(uri) { mutableStateOf(EditorTool.CROP) }
+    var strokes by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
+    var redo by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
+    var brush by remember(uri) { mutableStateOf(DEFAULT_BRUSH) }
+    // Fotoğrafta sonucu hemen göster (önizleme çözünürlüğünde ~1 sn); videoda yalnızca tahmini süre
+    val mattedPreview by produceState<ImageBitmap?>(null, uri, removeBackground) {
+        value = null
+        val still = m as? SourceMeta.Still
+        if (!removeBackground || still == null) return@produceState
+        value = withContext(Dispatchers.Default) {
+            runCatching { BackgroundRemover.open(context).use { it.matte().apply(still.previewImage, Matte.Region.FULL).toBitmap().asImageBitmap() } }.getOrNull()
+        }
+    }
     val maxMs = AnimationLoader.MAX_DURATION_MS.toFloat()
     val video = m as? SourceMeta.Video
     val currentRange = video?.let { range ?: (0f..min(it.durationMs.toFloat(), maxMs)) }
@@ -136,7 +160,19 @@ fun StickerEditor(
             val ratio = m.width.toFloat() / m.height
             Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f)) {
                 when (m) {
-                    is SourceMeta.Still -> Image(m.preview, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+                    is SourceMeta.Still -> {
+                        val shown = if (removeBackground) mattedPreview else m.preview
+                        if (shown != null) {
+                            val transparent = removeBackground || strokes.isNotEmpty()
+                            MaskCanvas(
+                                base = shown, original = m.preview, strokes = strokes, tool = tool, brush = brush,
+                                onStroke = { strokes = strokes + it; redo = emptyList() },
+                                modifier = Modifier.fillMaxSize().then(if (transparent) Modifier.checkerboard() else Modifier),
+                            )
+                        } else {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                        }
+                    }
                     is SourceMeta.Video -> AndroidView(
                         modifier = Modifier.fillMaxSize(),
                         factory = { ctx ->
@@ -152,8 +188,31 @@ fun StickerEditor(
                         onRelease = { it.stopPlayback() },
                     )
                 }
-                if (squareMode) {
+                if (squareMode && tool == EditorTool.CROP) {
                     CropOverlay(crop, m.width, m.height, onChange = { crop = it }, modifier = Modifier.fillMaxSize())
+                }
+            }
+        }
+
+        if (m is SourceMeta.Still) {
+            // Araçlar: kırp / sil / geri getir (fotoğraf ve GIF; GIF'te izler her kareye uygulanır)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                FilterChip(selected = tool == EditorTool.CROP, onClick = { tool = EditorTool.CROP }, label = { Text(stringResource(R.string.editor_tool_crop)) })
+                FilterChip(selected = tool == EditorTool.ERASE, onClick = { tool = EditorTool.ERASE }, label = { Text(stringResource(R.string.editor_tool_erase)) })
+                FilterChip(selected = tool == EditorTool.RESTORE, onClick = { tool = EditorTool.RESTORE }, label = { Text(stringResource(R.string.editor_tool_restore)) })
+            }
+            if (tool != EditorTool.CROP) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.editor_brush), style = MaterialTheme.typography.bodySmall)
+                    Slider(value = brush, valueRange = MIN_BRUSH..MAX_BRUSH, onValueChange = { brush = it }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+                }
+                Text(stringResource(R.string.editor_erase_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            if (strokes.isNotEmpty() || redo.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }) { Text(stringResource(R.string.editor_undo)) }
+                    TextButton(enabled = redo.isNotEmpty(), onClick = { strokes = strokes + redo.last(); redo = redo.dropLast(1) }) { Text(stringResource(R.string.editor_redo)) }
+                    TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = emptyList(); strokes = emptyList() }) { Text(stringResource(R.string.editor_clear_strokes)) }
                 }
             }
         }
@@ -172,6 +231,20 @@ fun StickerEditor(
             )
         } else {
             Text(stringResource(R.string.editor_fit_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.editor_remove_bg), style = MaterialTheme.typography.titleSmall)
+                val hint = if (video != null && currentRange != null) {
+                    val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
+                    val frames = (selMs * AnimationLoader.plannedFps(selMs, video.fps) / 1000).roundToInt()
+                    stringResource(R.string.editor_remove_bg_hint_video, (frames * SECONDS_PER_MATTE_FRAME).roundToInt().coerceAtLeast(1))
+                } else stringResource(R.string.editor_remove_bg_hint)
+                Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Spacer(Modifier.width(8.dp))
+            Switch(checked = removeBackground, onCheckedChange = { removeBackground = it })
         }
 
         if (video != null && currentRange != null) {
@@ -214,6 +287,8 @@ fun StickerEditor(
                     EditRecipe(
                         crop = if (squareMode) crop.toCropRect() else null,
                         trim = currentRange?.let { TrimRange(it.start.roundToInt(), it.endInclusive.roundToInt()) },
+                        removeBackground = removeBackground,
+                        strokes = strokes,
                     ),
                 )
             }) { Text(stringResource(R.string.editor_confirm)) }
@@ -250,6 +325,25 @@ private const val MIN_MS = 500
 private const val THUMBNAILS = 8
 private const val PREVIEW_LONG_SIDE = 1080
 
+/** Fırça yarıçapı, kaynak genişliğine oranla. */
+private const val DEFAULT_BRUSH = 0.04f
+private const val MIN_BRUSH = 0.008f
+private const val MAX_BRUSH = 0.15f
+
+/** Telefonda ölçülen: kare başına model ~0.7 sn + ön/son işlem (agents/raporlar). */
+private const val SECONDS_PER_MATTE_FRAME = 0.8
+
+/** Şeffaf alanları göstermek için dama deseni. */
+private fun Modifier.checkerboard(): Modifier = drawBehind {
+    val cell = 12.dp.toPx()
+    val cols = (size.width / cell).toInt() + 1
+    val rows = (size.height / cell).toInt() + 1
+    drawRect(Color(0xFFFFFFFF))
+    for (y in 0 until rows) for (x in 0 until cols) {
+        if ((x + y) % 2 == 0) drawRect(Color(0xFFDDDDDD), Offset(x * cell, y * cell), Size(cell, cell))
+    }
+}
+
 private fun sec(ms: Float) = String.format(Locale.ROOT, "%.1f", ms / 1000f)
 
 /**
@@ -260,7 +354,7 @@ private fun readStillMeta(context: Context, uri: Uri): SourceMeta.Still {
     val loaded = ImageLoader(context.contentResolver).load(uri, minLongSide = PREVIEW_LONG_SIDE)
     val w = (loaded.image.width / loaded.scale).roundToInt()
     val h = (loaded.image.height / loaded.scale).roundToInt()
-    return SourceMeta.Still(w, h, loaded.image.toBitmap().asImageBitmap())
+    return SourceMeta.Still(w, h, loaded.image.toBitmap().asImageBitmap(), loaded.image)
 }
 
 private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {

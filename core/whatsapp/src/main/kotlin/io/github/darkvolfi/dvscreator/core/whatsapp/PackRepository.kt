@@ -6,6 +6,7 @@ import android.webkit.MimeTypeMap
 import io.github.darkvolfi.dvscreator.core.imaging.CreatedSticker
 import io.github.darkvolfi.dvscreator.core.imaging.StickerFactory
 import io.github.darkvolfi.dvscreator.core.model.EditRecipe
+import io.github.darkvolfi.dvscreator.core.segmentation.BackgroundRemover
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -66,7 +67,12 @@ class PackRepository(context: Context) {
                 ?: error("Dosya açılamadı")
         }
         val created = try {
-            withContext(Dispatchers.Default) { StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, onProgress) }
+            withContext(Dispatchers.Default) {
+                // Model (~170 MB) yalnızca gerektiğinde açılır ve iş bitince bırakılır
+                if (recipe.removeBackground) BackgroundRemover.open(appContext).use { remover ->
+                    StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, remover.matte(), onProgress)
+                } else StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, onProgress = onProgress)
+            }
         } catch (e: Throwable) {
             sourceFile.delete()
             throw e

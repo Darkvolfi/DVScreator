@@ -52,16 +52,18 @@ class AnimationLoader(private val context: Context) {
         maxDurationMs: Int = MAX_DURATION_MS,
         maxFps: Double = DEFAULT_MAX_FPS,
         margin: Int = DEFAULT_MARGIN,
+        /** Kırpmadan sonra, küçültmeden önce her kareye uygulanır (ör. arka plan kaldırma). */
+        matte: Matte? = null,
         /** Her kare çıkarıldığında (yapılan, toplam). */
         onFrame: (Int, Int) -> Unit = { _, _ -> },
     ): LoadedAnimation {
         val type = mimeType ?: context.contentResolver.getType(uri).orEmpty()
-        return if (type == "image/gif") loadGif(uri, trim, crop, maxDurationMs, margin, onFrame)
-        else loadVideo(uri, trim, crop, maxDurationMs, maxFps, margin, onFrame)
+        return if (type == "image/gif") loadGif(uri, trim, crop, maxDurationMs, margin, matte, onFrame)
+        else loadVideo(uri, trim, crop, maxDurationMs, maxFps, margin, matte, onFrame)
     }
 
     private suspend fun loadVideo(
-        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, maxFps: Double, margin: Int,
+        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, maxFps: Double, margin: Int, matte: Matte?,
         onFrame: (Int, Int) -> Unit,
     ): LoadedAnimation {
         val retriever = MediaMetadataRetriever()
@@ -94,6 +96,7 @@ class AnimationLoader(private val context: Context) {
             val cropLong = crop?.let { maxOf(it.right - it.left, it.bottom - it.top) } ?: displayLong
             val targetLongSide = (2 * (STICKER_SIZE - 2 * margin) * displayLong / cropLong.coerceAtLeast(1)).coerceAtMost(displayLong)
 
+            val region = Matte.Region.of(crop, info.displayWidth, info.displayHeight)
             // Hızlı yol: MediaCodec ile tek geçiş. Desteklenmeyen videoda (ör. 10-bit HDR) eski yönteme dön.
             val frames = ArrayList<ArgbImage>(count)
             val fast = try {
@@ -106,7 +109,8 @@ class AnimationLoader(private val context: Context) {
                         gate.acquire()
                         pending += async(Dispatchers.Default) {
                             try {
-                                StickerCanvas.fit(cropScaled(image, crop, info.displayWidth), STICKER_SIZE, margin, fast = true)
+                                val cropped = cropScaled(image, crop, info.displayWidth)
+                                StickerCanvas.fit(matte?.apply(cropped, region) ?: cropped, STICKER_SIZE, margin, fast = true)
                             } finally {
                                 gate.release()
                             }
@@ -131,7 +135,7 @@ class AnimationLoader(private val context: Context) {
                     } else {
                         retriever.getFrameAtTime((timeMs * 1000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
                     } ?: error("Kare okunamadı: ${timeMs.roundToInt()} ms")
-                    frames += toStickerFrame(bitmap, margin, crop = crop, displayWidth = info.displayWidth)
+                    frames += toStickerFrame(bitmap, margin, crop = crop, displayWidth = info.displayWidth, displayHeight = info.displayHeight, matte = matte)
                     onFrame(k + 1, count)
                 }
             }
@@ -144,7 +148,7 @@ class AnimationLoader(private val context: Context) {
     }
 
     private suspend fun loadGif(
-        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, margin: Int, onFrame: (Int, Int) -> Unit,
+        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, margin: Int, matte: Matte?, onFrame: (Int, Int) -> Unit,
     ): LoadedAnimation {
         val data = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: error("GIF okunamadı")
         val decoder = StandardGifDecoder(SimpleBitmapProvider)
@@ -169,7 +173,7 @@ class AnimationLoader(private val context: Context) {
             val bitmap = decoder.nextFrame ?: break
             val visible = min(sourceTotal, endMs) - maxOf(frameStart, startMs)   // seçimle kesişen süre
             if (visible <= 0) continue
-            frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width)   // çözücü bitmap'i yeniden kullanabilir
+            frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width, displayHeight = decoder.height, matte = matte)   // çözücü bitmap'i yeniden kullanabilir
             onFrame(i + 1, decoder.frameCount)
             val d = min(visible, maxDurationMs - total).coerceAtLeast(MIN_FRAME_MS)
             durations += d
@@ -185,11 +189,12 @@ class AnimationLoader(private val context: Context) {
     }
 
     private fun toStickerFrame(
-        bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width,
+        bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width, displayHeight: Int = bitmap.height, matte: Matte? = null,
     ): ArgbImage {
         val image = bitmap.toArgbImage()
         if (recycle) bitmap.recycle()
-        return StickerCanvas.fit(cropScaled(image, crop, displayWidth), STICKER_SIZE, margin, fast = true)
+        val cropped = cropScaled(image, crop, displayWidth)
+        return StickerCanvas.fit(matte?.apply(cropped, Matte.Region.of(crop, displayWidth, displayHeight)) ?: cropped, STICKER_SIZE, margin, fast = true)
     }
 
     /**

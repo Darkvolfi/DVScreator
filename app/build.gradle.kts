@@ -26,6 +26,8 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
+    // Model belleğe eşlenebilsin diye APK içinde sıkıştırılmadan durmalı
+    androidResources { noCompress += "onnx" }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

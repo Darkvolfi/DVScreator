@@ -14,13 +14,15 @@ data class EditRecipe(
     val rotationDegrees: Int = 0,
     /** 512 px tuvalde kenar boşluğu (0..32). */
     val marginPx: Int = 16,
-    /** Silgi maskesinin dosya yolu (orijinal çözünürlükte, alfa kanalı). */
-    val maskPath: String? = null,
+    /** Silgi / geri getir fırça izleri, sırayla uygulanır (otomatik arka plan kaldırmadan SONRA). */
+    val strokes: List<MaskStroke> = emptyList(),
     val texts: List<TextLayer> = emptyList(),
     /** Küçültme sonrası keskinleştirme (0 = kapalı). */
     val sharpen: Float = 0f,
     /** Hareketli kaynaklarda kullanılan aralık; null = baştan, en fazla 10 sn. */
     val trim: TrimRange? = null,
+    /** Otomatik arka plan kaldırma (cihazdaki model, core:segmentation); videoda kare kare. */
+    val removeBackground: Boolean = false,
 )
 
 @Serializable
@@ -45,4 +47,17 @@ data class TextLayer(
     val sizeFraction: Float,
     val colorArgb: Int,
     val outlineArgb: Int? = null,
+)
+
+/**
+ * Bir silgi ya da "geri getir" fırça izi. Koordinatlar KAYNAĞIN TAMAMINA göre 0..1 (kırpma sonradan
+ * değişse de iz yerinde kalır); [radius] kaynak genişliğine oranla.
+ */
+@Serializable
+data class MaskStroke(
+    /** true: orijinal pikselleri geri getirir; false: siler. */
+    val restore: Boolean,
+    val radius: Float,
+    /** x0, y0, x1, y1, … */
+    val points: List<Float>,
 )

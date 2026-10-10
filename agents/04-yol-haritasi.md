@@ -53,7 +53,8 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [ ] Photo Picker (görsel + video), çoklu seçim (Android)
 - [~] Editör: kare kırpma (sürükle / iki parmakla / kaydırıcı) veya "tamamını sığdır" — fotoğraf, video, GIF ✅ (kırpma tam çözünürlükte, küçültmeden önce); döndürme ve kenar boşluğu ayarı eksik (Android)
 - [~] Video editörü: başlangıç/bitiş kırpma (≤ 10 sn) + döngülü önizleme + küçük resim şeridi + kare hızı tahmini ✅ (aralık tarife kaydedilir); FPS / hız seçimi ve GIF kırpma arayüzü eksik (Android) — cihazda proje sahibinin testi bekleniyor
-- [ ] Editör: silgi + geri al/yinele (maske orijinal çözünürlükte) (Android + Görüntü)
+- [~] Otomatik arka plan kaldırma: IS-Net general-use (Apache-2.0, proje sahibi seçti) + ONNX Runtime 1.30 (MIT), `core:segmentation`. Model depoda değil: derlemede indirilir + SHA-256 doğrulanır + girdi 1024→512'ye yamalanır (Resize hedef boyut sabitleri ölçeklenir). S731B: 1024'te ~3 sn/kare, 512'de ~0.7 sn/kare; NNAPI 5–14 sn (kullanılmaz), XNNPACK daha yavaş. Editörde anahtar + fotoğrafta önizleme; videoda kare kare. Delik doldurma eklendi (çizimlerde model yalnızca çizgileri buluyordu — kenardan ulaşılamayan bölgeler ön plan). 15 sticker+arka plan testinde IoU 512: 0.97, 1024: 0.88. Eksik: kenar renk taşması temizliği (koyu arka planda koyu hale), videoda titreme yumuşatma, APK ~330 MB (release'te ABI bölme gerekir) (Görüntü + Android)
+- [~] Editör: silgi / geri getir + fırça boyutu + geri al/yinele/temizle — fotoğraf ve GIF (GIF'te her kareye). İzler tarifte (`MaskStroke`, kaynağa göre 0..1 — kırpma değişse de yerinde), sticker tam çözünürlükte `StrokePainter` ile üretilir; önizleme GPU'da. Eksik: yakınlaştırma, videoda silgi. Cihazda proje sahibinin testi bekleniyor (Android + Görüntü)
 - [ ] Editör: metin ekleme (Android)
 - [ ] Kalite sonuç ekranı (mod, boyut, SSIM, önce/sonra büyüteç) (Android)
 - [ ] Emoji atama — sticker başına en az 1 zorunlu (Android)
@@ -78,6 +79,6 @@ Durum: `[ ]` yapılacak · `[~]` sürüyor · `[x]` bitti. Sorumlu rol parantez 
 - [ ] Gizlilik politikası ("hiçbir veri toplanmaz") (Release)
 
 ## M6 — v1.x
-- [ ] Otomatik arka plan kaldırma (06'daki karara göre) — videoda kare kare (Görüntü)
+- [~] Otomatik arka plan kaldırma — M4'e öne çekildi (2026-10-10), bkz. aşağıdaki not (Görüntü)
 - [ ] Beyaz kenar çizgisi / gölge (Görüntü)
 - [ ] Paket yedekleme / içe aktarma (Android)

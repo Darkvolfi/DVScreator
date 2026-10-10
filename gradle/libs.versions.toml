@@ -25,6 +25,7 @@ exifinterface = "1.4.2"
 testRunner = "1.7.0"
 gifdecoder = "5.0.9"
 ndk = "28.2.13676358"
+onnxruntime = "1.30.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,7 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "testRunner" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 glide-gifdecoder = { module = "com.github.bumptech.glide:gifdecoder", version.ref = "gifdecoder" }
+onnxruntime-android = { module = "com.microsoft.onnxruntime:onnxruntime-android", version.ref = "onnxruntime" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 [plugins]

@@ -60,16 +60,20 @@ object StickerFactory {
         uri: Uri,
         mimeType: String,
         recipe: EditRecipe = EditRecipe(),
+        /** recipe.removeBackground için otomatik maske (çağıran açar; imaging modeli bilmez). Silgi izleri burada eklenir. */
+        matte: Matte? = null,
         onProgress: (Progress) -> Unit = {},
     ): CreatedSticker =
-        if (isAnimatedSource(mimeType)) animated(context, uri, mimeType, recipe, onProgress) else still(context, uri, recipe)
+        Matte.of(matte, recipe.strokes).let { full ->
+            if (isAnimatedSource(mimeType)) animated(context, uri, mimeType, recipe, full, onProgress) else still(context, uri, recipe, full)
+        }
 
-    private suspend fun still(context: Context, uri: Uri, recipe: EditRecipe): CreatedSticker {
+    private suspend fun still(context: Context, uri: Uri, recipe: EditRecipe, matte: Matte?): CreatedSticker {
         val start = SystemClock.elapsedRealtime()
         val loaded = ImageLoader(context.contentResolver).load(uri)
         val loadMs = SystemClock.elapsedRealtime() - start
         val result = StickerPipeline(NativeWebp, limitBytes = ANIMATED_LIMIT - MUX_RESERVE)
-            .export(loaded.image, recipe, loaded.scale)
+            .export(loaded.image, recipe, loaded.scale, matte)
         val bytes = NativeWebp.staticAsAnimation(result.bytes, StickerPipeline.STICKER_SIZE, StickerPipeline.STICKER_SIZE)
         return CreatedSticker(
             webp = bytes, fromVideo = false, mode = result.mode, quality = result.quality,
@@ -81,11 +85,11 @@ object StickerFactory {
     }
 
     private suspend fun animated(
-        context: Context, uri: Uri, mimeType: String, recipe: EditRecipe, onProgress: (Progress) -> Unit,
+        context: Context, uri: Uri, mimeType: String, recipe: EditRecipe, matte: Matte?, onProgress: (Progress) -> Unit,
     ): CreatedSticker {
         val start = SystemClock.elapsedRealtime()
         val loader = AnimationLoader(context)
-        val loaded = loader.load(uri, mimeType, recipe.trim, recipe.crop, margin = recipe.marginPx, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
+        val loaded = loader.load(uri, mimeType, recipe.trim, recipe.crop, margin = recipe.marginPx, matte = matte, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
         val loadMs = SystemClock.elapsedRealtime() - start
         val sourceFrames = loaded.clip.frames.size
         val r = AnimationEncoder().encode(loaded.clip) { p ->
