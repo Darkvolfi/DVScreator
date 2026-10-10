@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 data class EditRecipe(
     /** Orijinal görsel üzerindeki kırpma alanı; null ise görselin tamamı. */
     val crop: CropRect? = null,
-    /** Saat yönünde, 90'ın katları. */
+    /** Saat yönünde, 90'ın katları; son sticker tuvaline uygulanır (yazılar düz kalır). */
     val rotationDegrees: Int = 0,
     /** 512 px tuvalde kenar boşluğu (0..32). */
     val marginPx: Int = 16,
@@ -23,6 +23,9 @@ data class EditRecipe(
     val trim: TrimRange? = null,
     /** Otomatik arka plan kaldırma (cihazdaki model, core:segmentation); videoda kare kare. */
     val removeBackground: Boolean = false,
+    /** Konunun etrafına dış çizgi kalınlığı (512 tuvalde px; 0 = yok) ve rengi. */
+    val outlinePx: Int = 0,
+    val outlineArgb: Int = 0xFFFFFFFF.toInt(),
 )
 
 @Serializable

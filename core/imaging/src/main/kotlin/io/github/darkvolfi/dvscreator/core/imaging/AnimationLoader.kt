@@ -188,6 +188,30 @@ class AnimationLoader(private val context: Context) {
         return LoadedAnimation(AnimationClip(frames, durations.toIntArray()), sourceTotal, fps, trimmed = total < sourceTotal)
     }
 
+    /** GIF'in süresi, kare hızı ve kırpma ekranı için küçük resimler (en fazla [thumbnails] tane, [thumbSize] px). */
+    class GifInfo(val durationMs: Int, val fps: Double, val thumbnails: List<Bitmap>)
+
+    fun readGifInfo(uri: Uri, thumbnails: Int = 8, thumbSize: Int = 96): GifInfo {
+        val data = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: error("GIF okunamadı")
+        val decoder = StandardGifDecoder(SimpleBitmapProvider)
+        decoder.read(data)
+        check(decoder.status == GifDecoder.STATUS_OK) { "GIF çözülemedi (durum ${decoder.status})" }
+        val n = decoder.frameCount
+        val delays = IntArray(n) { decoder.getDelay(it).let { d -> if (d < 20) 100 else d } }   // loadGif ile aynı kural
+        val wanted = (0 until thumbnails).map { (it + 0.5) * n / thumbnails }.map { it.toInt() }.toSet()
+        val thumbs = ArrayList<Bitmap>()
+        for (i in 0 until n) {
+            decoder.advance()
+            if (i !in wanted) continue
+            val frame = decoder.nextFrame ?: break
+            thumbs += Bitmap.createScaledBitmap(frame, thumbSize, maxOf(1, thumbSize * frame.height / frame.width), true)
+            if (thumbs.size == wanted.size) break
+        }
+        decoder.clear()
+        val total = delays.sum()
+        return GifInfo(total, if (total > 0) n * 1000.0 / total else 10.0, thumbs)
+    }
+
     private fun toStickerFrame(
         bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width, displayHeight: Int = bitmap.height, matte: Matte? = null,
     ): ArgbImage {

@@ -8,6 +8,11 @@ import android.os.Build
 import android.widget.VideoView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -48,6 +54,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -58,10 +65,13 @@ import io.github.darkvolfi.dvscreator.core.imaging.ArgbImage
 import io.github.darkvolfi.dvscreator.core.imaging.AnimationLoader
 import io.github.darkvolfi.dvscreator.core.imaging.ImageLoader
 import io.github.darkvolfi.dvscreator.core.imaging.Matte
+import io.github.darkvolfi.dvscreator.core.imaging.StickerPipeline
+import io.github.darkvolfi.dvscreator.core.webp.NativeWebp
 import io.github.darkvolfi.dvscreator.core.imaging.toBitmap
 import io.github.darkvolfi.dvscreator.core.imaging.toArgbImage
 import io.github.darkvolfi.dvscreator.core.model.EditRecipe
 import io.github.darkvolfi.dvscreator.core.model.MaskStroke
+import io.github.darkvolfi.dvscreator.core.model.TextLayer
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
 import io.github.darkvolfi.dvscreator.core.segmentation.BackgroundRemover
 import kotlinx.coroutines.Dispatchers
@@ -71,17 +81,23 @@ import java.util.Locale
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/** Hareketli kaynağın zaman çizelgesi (video ve GIF ortak): süre kırpma arayüzü için. */
+private class Timeline(val durationMs: Int, val fps: Double, val thumbnails: List<ImageBitmap>)
+
 /** Düzenleme ekranının ihtiyaç duyduğu kaynak bilgisi. */
 private sealed interface SourceMeta {
     /** Kaynağın görünen (döndürülmüş) çözünürlüğü — kırpma bu koordinatlarda. */
     val width: Int
     val height: Int
 
-    class Still(override val width: Int, override val height: Int, val preview: ImageBitmap, val previewImage: ArgbImage) : SourceMeta
+    /** [timeline]: GIF'lerde süre kırpma için; fotoğrafta null. */
+    class Still(override val width: Int, override val height: Int, val preview: ImageBitmap, val previewImage: ArgbImage, val timeline: Timeline? = null) : SourceMeta
     class Video(
         override val width: Int, override val height: Int,
         val durationMs: Int, val fps: Double, val thumbnails: List<ImageBitmap>,
-    ) : SourceMeta
+    ) : SourceMeta {
+        val timeline = Timeline(durationMs, fps, thumbnails)
+    }
 }
 
 /**
@@ -105,7 +121,7 @@ fun StickerEditor(
     val context = LocalContext.current
     val isVideo = mimeType.startsWith("video/")
     val meta by produceState<SourceMeta?>(null, uri) {
-        value = withContext(Dispatchers.IO) { runCatching { if (isVideo) readVideoMeta(context, uri) else readStillMeta(context, uri) }.getOrNull() }
+        value = withContext(Dispatchers.IO) { runCatching { if (isVideo) readVideoMeta(context, uri) else readStillMeta(context, uri, mimeType) }.getOrNull() }
     }
     val m = meta
     if (m == null) {
@@ -122,9 +138,18 @@ fun StickerEditor(
     var strokes by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
     var redo by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
     var brush by remember(uri) { mutableStateOf(DEFAULT_BRUSH) }
+    var rotation by remember(uri) { mutableStateOf(0) }
+    var margin by remember(uri) { mutableStateOf(EditRecipe().marginPx) }
+    var outline by remember(uri) { mutableStateOf(0) }
+    var outlineColor by remember(uri) { mutableStateOf(0xFFFFFFFF.toInt()) }
+    var texts by remember(uri) { mutableStateOf<List<TextLayer>>(emptyList()) }
+    var selectedText by remember(uri) { mutableStateOf<Int?>(null) }
+    // Açık yazı penceresi: -1 yeni yazı, ≥0 düzenlenen yazı
+    var textDialog by remember(uri) { mutableStateOf<Int?>(null) }
     val maxMs = AnimationLoader.MAX_DURATION_MS.toFloat()
     val video = m as? SourceMeta.Video
-    val currentRange = video?.let { range ?: (0f..min(it.durationMs.toFloat(), maxMs)) }
+    val timeline = video?.timeline ?: (m as? SourceMeta.Still)?.timeline
+    val currentRange = timeline?.let { range ?: (0f..min(it.durationMs.toFloat(), maxMs)) }
     val latestRange by rememberUpdatedState(currentRange)
 
     // Videoda silgi / arka plan önizlemesi oynayan video üzerinde değil, seçilen aralığın ilk karesinde yapılır;
@@ -138,13 +163,25 @@ fun StickerEditor(
     }
     val frame: StillFrame? = (m as? SourceMeta.Still)?.let { StillFrame(it.previewImage, it.preview) } ?: videoFrame
     // Arka plan kaldırmanın sonucu hemen gösterilir (önizleme çözünürlüğünde ~1 sn)
-    val mattedPreview by produceState<ImageBitmap?>(null, removeBackground, frame) {
+    val mattedFrame by produceState<StillFrame?>(null, removeBackground, frame) {
         value = null
         val f = frame
         if (!removeBackground || f == null) return@produceState
         value = withContext(Dispatchers.Default) {
-            runCatching { BackgroundRemover.open(context).use { it.matte().apply(f.image, Matte.Region.FULL).toBitmap().asImageBitmap() } }.getOrNull()
+            runCatching { BackgroundRemover.open(context).use { it.matte().apply(f.image, Matte.Region.FULL) }.let { StillFrame(it, it.toBitmap().asImageBitmap()) } }.getOrNull()
         }
+    }
+    val mattedPreview = mattedFrame?.bitmap
+    // Yazı aracındaki "son hâl": sticker üretimiyle aynı kod (kırpma, maske, silgi, kenar boşluğu, döndürme, dış çizgi)
+    val previewRecipe = EditRecipe(
+        crop = if (squareMode) crop.toCropRect() else null, rotationDegrees = rotation, marginPx = margin,
+        strokes = strokes, outlinePx = outline, outlineArgb = outlineColor,
+    )
+    val finalCanvas by produceState<ImageBitmap?>(null, tool == EditorTool.TEXT, frame, mattedFrame, previewRecipe) {
+        val f = frame
+        if (tool != EditorTool.TEXT || f == null || (removeBackground && mattedFrame == null)) return@produceState
+        delay(80)   // kaydırıcı sürüklenirken her adımda yeniden çizme
+        value = withContext(Dispatchers.Default) { runCatching { renderFinal(f.image, mattedFrame?.image, previewRecipe, m.width) }.getOrNull() }
     }
 
     // Videoda önizlemeyi seçili aralıkta döngüde tut
@@ -169,8 +206,21 @@ fun StickerEditor(
 
         // Önizleme: kare alan içinde kaynağın en-boy oranında kutu; kırpma çerçevesi aynı kutunun üzerinde
         Box(Modifier.fillMaxWidth().aspectRatio(1f).background(Color.Black), contentAlignment = Alignment.Center) {
+            if (tool == EditorTool.TEXT) {
+                // Yazı aracı: stickerın son hâli
+                val canvas = finalCanvas
+                if (canvas != null) {
+                    StickerPreview(
+                        canvas = canvas, texts = texts, selected = selectedText, onSelect = { selectedText = it },
+                        onChange = { i, t -> texts = texts.toMutableList().also { l -> l[i] = t } },
+                        modifier = Modifier.fillMaxSize().checkerboard(),
+                    )
+                } else {
+                    CircularProgressIndicator()
+                }
+            } else {
             val ratio = m.width.toFloat() / m.height
-            Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f)) {
+            Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f).graphicsLayer { rotationZ = rotation.toFloat() }) {
                 when {
                     m is SourceMeta.Still || needFrame -> {
                         val shown = if (removeBackground) mattedPreview else frame?.bitmap
@@ -205,16 +255,49 @@ fun StickerEditor(
                     CropOverlay(crop, m.width, m.height, onChange = { crop = it }, modifier = Modifier.fillMaxSize())
                 }
             }
+            }
         }
 
         run {
             // Araçlar: kırp / sil / geri getir. GIF ve videoda izler her kareye uygulanır
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 FilterChip(selected = tool == EditorTool.CROP, onClick = { tool = EditorTool.CROP }, label = { Text(stringResource(R.string.editor_tool_crop)) })
                 FilterChip(selected = tool == EditorTool.ERASE, onClick = { tool = EditorTool.ERASE }, label = { Text(stringResource(R.string.editor_tool_erase)) })
                 FilterChip(selected = tool == EditorTool.RESTORE, onClick = { tool = EditorTool.RESTORE }, label = { Text(stringResource(R.string.editor_tool_restore)) })
+                FilterChip(selected = tool == EditorTool.TEXT, onClick = { tool = EditorTool.TEXT }, label = { Text(stringResource(R.string.editor_tool_text)) })
             }
-            if (tool != EditorTool.CROP) {
+            if (tool == EditorTool.TEXT) {
+                Text(stringResource(R.string.text_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = { textDialog = -1 }) { Text(stringResource(R.string.text_add)) }
+                    selectedText?.let { i ->
+                        OutlinedButton(onClick = { textDialog = i }) { Text(stringResource(R.string.text_edit)) }
+                        TextButton(onClick = { texts = texts.filterIndexed { j, _ -> j != i }; selectedText = null }) { Text(stringResource(R.string.text_delete)) }
+                    }
+                }
+                selectedText?.let { i -> texts.getOrNull(i) }?.let { t ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.text_size), style = MaterialTheme.typography.bodySmall)
+                        Slider(
+                            value = t.sizeFraction, valueRange = MIN_TEXT_SIZE..MAX_TEXT_SIZE,
+                            onValueChange = { v -> texts = texts.toMutableList().also { l -> l[selectedText!!] = t.copy(sizeFraction = v) } },
+                            modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                        )
+                    }
+                }
+            }
+            textDialog?.let { index ->
+                TextDialog(
+                    initial = texts.getOrNull(index) ?: newTextLayer(),
+                    onDone = { t ->
+                        if (index >= 0) texts = texts.toMutableList().also { it[index] = t }
+                        else { texts = texts + t; selectedText = texts.lastIndex }
+                        textDialog = null
+                    },
+                    onDismiss = { textDialog = null },
+                )
+            }
+            if (tool == EditorTool.ERASE || tool == EditorTool.RESTORE) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.editor_brush), style = MaterialTheme.typography.bodySmall)
                     Slider(value = brush, valueRange = MIN_BRUSH..MAX_BRUSH, onValueChange = { brush = it }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
@@ -234,6 +317,28 @@ fun StickerEditor(
             FilterChip(selected = squareMode, onClick = { squareMode = true }, label = { Text(stringResource(R.string.editor_mode_square)) })
             FilterChip(selected = !squareMode, onClick = { squareMode = false }, label = { Text(stringResource(R.string.editor_mode_fit)) })
         }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedButton(onClick = { rotation = (rotation + 90) % 360 }) { Text(stringResource(R.string.editor_rotate)) }
+            Spacer(Modifier.width(12.dp))
+            Text(stringResource(R.string.editor_margin), style = MaterialTheme.typography.bodySmall)
+            Slider(value = margin.toFloat(), valueRange = 0f..MAX_MARGIN.toFloat(), steps = MAX_MARGIN / 4 - 1, onValueChange = { margin = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+        }
+        // Dış çizgi (klasik beyaz sticker kenarı)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.editor_outline), style = MaterialTheme.typography.bodySmall)
+            Slider(value = outline.toFloat(), valueRange = 0f..MAX_OUTLINE.toFloat(), steps = MAX_OUTLINE - 1, onValueChange = { outline = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+            for (c in listOf(0xFFFFFFFF.toInt(), 0xFF000000.toInt())) {
+                Box(
+                    Modifier.padding(start = 6.dp).size(28.dp).clip(CircleShape).background(Color(c))
+                        .border(if (c == outlineColor) 3.dp else 1.dp, if (c == outlineColor) MaterialTheme.colorScheme.primary else Color.Gray, CircleShape)
+                        .clickable { outlineColor = c },
+                )
+            }
+        }
+        if ((outline > 0 || margin != EditRecipe().marginPx || rotation != 0) && tool != EditorTool.TEXT) {
+            Text(stringResource(R.string.editor_see_final), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
         if (squareMode) {
             val maxSide = min(m.width, m.height).toFloat()
             Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -249,9 +354,9 @@ fun StickerEditor(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.editor_remove_bg), style = MaterialTheme.typography.titleSmall)
-                val hint = if (video != null && currentRange != null) {
+                val hint = if (timeline != null && currentRange != null) {
                     val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-                    val frames = (selMs * AnimationLoader.plannedFps(selMs, video.fps) / 1000).roundToInt()
+                    val frames = (selMs * plannedFps(selMs, timeline, video != null) / 1000).roundToInt()
                     stringResource(R.string.editor_remove_bg_hint_video, (frames * SECONDS_PER_MATTE_FRAME).roundToInt().coerceAtLeast(1))
                 } else stringResource(R.string.editor_remove_bg_hint)
                 Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -260,16 +365,16 @@ fun StickerEditor(
             Switch(checked = removeBackground, onCheckedChange = { removeBackground = it })
         }
 
-        if (video != null && currentRange != null) {
+        if (timeline != null && currentRange != null) {
             // Küçük resim şeridi: hangi anı seçtiğini görmek için
             Row(Modifier.fillMaxWidth().height(48.dp).clipToBounds()) {
-                for (thumb in video.thumbnails) {
+                for (thumb in timeline.thumbnails) {
                     Image(thumb, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.weight(1f).height(48.dp))
                 }
             }
             RangeSlider(
                 value = currentRange,
-                valueRange = 0f..video.durationMs.toFloat(),
+                valueRange = 0f..timeline.durationMs.toFloat(),
                 onValueChange = { new ->
                     val next = constrain(currentRange, new, maxMs, MIN_MS.toFloat())
                     range = next
@@ -279,7 +384,7 @@ fun StickerEditor(
                 },
             )
             val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-            val fps = AnimationLoader.plannedFps(selMs, video.fps)
+            val fps = plannedFps(selMs, timeline, video != null)
             val frames = (selMs * fps / 1000).roundToInt()
             Text(
                 stringResource(R.string.trim_selection, sec(currentRange.start), sec(currentRange.endInclusive), sec(selMs.toFloat())),
@@ -302,6 +407,11 @@ fun StickerEditor(
                         trim = currentRange?.let { TrimRange(it.start.roundToInt(), it.endInclusive.roundToInt()) },
                         removeBackground = removeBackground,
                         strokes = strokes,
+                        texts = texts,
+                        rotationDegrees = rotation,
+                        marginPx = margin,
+                        outlinePx = outline,
+                        outlineArgb = outlineColor,
                     ),
                 )
             }) { Text(stringResource(R.string.editor_confirm)) }
@@ -338,6 +448,11 @@ private const val MIN_MS = 500
 private const val THUMBNAILS = 8
 private const val PREVIEW_LONG_SIDE = 1080
 
+/** Kenar boşluğu üst sınırı (px, 512 tuvalde) — StickerPipeline.MAX_MARGIN ile aynı. */
+private const val MAX_MARGIN = 32
+/** Dış çizgi üst sınırı (px, 512 tuvalde); varsayılan kenar boşluğu 16 olduğundan kesilmez. */
+private const val MAX_OUTLINE = 14
+
 /** Fırça yarıçapı, kaynak genişliğine oranla. */
 private const val DEFAULT_BRUSH = 0.04f
 private const val MIN_BRUSH = 0.008f
@@ -363,12 +478,21 @@ private fun sec(ms: Float) = String.format(Locale.ROOT, "%.1f", ms / 1000f)
  * Fotoğraf / GIF (ilk kare). Kırpma koordinatları ORİJİNAL (EXIF yönü uygulanmış) çözünürlükte —
  * kalite hattı ([io.github.darkvolfi.dvscreator.core.imaging.StickerPipeline]) aynı uzayı bekler.
  */
-private fun readStillMeta(context: Context, uri: Uri): SourceMeta.Still {
+private fun readStillMeta(context: Context, uri: Uri, mimeType: String): SourceMeta.Still {
     val loaded = ImageLoader(context.contentResolver).load(uri, minLongSide = PREVIEW_LONG_SIDE)
     val w = (loaded.image.width / loaded.scale).roundToInt()
     val h = (loaded.image.height / loaded.scale).roundToInt()
-    return SourceMeta.Still(w, h, loaded.image.toBitmap().asImageBitmap(), loaded.image)
+    val timeline = if (mimeType == "image/gif") {
+        runCatching { AnimationLoader(context).readGifInfo(uri) }.getOrNull()
+            ?.takeIf { it.durationMs > 0 }
+            ?.let { g -> Timeline(g.durationMs, g.fps, g.thumbnails.map { it.asImageBitmap() }) }
+    } else null
+    return SourceMeta.Still(w, h, loaded.image.toBitmap().asImageBitmap(), loaded.image, timeline)
 }
+
+/** Seçilen aralıkta çıkarılacak kare hızı: video planlanan hıza indirilir, GIF kendi kareleriyle kalır. */
+private fun plannedFps(selMs: Int, timeline: Timeline, isVideo: Boolean): Double =
+    if (isVideo) AnimationLoader.plannedFps(selMs, timeline.fps) else timeline.fps
 
 private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {
     val retriever = MediaMetadataRetriever()
@@ -406,4 +530,20 @@ private fun readVideoFrame(context: Context, uri: Uri, ms: Int): StillFrame? {
     } finally {
         retriever.release()
     }
+}
+
+/**
+ * Önizleme karesinden stickerın son hâli (yazılar hariç — onlar canlı çizilir). [matted]: otomatik arka plan
+ * kaldırma sonucu (aynı karenin tamamı için, önbellekten); maske yeniden hesaplanmaz.
+ */
+private fun renderFinal(frame: ArgbImage, matted: ArgbImage?, recipe: EditRecipe, sourceWidth: Int): ImageBitmap {
+    val scale = frame.width.toDouble() / sourceWidth
+    val auto = matted?.let { full ->
+        Matte { image, _ ->
+            val c = recipe.crop ?: return@Matte full
+            fun s(v: Int) = (v * scale).roundToInt()
+            full.crop(s(c.left), s(c.top), s(c.right), s(c.bottom)).takeIf { it.width == image.width && it.height == image.height } ?: image
+        }
+    }
+    return StickerPipeline(NativeWebp).render(frame, recipe, scale, Matte.of(auto, recipe.strokes)).toBitmap().asImageBitmap()
 }

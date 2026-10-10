@@ -23,10 +23,13 @@ class StickerPipeline(
             fun s(v: Int) = (v * sourceScale).roundToInt()
             image = image.crop(s(c.left), s(c.top), s(c.right), s(c.bottom))
         }
-        image = image.rotate(recipe.rotationDegrees)
         matte?.let { image = it.apply(image, Matte.Region.of(recipe.crop, (source.width / sourceScale).roundToInt(), (source.height / sourceScale).roundToInt())) }
-        // TODO(M3): silgi maskesi ve metin katmanları burada, küçültmeden ÖNCE uygulanacak
-        return StickerCanvas.fit(image, size, recipe.marginPx.coerceIn(0, MAX_MARGIN))
+        // Döndürme son tuvalde (kare → boyut değişmez; video kareleriyle aynı yol, yazılar düz kalır)
+        val canvas = StickerCanvas.fit(image, size, recipe.marginPx.coerceIn(0, MAX_MARGIN)).rotate(recipe.rotationDegrees)
+        StickerOutline.apply(canvas, recipe.outlinePx, recipe.outlineArgb)
+        // Yazılar küçültmeden SONRA, son tuvalde: her zaman keskin
+        TextOverlay.apply(canvas, recipe.texts)
+        return canvas
     }
 
     suspend fun export(source: ArgbImage, recipe: EditRecipe, sourceScale: Double = 1.0, matte: Matte? = null): EncodedSticker =

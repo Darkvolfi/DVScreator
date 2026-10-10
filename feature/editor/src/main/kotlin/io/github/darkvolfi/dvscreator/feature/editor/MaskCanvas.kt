@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.IntSize
 import io.github.darkvolfi.dvscreator.core.model.MaskStroke
 
 /** Düzenleme ekranındaki araç. */
-enum class EditorTool { CROP, ERASE, RESTORE }
+enum class EditorTool { CROP, ERASE, RESTORE, TEXT }
 
 /**
  * Silgi önizlemesi: [base] (otomatik arka plan kaldırılmış ya da orijinal) üzerine fırça izleri GPU'da
@@ -62,7 +62,7 @@ fun MaskCanvas(
     val latestTool by rememberUpdatedState(tool)
     val latestBrush by rememberUpdatedState(brush)
     val latestOnStroke by rememberUpdatedState(onStroke)
-    val drawing = tool != EditorTool.CROP
+    val drawing = tool == EditorTool.ERASE || tool == EditorTool.RESTORE
 
     // Yakınlaştırma (yalnızca silgi araçlarında): içerik = (ekran - offset) / scale
     var scale by remember { mutableStateOf(1f) }

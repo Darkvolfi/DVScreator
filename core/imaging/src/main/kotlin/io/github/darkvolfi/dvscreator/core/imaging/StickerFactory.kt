@@ -92,7 +92,11 @@ object StickerFactory {
         val loaded = loader.load(uri, mimeType, recipe.trim, recipe.crop, margin = recipe.marginPx, matte = matte, onFrame = { done, total -> onProgress(Progress.Extracting(done, total)) })
         val loadMs = SystemClock.elapsedRealtime() - start
         val sourceFrames = loaded.clip.frames.size
-        val r = AnimationEncoder().encode(loaded.clip) { p ->
+        // Kareler yerinde döndürülür: 150 karelik klibin kopyası bellek sınırını aşabilir
+        loaded.clip.frames.forEach { rotateInPlace(it, recipe.rotationDegrees); StickerOutline.apply(it, recipe.outlinePx, recipe.outlineArgb) }
+        TextOverlay.apply(loaded.clip.frames, recipe.texts)
+        val clip = loaded.clip
+        val r = AnimationEncoder().encode(clip) { p ->
             onProgress(
                 when (p) {
                     is AnimationEncoder.Progress.Encoding -> Progress.Encoding(p.attempt, p.frames)
@@ -114,6 +118,13 @@ object StickerFactory {
             sourceDescription = "%.1f sn, %.1f fps".format(loaded.sourceDurationMs / 1000.0, loaded.sourceFps),
             loadMs = loadMs, totalMs = SystemClock.elapsedRealtime() - start,
         )
+    }
+
+    /** Kare tuvali (512×512) yerinde döndürür. */
+    private fun rotateInPlace(frame: ArgbImage, degrees: Int) {
+        if (((degrees % 360) + 360) % 360 == 0) return
+        val rotated = frame.rotate(degrees)
+        System.arraycopy(rotated.pixels, 0, frame.pixels, 0, frame.pixels.size)
     }
 
     /** WhatsApp paket simgesi: 96×96 PNG, stickerın ilk karesinden. */
