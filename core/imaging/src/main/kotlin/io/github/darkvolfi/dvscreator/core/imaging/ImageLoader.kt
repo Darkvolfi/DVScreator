@@ -7,6 +7,7 @@ import android.graphics.ColorSpace
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import android.annotation.TargetApi
 import androidx.exifinterface.media.ExifInterface
 
 /** Yüklenen görüntü ve orijinal çözünürlüğe oranı (örnekleme yapıldıysa < 1). */
@@ -24,6 +25,7 @@ class ImageLoader(private val resolver: ContentResolver) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) loadWithImageDecoder(uri, minLongSide)
         else loadWithBitmapFactory(uri, minLongSide)
 
+    @TargetApi(Build.VERSION_CODES.P)   // yalnızca load() içindeki sürüm kontrolünden çağrılır
     private fun loadWithImageDecoder(uri: Uri, minLongSide: Int): LoadedImage {
         var sample = 1
         var originalLongSide = 0
