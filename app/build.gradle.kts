@@ -13,8 +13,9 @@ android {
         applicationId = "io.github.darkvolfi.dvscreator"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        // Sürüm: UYGULAMA.BÜYÜK.KÜÇÜK — 1 = uygulama; ortadaki büyük değişiklik / hata düzeltmesi turu; sonuncu küçük düzeltmeler
+        versionName = "1.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -99,4 +100,23 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+}
+
+/** Depo kökündeki GPL-3.0 metnini uygulamaya koyar (Ayarlar → Lisans; GPL lisans metninin birlikte dağıtılmasını ister). */
+abstract class LicenseAssetTask : DefaultTask() {
+    @get:InputFile abstract val license: RegularFileProperty
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        val dir = outputDir.get().asFile.apply { mkdirs() }
+        license.get().asFile.copyTo(File(dir, "LICENSE.txt"), overwrite = true)
+    }
+}
+
+val licenseAsset = tasks.register<LicenseAssetTask>("licenseAsset") {
+    license.set(rootProject.layout.projectDirectory.file("LICENSE"))
+}
+androidComponents {
+    onVariants { variant -> variant.sources.assets?.addGeneratedSourceDirectory(licenseAsset, LicenseAssetTask::outputDir) }
 }

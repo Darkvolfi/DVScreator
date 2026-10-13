@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yalnızca paylaşılan tek stickerın geçici kopyası (StickerShare) dışarı açılır -->
+<paths>
+    <cache-path name="share" path="share/" />
+</paths>

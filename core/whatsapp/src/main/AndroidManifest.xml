@@ -10,5 +10,16 @@
             android:enabled="true"
             android:exported="true"
             android:readPermission="com.whatsapp.sticker.READ" />
+
+        <!-- Tek stickerı sohbete göndermek için (StickerShare); yalnızca izin verilen uygulama okuyabilir -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.share"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/share_paths" />
+        </provider>
     </application>
 </manifest>

@@ -67,12 +67,7 @@ class PackRepository(context: Context) {
                 ?: error("Dosya açılamadı")
         }
         val created = try {
-            withContext(Dispatchers.Default) {
-                // Model (~170 MB) yalnızca gerektiğinde açılır ve iş bitince bırakılır
-                if (recipe.removeBackground) BackgroundRemover.open(appContext).use { remover ->
-                    StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, remover.matte(), onProgress)
-                } else StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, onProgress = onProgress)
-            }
+            produce(sourceFile, mimeType, recipe, onProgress)
         } catch (e: Throwable) {
             sourceFile.delete()
             throw e
@@ -91,6 +86,67 @@ class PackRepository(context: Context) {
         }
         return created
     }
+
+    /**
+     * Pakete eklemeden tek sticker üretir (doğrudan sohbete göndermek için). Kaynak geçici olarak
+     * önbelleğe kopyalanır, iş bitince silinir.
+     */
+    suspend fun createLoose(
+        source: Uri,
+        mimeType: String,
+        recipe: EditRecipe = EditRecipe(),
+        onProgress: (StickerFactory.Progress) -> Unit = {},
+    ): CreatedSticker {
+        val ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: "bin"
+        val sourceFile = File(appContext.cacheDir, "loose_source.$ext")
+        withContext(Dispatchers.IO) {
+            appContext.contentResolver.openInputStream(source)?.use { input -> sourceFile.outputStream().use { input.copyTo(it) } }
+                ?: error("Dosya açılamadı")
+        }
+        return try {
+            produce(sourceFile, mimeType, recipe, onProgress)
+        } finally {
+            sourceFile.delete()
+        }
+    }
+
+    /**
+     * Tek stickerı "hızlı" pakete ekler; son hızlı paket doluysa (30) yenisi açılır ([baseName], "[baseName] 2"…).
+     * Kullanıcı hızlı paketi WhatsApp'a bir kez ekler, sonra her yeni stickerda yalnızca güncellemeyi onaylar.
+     * @return stickerın eklendiği paketin güncel hâli
+     */
+    suspend fun addToQuickPack(webp: ByteArray, recipe: EditRecipe, baseName: String): PackManifest = edit {
+        val quick = store.packs().filter { it.identifier.startsWith(QUICK_PREFIX) }
+        val target = quick.lastOrNull { it.stickers.size < WhatsAppLimits.PACK_MAX_STICKERS } ?: run {
+            val n = quick.size + 1
+            PackManifest(
+                identifier = QUICK_PREFIX + UUID.randomUUID().toString().replace("-", "").take(8),
+                name = (if (n == 1) baseName else "$baseName $n").take(WhatsAppLimits.MAX_TEXT_LENGTH),
+                publisher = DEFAULT_PUBLISHER,
+                trayImageFile = TRAY_FILE,
+                animated = true,
+                stickers = emptyList(),
+                createdAt = System.currentTimeMillis(),
+            )
+        }
+        val fileName = "s_" + UUID.randomUUID().toString().replace("-", "").take(12) + ".webp"
+        store.writeFile(target.identifier, fileName, webp)
+        if (target.stickers.isEmpty()) store.writeFile(target.identifier, TRAY_FILE, StickerFactory.trayIcon(webp))
+        val updated = target.copy(
+            stickers = target.stickers + StickerEntry(fileName, listOf(DEFAULT_EMOJI), recipe = recipe),
+            imageDataVersion = target.imageDataVersion + 1,
+        )
+        store.saveManifest(updated)
+        updated
+    }
+
+    private suspend fun produce(sourceFile: File, mimeType: String, recipe: EditRecipe, onProgress: (StickerFactory.Progress) -> Unit): CreatedSticker =
+        withContext(Dispatchers.Default) {
+            // Model (~170 MB) yalnızca gerektiğinde açılır ve iş bitince bırakılır
+            if (recipe.removeBackground) BackgroundRemover.open(appContext).use { remover ->
+                StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, remover.matte(), onProgress)
+            } else StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, onProgress = onProgress)
+        }
 
     /**
      * WhatsApp'ta alınmış stickerları pakete ekler (yeniden kodlamadan, bkz. [StickerImport]).
@@ -189,6 +245,8 @@ class PackRepository(context: Context) {
         const val TRAY_FILE = "tray.png"
         const val DEFAULT_PUBLISHER = "DVScreator"
         const val DEFAULT_EMOJI = "😀"
+        /** Hızlı (tek sticker) paketlerinin kimlik öneki. */
+        const val QUICK_PREFIX = "wsc_quick_"
     }
 }
 

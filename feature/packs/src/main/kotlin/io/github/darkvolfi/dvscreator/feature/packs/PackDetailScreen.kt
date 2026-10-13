@@ -53,6 +53,7 @@ import io.github.darkvolfi.dvscreator.core.imaging.StickerFactory
 import io.github.darkvolfi.dvscreator.core.model.EncodeMode
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackManifest
 import io.github.darkvolfi.dvscreator.core.whatsapp.StickerEntry
+import io.github.darkvolfi.dvscreator.core.whatsapp.StickerShare
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppIntents
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppLimits
 import io.github.darkvolfi.dvscreator.feature.editor.StickerEditor
@@ -254,6 +255,7 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
             onDismiss = { editing = null },
             onEmojis = { vm.setEmojis(pack.identifier, sticker.imageFile, it); editing = null },
             onDelete = { vm.removeSticker(pack.identifier, sticker.imageFile); editing = null },
+            onSave = { vm.repository.stickerBytes(pack.identifier, sticker.imageFile)?.let { saveToGallery(context, it) } },
         )
     }
     if (renaming) {
@@ -313,7 +315,7 @@ private fun AddStatusCard(state: AddState, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun describe(s: CreatedSticker): String {
+internal fun describe(s: CreatedSticker): String {
     val mode = when (s.mode) {
         EncodeMode.LOSSLESS -> stringResource(R.string.mode_lossless)
         EncodeMode.NEAR_LOSSLESS -> stringResource(R.string.mode_near_lossless, s.quality)
@@ -356,7 +358,14 @@ private val EMOJIS = listOf(
 )
 
 @Composable
-private fun StickerDialog(sticker: StickerEntry, onDismiss: () -> Unit, onEmojis: (List<String>) -> Unit, onDelete: () -> Unit) {
+private fun StickerDialog(
+    sticker: StickerEntry,
+    onDismiss: () -> Unit,
+    onEmojis: (List<String>) -> Unit,
+    onDelete: () -> Unit,
+    /** Galeriye kaydet (Samsung Klavye'de özel sticker yapmak için). */
+    onSave: () -> Unit,
+) {
     var selected by remember { mutableStateOf(sticker.emojis) }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -385,6 +394,7 @@ private fun StickerDialog(sticker: StickerEntry, onDismiss: () -> Unit, onEmojis
                         }
                     }
                 }
+                if (StickerShare.canSaveToGallery) OutlinedButton(onClick = onSave) { Text(stringResource(R.string.save_to_gallery)) }
                 OutlinedButton(onClick = onDelete) { Text(stringResource(R.string.sticker_delete)) }
             }
         },

@@ -9,6 +9,16 @@
     <string name="lab_working">Processing… videos can take 5–30 seconds.</string>
     <string name="lab_error">Error: %1$s</string>
 
-    <string name="tab_lab">Quality lab</string>
-    <string name="tab_packs">My packs</string>
+    <string name="settings_keyboard">Sticker keyboard</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_privacy_text">The app has no internet permission. Your photos, videos and stickers never leave the phone; background removal also runs on the phone with an on-device AI model.</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_license_title">GNU GPL v3.0 license</string>
+    <string name="settings_license_text">DVScreator is free and open source software. You may use it, study its source code, change it and share it. If you distribute modified versions, you must share them under the same license together with their source code. The software comes with no warranty.</string>
+    <string name="settings_license_read">License text</string>
+    <string name="settings_source">Source code</string>
+    <string name="settings_components">Open source components</string>
+    <string name="settings_developer">Developer</string>
+    <string name="settings_lab_text">Test screen for measuring sticker quality and size.</string>
 </resources>

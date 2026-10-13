@@ -48,6 +48,21 @@
     <string name="sticker_emojis_hint">Choose 1–3 emojis. WhatsApp uses them to suggest this sticker.</string>
     <string name="sticker_delete">Delete sticker</string>
 
+    <string name="quick_start">Make a single sticker</string>
+    <string name="quick_title">Single sticker</string>
+    <string name="quick_working">Preparing sticker…</string>
+    <string name="quick_pack_name">Quick stickers</string>
+    <string name="quick_explain">WhatsApp doesn\'t allow sending a single sticker to a chat (it arrives as a photo). Instead the sticker goes into the \"Quick stickers\" pack: add the pack to WhatsApp once, then just confirm the update for each new sticker.</string>
+    <string name="quick_add_whatsapp">Add to quick pack → WhatsApp</string>
+    <string name="quick_add_business">Add to quick pack → WhatsApp Business</string>
+    <string name="quick_need_more">Added to \"%1$s\" (%2$d stickers). WhatsApp needs at least 3 stickers per pack: make %3$d more and it will be added to WhatsApp.</string>
+    <string name="quick_added">Added to \"%1$s\" (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ In WhatsApp. It appears inside the pack in your sticker panel.</string>
+    <string name="quick_wa_already">The pack is already in WhatsApp; the update wasn\'t confirmed. Tap \"Update in WhatsApp\" to make the new sticker appear.</string>
+    <string name="quick_wa_cancelled">Not added to WhatsApp (cancelled).</string>
+    <string name="quick_share_other">Share with another app (arrives as a photo in WhatsApp)</string>
+    <string name="quick_done">Done</string>
+
     <string name="pack_import_whatsapp">Import from WhatsApp</string>
     <string name="import_title">Stickers received in WhatsApp</string>
     <string name="import_explain">WhatsApp keeps the stickers you receive in chats in a folder. Allow access to that folder once: on the next screen tap “Use this folder”.</string>
@@ -74,4 +89,24 @@
     <string name="import_shared_explain">When a whole pack is shared in a chat, WhatsApp saves it in a separate folder. Allow that folder too to see complete packs.</string>
     <string name="import_shared_grant">Choose the shared packs folder</string>
     <string name="import_shared_badge">full pack</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">Back to previous keyboard</string>
+    <string name="keyboard_recent">Recently sent</string>
+    <string name="keyboard_empty">No stickers yet. Make some in DVScreator and they appear here.</string>
+    <string name="keyboard_recent_empty">Stickers you send appear here. Pick a pack above.</string>
+    <string name="keyboard_not_supported">This text field doesn\'t accept stickers.</string>
+    <string name="keyboard_card_title">Sticker keyboard</string>
+    <string name="keyboard_card_text">Send stickers without adding a pack: in a chat switch the keyboard to “DVScreator Sticker” and tap a sticker; it is sent as a sticker. This keyboard doesn\'t type and doesn\'t read what you type; Android shows a generic warning for every keyboard.</string>
+    <string name="keyboard_enable">1. Enable in Settings</string>
+    <string name="keyboard_pick">2. Choose keyboard</string>
+    <string name="keyboard_ready">✅ Keyboard enabled. In a chat pick “DVScreator Sticker” from the keyboard switcher; tap the keyboard icon at the very bottom to go back.</string>
+    <string name="save_to_gallery">Save to gallery (for Samsung Keyboard)</string>
+    <string name="saved_to_gallery">Saved to Pictures/DVScreator. In Samsung Keyboard: sticker tab → + (Create sticker) → pick this image.</string>
+    <string name="save_failed">Couldn\'t save to gallery.</string>
+    <string name="keyboard_abc" translatable="false">⌨  ABC</string>
+
+    <string name="home_title">My stickers</string>
+    <string name="home_quick_subtitle">Make it, send it with the keyboard</string>
+    <string name="home_new_pack_subtitle">A pack to add to WhatsApp</string>
+    <string name="settings_title">Settings</string>
 </resources>

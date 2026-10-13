@@ -40,6 +40,16 @@ data class ImportStatus(
     val newPacks: List<String> = emptyList(),
 )
 
+/** Paketsiz tek sticker akışının adımı. */
+sealed interface QuickState {
+    data object Idle : QuickState
+    data class Editing(val source: StickerSource) : QuickState
+    data class Working(val progress: StickerFactory.Progress?) : QuickState
+    /** [packId]: eklendiği hızlı paket (henüz eklenmediyse null). */
+    data class Done(val sticker: CreatedSticker, val recipe: EditRecipe, val packId: String? = null) : QuickState
+    data class Failed(val error: String) : QuickState
+}
+
 /** Tek bir kaynağın sonucu: üretilen sticker ya da hata mesajı. */
 class ItemResult(val sticker: CreatedSticker? = null, val error: String? = null)
 
@@ -122,13 +132,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
                         onSuccess = { ItemResult(sticker = it) },
                         onFailure = { e ->
                             Log.e(TAG, "sticker eklenemedi", e)
-                            ItemResult(
-                                error = when (e) {
-                                    is StickerTooLargeException, is AnimationTooLargeException, is IllegalStateException -> e.message.orEmpty()
-                                    is OutOfMemoryError -> "Bellek yetmedi — daha kısa bir video deneyin."
-                                    else -> e.toString()
-                                },
-                            )
+                            ItemResult(error = errorText(e))
                         },
                     )
                     remaining--
@@ -142,6 +146,40 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun dismissAddState(packId: String) = _addState.update { it - packId }
+
+    /** Paketsiz tek sticker: seç → düzenle → üret → sohbete gönder. */
+    private val _quick = MutableStateFlow<QuickState>(QuickState.Idle)
+    val quick: StateFlow<QuickState> = _quick.asStateFlow()
+
+    fun onQuickPicked(source: StickerSource) { _quick.value = QuickState.Editing(source) }
+
+    fun onQuickEdited(recipe: EditRecipe) {
+        val source = (_quick.value as? QuickState.Editing)?.source ?: return
+        _quick.value = QuickState.Working(null)
+        viewModelScope.launch {
+            processing.withLock {
+                _quick.value = runCatching {
+                    repository.createLoose(source.uri, source.mimeType, recipe) { p -> _quick.update { if (it is QuickState.Working) QuickState.Working(p) else it } }
+                }.fold(
+                    onSuccess = { QuickState.Done(it, recipe) },
+                    onFailure = { e -> Log.e(TAG, "tek sticker üretilemedi", e); QuickState.Failed(errorText(e)) },
+                )
+            }
+        }
+    }
+
+    /** Üretilen stickerı hızlı pakete ekler; ardından [onAdded] ile WhatsApp'a ekleme / güncelleme başlatılır. */
+    fun addQuickToPack(baseName: String, onAdded: (PackManifest) -> Unit) {
+        val done = _quick.value as? QuickState.Done ?: return
+        if (done.packId != null) return
+        viewModelScope.launch {
+            val pack = repository.addToQuickPack(done.sticker.webp, done.recipe, baseName)
+            _quick.update { if (it === done) done.copy(packId = pack.identifier) else it }
+            onAdded(pack)
+        }
+    }
+
+    fun dismissQuick() { _quick.value = QuickState.Idle }
 
     /** WhatsApp'tan içe aktarma sonucu (paket kimliği → eklenen sayı, reddedilenler). */
     private val _importResult = MutableStateFlow<Map<String, ImportStatus>>(emptyMap())
@@ -199,6 +237,12 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
         private const val TAG = "WSC_PACKS"
+
+        private fun errorText(e: Throwable): String = when (e) {
+            is StickerTooLargeException, is AnimationTooLargeException, is IllegalStateException -> e.message.orEmpty()
+            is OutOfMemoryError -> "Bellek yetmedi — daha kısa bir video deneyin."
+            else -> e.toString()
+        }
 
         /** En az 3, en fazla 30'luk, olabildiğince eşit parçalar. */
         fun <T> splitForPacks(items: List<T>, max: Int = 30): List<List<T>> {

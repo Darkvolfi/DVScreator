@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kıvrık köşeli sticker üzerinde ":3" yüzü, yukarıdan aşağı (":" gözler, "3" ağız → • • / ω).
+<!-- Kıvrık köşeli sticker üzerinde ":3" yüzü (":" gözler, "3" ağız → • • / ω). Yüz 45° döndürülmüş:
+     ağız kıvrık köşenin katlanma çizgisine paralel, köşenin hemen üstünde — sticker köşesine bakıyormuş gibi.
      Adaptive icon güvenli alanı: 108 dp içinde merkezdeki 66 dp (21..87). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -14,18 +15,24 @@
     <path
         android:fillColor="#C8EBD9"
         android:pathData="M80,60h-16a4,4 0,0 0,-4 4v16z" />
-    <!-- ":" → gözler -->
-    <path
-        android:fillColor="#1B8A5A"
-        android:pathData="M45,46m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
-    <path
-        android:fillColor="#1B8A5A"
-        android:pathData="M63,46m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
-    <!-- "3" → ω ağız -->
-    <path
-        android:pathData="M43,56q5,9 11,0q6,9 11,0"
-        android:strokeWidth="3.5"
-        android:strokeColor="#1B8A5A"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
+    <!-- Yüz: yerel koordinatlarda merkez (0,0), ağız merkezi (0,6); döndürülüp köşeye taşınır -->
+    <group
+        android:rotation="-45"
+        android:translateX="50.5"
+        android:translateY="50.5">
+        <!-- ":" → gözler -->
+        <path
+            android:fillColor="#1B8A5A"
+            android:pathData="M-9,-8m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+        <path
+            android:fillColor="#1B8A5A"
+            android:pathData="M9,-8m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+        <!-- "3" → ω ağız -->
+        <path
+            android:pathData="M-11,4q5,9 11,0q6,9 11,0"
+            android:strokeWidth="3.5"
+            android:strokeColor="#1B8A5A"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
 </vector>

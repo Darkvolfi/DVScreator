@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Sticker klavyesi: stickerları paket eklemeden sohbete gönderir (WhatsApp'ta sticker olarak gider).
+             BIND_INPUT_METHOD yalnızca sistemin bu servise bağlanabilmesi içindir; uygulama izin istemez. -->
+        <service
+            android:name=".keyboard.StickerKeyboardService"
+            android:exported="true"
+            android:label="@string/keyboard_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/sticker_keyboard" />
+        </service>
+    </application>
+</manifest>

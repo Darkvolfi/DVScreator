@@ -6,6 +6,16 @@
     <string name="lab_working">İşleniyor… videolar 5–30 saniye sürebilir.</string>
     <string name="lab_error">Hata: %1$s</string>
 
-    <string name="tab_lab">Kalite laboratuvarı</string>
-    <string name="tab_packs">Paketlerim</string>
+    <string name="settings_keyboard">Sticker klavyesi</string>
+    <string name="settings_privacy">Gizlilik</string>
+    <string name="settings_privacy_text">Uygulamanın internet izni yok. Fotoğrafların, videoların ve stickerların telefondan çıkmaz; arka plan kaldırma da telefondaki yapay zekâ modeliyle yapılır.</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_version">Sürüm %1$s</string>
+    <string name="settings_license_title">GNU GPL v3.0 lisansı</string>
+    <string name="settings_license_text">DVScreator özgür ve açık kaynaklı bir yazılımdır. Onu kullanabilir, kaynak kodunu inceleyebilir, değiştirebilir ve paylaşabilirsin. Değiştirilmiş sürümleri dağıtırsan onları da aynı lisansla, kaynak koduyla birlikte paylaşmalısın. Yazılım hiçbir garanti olmadan sunulur.</string>
+    <string name="settings_license_read">Lisans metni</string>
+    <string name="settings_source">Kaynak kodu</string>
+    <string name="settings_components">Açık kaynak bileşenler</string>
+    <string name="settings_developer">Geliştirici</string>
+    <string name="settings_lab_text">Sticker kalitesini ve boyutunu ölçmek için deneme ekranı.</string>
 </resources>

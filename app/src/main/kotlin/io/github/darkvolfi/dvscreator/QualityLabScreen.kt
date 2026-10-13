@@ -58,7 +58,7 @@ private const val TAG = "WSC_LAB"
  * M4'te paket ekranıyla değiştirilecek.
  */
 @Composable
-fun QualityLabScreen() {
+fun QualityLabScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf<LabState>(LabState.Idle) }
@@ -86,9 +86,8 @@ fun QualityLabScreen() {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(stringResource(R.string.lab_title), style = MaterialTheme.typography.headlineSmall)
+        TitleBar(stringResource(R.string.lab_title), onBack)
         Text(stringResource(R.string.lab_subtitle), style = MaterialTheme.typography.bodyMedium)
         Button(
             onClick = { picker.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo)) },

@@ -48,6 +48,21 @@
     <string name="sticker_emojis_hint">1–3 emoji seç. WhatsApp bu stickerı önermek için bunları kullanır.</string>
     <string name="sticker_delete">Stickerı sil</string>
 
+    <string name="quick_start">Tek sticker yap</string>
+    <string name="quick_title">Tek sticker</string>
+    <string name="quick_working">Sticker hazırlanıyor…</string>
+    <string name="quick_pack_name">Hızlı stickerlar</string>
+    <string name="quick_explain">WhatsApp sohbete tek sticker gönderilmesine izin vermiyor (fotoğraf olarak gidiyor). Bunun yerine sticker \"Hızlı stickerlar\" paketine eklenir: paketi WhatsApp\'a bir kez eklersin, sonraki stickerlarda yalnızca güncellemeyi onaylarsın.</string>
+    <string name="quick_add_whatsapp">Hızlı pakete ekle → WhatsApp</string>
+    <string name="quick_add_business">Hızlı pakete ekle → WhatsApp Business</string>
+    <string name="quick_need_more">\"%1$s\" paketine eklendi (%2$d sticker). WhatsApp bir paket için en az 3 sticker istiyor: %3$d tane daha yapınca WhatsApp\'a eklenecek.</string>
+    <string name="quick_added">\"%1$s\" paketine eklendi (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ WhatsApp\'ta. Sticker panelinde paketin içinde görünür.</string>
+    <string name="quick_wa_already">Paket zaten WhatsApp\'ta; güncelleme onaylanmadı. Yeni stickerın görünmesi için \"WhatsApp\'ta güncelle\"ye bas.</string>
+    <string name="quick_wa_cancelled">WhatsApp\'a eklenmedi (iptal edildi).</string>
+    <string name="quick_share_other">Başka uygulamayla paylaş (WhatsApp\'ta fotoğraf olarak gider)</string>
+    <string name="quick_done">Bitti</string>
+
     <string name="pack_import_whatsapp">WhatsApp\'tan içe aktar</string>
     <string name="import_title">WhatsApp\'ta aldığın stickerlar</string>
     <string name="import_explain">WhatsApp, sohbetlerde aldığın stickerları bir klasörde saklar. Bu klasöre bir kez erişim izni ver: sonraki ekranda “Bu klasörü kullan”a dokun.</string>
@@ -74,4 +89,23 @@
     <string name="import_shared_explain">Bir paket sohbette bütün olarak paylaşıldığında WhatsApp onu ayrı bir klasöre kaydeder. Paketlerin tamamını görmek için bu klasöre de izin ver.</string>
     <string name="import_shared_grant">Paylaşılan paketler klasörünü seç</string>
     <string name="import_shared_badge">tam paket</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">Önceki klavyeye dön</string>
+    <string name="keyboard_recent">Son gönderilenler</string>
+    <string name="keyboard_empty">Henüz sticker yok. DVScreator\'da sticker yap; burada görünür.</string>
+    <string name="keyboard_recent_empty">Gönderdiğin stickerlar burada görünür. Üstten bir paket seç.</string>
+    <string name="keyboard_not_supported">Bu yazı kutusu sticker kabul etmiyor.</string>
+    <string name="keyboard_card_title">Sticker klavyesi</string>
+    <string name="keyboard_card_text">Paket eklemeden sticker göndermenin yolu: sohbette klavyeyi “DVScreator Sticker” yapıp stickera dokun, sticker olarak gider. Bu klavye yazı yazmaz ve yazdıklarını okumaz; Android her klavye için genel bir uyarı gösterir.</string>
+    <string name="keyboard_enable">1. Ayarlardan aç</string>
+    <string name="keyboard_pick">2. Klavyeyi seç</string>
+    <string name="keyboard_ready">✅ Klavye açık. Sohbette klavye simgesinden “DVScreator Sticker”ı seç; yazı klavyesine dönmek için en alttaki klavye simgesine bas.</string>
+    <string name="save_to_gallery">Galeriye kaydet (Samsung Klavye için)</string>
+    <string name="saved_to_gallery">Galeride Resimler/DVScreator\'a kaydedildi. Samsung Klavye\'de: sticker sekmesi → + (Sticker oluştur) → bu resmi seç.</string>
+    <string name="save_failed">Galeriye kaydedilemedi.</string>
+
+    <string name="home_title">Stickerlarım</string>
+    <string name="home_quick_subtitle">Hemen yap, klavyeyle gönder</string>
+    <string name="home_new_pack_subtitle">WhatsApp\'a eklenecek paket</string>
+    <string name="settings_title">Ayarlar</string>
 </resources>
