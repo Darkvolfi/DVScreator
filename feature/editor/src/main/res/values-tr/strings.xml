@@ -32,6 +32,7 @@
     <string name="editor_clear_strokes">Hepsini temizle</string>
     <string name="editor_remove_bg_hint">Telefonundaki yapay zekâ modeliyle yapılır; hiçbir şey yüklenmez.</string>
     <string name="editor_remove_bg_hint_video">Her kare ayrı işlenir: yaklaşık %1$d sn ek süre.</string>
+    <string name="editor_anim_preparing">Hareketli önizleme hazırlanıyor: %1$d / %2$d kare</string>
     <string name="editor_add_rest">Kalan %1$d dosyayı olduğu gibi ekle</string>
 
     <string name="trim_selection">%1$s sn – %2$s sn (%3$s sn)</string>

@@ -212,6 +212,44 @@ class AnimationLoader(private val context: Context) {
         return GifInfo(total, if (total > 0) n * 1000.0 / total else 10.0, thumbs)
     }
 
+    /**
+     * Düzenleme ekranındaki hareketli önizleme için GIF kareleri ve süreleri: [startMs]..[endMs] aralığı,
+     * uzun kenarı en fazla [maxLongSide] px, en fazla [maxFrames] kare (fazlası atlanır, süresi öncekine eklenir).
+     */
+    fun readGifPreview(uri: Uri, startMs: Int, endMs: Int, maxLongSide: Int, maxFrames: Int): List<Pair<Bitmap, Int>> {
+        val data = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: error("GIF okunamadı")
+        val decoder = StandardGifDecoder(SimpleBitmapProvider)
+        decoder.read(data)
+        check(decoder.status == GifDecoder.STATUS_OK) { "GIF çözülemedi (durum ${decoder.status})" }
+        val n = decoder.frameCount
+        val delays = IntArray(n) { decoder.getDelay(it).let { d -> if (d < 20) 100 else d } }   // loadGif ile aynı kural
+        var visibleCount = 0
+        run { var t = 0; for (d in delays) { if (min(t + d, endMs) > maxOf(t, startMs)) visibleCount++; t += d } }
+        val step = maxOf(1, (visibleCount + maxFrames - 1) / maxFrames)
+        val k = minOf(1f, maxLongSide.toFloat() / maxOf(decoder.width, decoder.height))
+        val out = ArrayList<Pair<Bitmap, Int>>()
+        var t = 0
+        var visibleIndex = 0
+        for (i in 0 until n) {
+            val start = t
+            t += delays[i]
+            if (start >= endMs) break
+            // GIF kareleri bir öncekinin üzerine çizilir: atlanan kareler de çözülmeli
+            decoder.advance()
+            val frame = decoder.nextFrame ?: break
+            val visible = min(t, endMs) - maxOf(start, startMs)
+            if (visible <= 0) continue
+            if (visibleIndex++ % step == 0) {
+                val w = maxOf(1, (frame.width * k).roundToInt()); val h = maxOf(1, (frame.height * k).roundToInt())
+                out += Bitmap.createScaledBitmap(frame, w, h, true).let { if (it === frame) it.copy(Bitmap.Config.ARGB_8888, false) else it } to visible
+            } else if (out.isNotEmpty()) {
+                out[out.lastIndex] = out.last().let { it.first to it.second + visible }
+            }
+        }
+        decoder.clear()
+        return out
+    }
+
     private fun toStickerFrame(
         bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width, displayHeight: Int = bitmap.height, matte: Matte? = null,
     ): ArgbImage {

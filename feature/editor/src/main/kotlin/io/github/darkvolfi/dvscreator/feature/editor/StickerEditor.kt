@@ -55,6 +55,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -161,7 +163,8 @@ fun StickerEditor(
         delay(300)   // aralık sürüklenirken her adımda kare okuma
         value = withContext(Dispatchers.IO) { runCatching { readVideoFrame(context, uri, frameMs) }.getOrNull() } ?: value
     }
-    val frame: StillFrame? = (m as? SourceMeta.Still)?.let { StillFrame(it.previewImage, it.preview) } ?: videoFrame
+    // remember: her çizimde yeni nesne olursa aşağıdaki işler (arka plan kaldırma) durmadan yeniden başlar
+    val frame: StillFrame? = remember(m, videoFrame) { (m as? SourceMeta.Still)?.let { StillFrame(it.previewImage, it.preview) } ?: videoFrame }
     // Arka plan kaldırmanın sonucu hemen gösterilir (önizleme çözünürlüğünde ~1 sn)
     val mattedFrame by produceState<StillFrame?>(null, removeBackground, frame) {
         value = null
@@ -172,6 +175,62 @@ fun StickerEditor(
         }
     }
     val mattedPreview = mattedFrame?.bitmap
+
+    // Hareketli önizleme: GIF her zaman, video yalnızca arka plan kaldırılınca (aksi hâlde video oynatıcı oynar).
+    // Arka plan kaldırılınca kareler tek tek işlenir; hazır olanlar döngüde oynar.
+    val animStart = ((currentRange?.start ?: 0f) / 100f).roundToInt() * 100
+    val animEnd = ((currentRange?.endInclusive ?: 0f) / 100f).roundToInt() * 100
+    val wantAnim = timeline != null && (video == null || removeBackground)
+    val rawAnim by produceState<List<AnimFrame>?>(null, uri, wantAnim, removeBackground, animStart, animEnd) {
+        if (!wantAnim) { value = null; return@produceState }
+        delay(300)   // aralık sürüklenirken her adımda okuma
+        val maxFrames = if (removeBackground) MATTED_PREVIEW_FRAMES else ANIM_PREVIEW_FRAMES
+        value = withContext(Dispatchers.IO) {
+            runCatching {
+                val raw = if (video != null) readVideoPreview(context, uri, animStart, animEnd, maxFrames)
+                else AnimationLoader(context).readGifPreview(uri, animStart, animEnd, ANIM_PREVIEW_SIDE, maxFrames)
+                raw.map { (bmp, ms) -> bmp.asImageBitmap().let { AnimFrame(it, it, ms) } }
+            }.getOrNull()
+        }
+    }
+    var mattedAnim by remember(uri) { mutableStateOf<List<AnimFrame>>(emptyList()) }
+    LaunchedEffect(rawAnim, removeBackground, mattedFrame != null) {
+        mattedAnim = emptyList()
+        val raw = rawAnim
+        // İlk kare bitmeden başlama: aynı anda iki model işlemciyi paylaşmasın
+        if (!removeBackground || raw == null || mattedFrame == null) return@LaunchedEffect
+        val remover = withContext(Dispatchers.Default) { runCatching { BackgroundRemover.open(context) }.getOrNull() } ?: return@LaunchedEffect
+        try {
+            val matte = remover.matte()
+            for (f in raw) {
+                val done = withContext(Dispatchers.Default) {
+                    runCatching {
+                        val image = f.original.asAndroidBitmap().copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
+                        AnimFrame(matte.apply(image, Matte.Region.FULL).toBitmap().asImageBitmap(), f.original, f.durationMs)
+                    }.getOrNull()
+                } ?: break
+                mattedAnim = mattedAnim + done
+            }
+        } finally {
+            remover.close()
+        }
+    }
+    // Silgi araçlarında görüntü durur (hareketli kareye çizilmez); izler yine her kareye uygulanır
+    val playing: List<AnimFrame>? = when {
+        tool != EditorTool.CROP -> null
+        removeBackground -> mattedAnim.takeIf { it.size >= 2 }
+        else -> rawAnim?.takeIf { it.size >= 2 }
+    }
+    var animIndex by remember(uri) { mutableStateOf(0) }
+    LaunchedEffect(playing) {
+        val p = playing ?: return@LaunchedEffect
+        while (true) {
+            val i = animIndex % p.size
+            delay(p[i].durationMs.toLong().coerceAtLeast(20))
+            animIndex = (i + 1) % p.size
+        }
+    }
+    val animFrame = playing?.let { it[animIndex % it.size] }
     // Yazı aracındaki "son hâl": sticker üretimiyle aynı kod (kırpma, maske, silgi, kenar boşluğu, döndürme, dış çizgi)
     val previewRecipe = EditRecipe(
         crop = if (squareMode) crop.toCropRect() else null, rotationDegrees = rotation, marginPx = margin,
@@ -223,8 +282,8 @@ fun StickerEditor(
             Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f).graphicsLayer { rotationZ = rotation.toFloat() }) {
                 when {
                     m is SourceMeta.Still || needFrame -> {
-                        val shown = if (removeBackground) mattedPreview else frame?.bitmap
-                        val original = frame?.bitmap
+                        val shown = animFrame?.bitmap ?: if (removeBackground) mattedPreview else frame?.bitmap
+                        val original = animFrame?.original ?: frame?.bitmap
                         if (shown != null && original != null) {
                             val transparent = removeBackground || strokes.isNotEmpty()
                             MaskCanvas(
@@ -255,6 +314,15 @@ fun StickerEditor(
                     CropOverlay(crop, m.width, m.height, onChange = { crop = it }, modifier = Modifier.fillMaxSize())
                 }
             }
+            }
+        }
+
+        rawAnim?.let { raw ->
+            if (removeBackground && tool == EditorTool.CROP && mattedAnim.size < raw.size) {
+                Text(
+                    stringResource(R.string.editor_anim_preparing, mattedAnim.size, raw.size),
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 
@@ -461,14 +529,22 @@ private const val MAX_BRUSH = 0.15f
 /** Telefonda ölçülen: kare başına model ~0.7 sn + ön/son işlem (agents/raporlar). */
 private const val SECONDS_PER_MATTE_FRAME = 0.8
 
+/** Hareketli önizleme: uzun kenar (px) ve kare sınırı (bellek); arka plan kaldırılınca her kare ~0.7 sn. */
+private const val ANIM_PREVIEW_SIDE = 360
+private const val ANIM_PREVIEW_FRAMES = 60
+private const val MATTED_PREVIEW_FRAMES = 16
+
 /** Şeffaf alanları göstermek için dama deseni. */
 private fun Modifier.checkerboard(): Modifier = drawBehind {
     val cell = 12.dp.toPx()
     val cols = (size.width / cell).toInt() + 1
     val rows = (size.height / cell).toInt() + 1
     drawRect(Color(0xFFFFFFFF))
-    for (y in 0 until rows) for (x in 0 until cols) {
-        if ((x + y) % 2 == 0) drawRect(Color(0xFFDDDDDD), Offset(x * cell, y * cell), Size(cell, cell))
+    // Son satır / sütundaki kareler alanın dışına taşmasın
+    clipRect {
+        for (y in 0 until rows) for (x in 0 until cols) {
+            if ((x + y) % 2 == 0) drawRect(Color(0xFFDDDDDD), Offset(x * cell, y * cell), Size(cell, cell))
+        }
     }
 }
 
@@ -516,6 +592,29 @@ private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {
 
 /** Silgi / arka plan önizlemesi için hareketsiz kare: işlenecek pikseller ve gösterilecek bitmap. */
 private class StillFrame(val image: ArgbImage, val bitmap: ImageBitmap)
+
+/** Hareketli önizleme karesi: gösterilen ([bitmap], arka planı kaldırılmış olabilir), [original] ve süresi. */
+private class AnimFrame(val bitmap: ImageBitmap, val original: ImageBitmap, val durationMs: Int)
+
+/** Videonun [startMs]..[endMs] aralığından eşit aralıklı [count] kare (en fazla [ANIM_PREVIEW_SIDE] px) ve süreleri. */
+private fun readVideoPreview(context: Context, uri: Uri, startMs: Int, endMs: Int, count: Int): List<Pair<Bitmap, Int>> {
+    val retriever = MediaMetadataRetriever()
+    try {
+        retriever.setDataSource(context, uri)
+        val n = count.coerceAtMost(maxOf(2, (endMs - startMs) / 100))
+        val step = (endMs - startMs).toDouble() / n
+        return (0 until n).mapNotNull { k ->
+            val raw = retriever.getFrameAtTime(((startMs + k * step) * 1000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST) ?: return@mapNotNull null
+            val s = minOf(1f, ANIM_PREVIEW_SIDE.toFloat() / maxOf(raw.width, raw.height))
+            val scaled = Bitmap.createScaledBitmap(raw, maxOf(1, (raw.width * s).roundToInt()), maxOf(1, (raw.height * s).roundToInt()), true)
+            if (scaled !== raw) raw.recycle()
+            val argb = if (scaled.config == Bitmap.Config.ARGB_8888) scaled else scaled.copy(Bitmap.Config.ARGB_8888, false).also { scaled.recycle() }
+            argb to step.roundToInt()
+        }
+    } finally {
+        retriever.release()
+    }
+}
 
 /** Videonun [ms] anındaki karesi (döndürme uygulanmış), en fazla [PREVIEW_LONG_SIDE] px. */
 private fun readVideoFrame(context: Context, uri: Uri, ms: Int): StillFrame? {
