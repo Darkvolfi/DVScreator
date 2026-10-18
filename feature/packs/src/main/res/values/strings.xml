@@ -109,4 +109,5 @@
     <string name="home_quick_subtitle">Make it, send it with the keyboard</string>
     <string name="home_new_pack_subtitle">A pack to add to WhatsApp</string>
     <string name="settings_title">Settings</string>
+    <string name="operation_failed">Couldn\'t complete: %1$s</string>
 </resources>

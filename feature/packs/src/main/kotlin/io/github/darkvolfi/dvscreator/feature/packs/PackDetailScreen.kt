@@ -89,7 +89,9 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
     var pendingPackage by remember { mutableStateOf<String?>(null) }
     var pendingWasAdded by remember { mutableStateOf(false) }
     val whatsApps = remember { WhatsAppIntents.installedWhatsApps(context) }
-    val room = WhatsAppLimits.PACK_MAX_STICKERS - pack.stickers.size
+    val inFlight by vm.inFlight.collectAsState()
+    // Düzenleme sırasında bekleyenler ve işlenmekte olanlar da yer tutar
+    val room = (WhatsAppLimits.PACK_MAX_STICKERS - pack.stickers.size - queue.size - (inFlight[pack.identifier] ?: 0)).coerceAtLeast(0)
 
     val picker = rememberLauncherForActivityResult(PickMultipleVisualMedia(maxItems = WhatsAppLimits.PACK_MAX_STICKERS)) { uris ->
         val sources = uris.take(room).map { StickerSource(it, context.contentResolver.getType(it) ?: "image/*") }

@@ -155,37 +155,52 @@ class AnimationLoader(private val context: Context) {
         decoder.read(data)
         check(decoder.status == GifDecoder.STATUS_OK) { "GIF çözülemedi (durum ${decoder.status})" }
 
-        val startMs = trim?.startMs ?: 0
-        val endMs = trim?.endMs ?: Int.MAX_VALUE
+        val n = decoder.frameCount
+        // Tarayıcılarla aynı kural: 20 ms altı gecikme 100 ms sayılır
+        val delays = IntArray(n) { decoder.getDelay(it).let { d -> if (d < 20) 100 else d } }
+        val sourceTotal = delays.sum()
+        val startMs = (trim?.startMs ?: 0).coerceIn(0, maxOf(0, sourceTotal - 1))
+        val selectedEnd = min(trim?.endMs ?: sourceTotal, sourceTotal)
+        val endMs = min(selectedEnd, startMs + maxDurationMs)
+        // Seçimde MAX_FRAMES'ten çok kare varsa kare atlanır (süresi öncekine eklenir): klip kısalmaz, yalnızca akıcılık azalır
+        var visibleCount = 0
+        run { var t = 0; for (d in delays) { if (min(t + d, endMs) > maxOf(t, startMs)) visibleCount++; t += d } }
+        val step = maxOf(1, (visibleCount + MAX_FRAMES - 1) / MAX_FRAMES)
+
         val frames = ArrayList<ArgbImage>()
         val durations = ArrayList<Int>()
-        var total = 0
-        var sourceTotal = 0
-        for (i in 0 until decoder.frameCount) {
-            // Tarayıcılarla aynı kural: 20 ms altı gecikme 100 ms sayılır
-            val delay = decoder.getDelay(i).let { if (it < 20) 100 else it }
-            val frameStart = sourceTotal
-            sourceTotal += delay
-            if (total >= maxDurationMs || frames.size >= MAX_FRAMES || frameStart >= endMs) continue   // kaynak süresi yine de sayılır
+        var t = 0
+        var visibleIndex = 0
+        for (i in 0 until n) {
+            val frameStart = t
+            t += delays[i]
+            if (frameStart >= endMs) break
             currentCoroutineContext().ensureActive()
-            // GIF kareleri bir öncekinin üzerine çizilir: seçim öncesindeki kareler de çözülmeli
+            // GIF kareleri bir öncekinin üzerine çizilir: seçim öncesindeki ve atlanan kareler de çözülmeli
             decoder.advance()
             val bitmap = decoder.nextFrame ?: break
-            val visible = min(sourceTotal, endMs) - maxOf(frameStart, startMs)   // seçimle kesişen süre
+            val visible = min(t, endMs) - maxOf(frameStart, startMs)   // seçimle kesişen süre
             if (visible <= 0) continue
-            frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width, displayHeight = decoder.height, matte = matte)   // çözücü bitmap'i yeniden kullanabilir
-            onFrame(i + 1, decoder.frameCount)
-            val d = min(visible, maxDurationMs - total).coerceAtLeast(MIN_FRAME_MS)
-            durations += d
-            total += d
+            if (visibleIndex++ % step == 0 || frames.isEmpty()) {
+                frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width, displayHeight = decoder.height, matte = matte)   // çözücü bitmap'i yeniden kullanabilir
+                durations += visible
+            } else {
+                durations[durations.lastIndex] += visible
+            }
+            onFrame(i + 1, n)
         }
         decoder.clear()
         check(frames.isNotEmpty()) { "GIF'te kare yok" }
         if (frames.size == 1) {   // tek kareli GIF: hareketli sayılması için 2 kare gerekir
             frames += frames[0]; durations += durations[0]
         }
-        val fps = frames.size * 1000.0 / durations.sum()
-        return LoadedAnimation(AnimationClip(frames, durations.toIntArray()), sourceTotal, fps, trimmed = total < sourceTotal)
+        // WhatsApp: her kare ≥ 8 ms ve toplam ≤ 10 sn. Sınırdaki kısa kareler uzatılırsa fazlası en uzun kareden düşülür.
+        for (k in durations.indices) durations[k] = durations[k].coerceAtLeast(MIN_FRAME_MS)
+        val excess = durations.sum() - maxDurationMs
+        if (excess > 0) durations.indices.maxBy { durations[it] }.let { durations[it] -= excess }
+        val fps = if (sourceTotal > 0) n * 1000.0 / sourceTotal else 0.0
+        // "trimmed" = kullanıcının seçimi (ya da tüm GIF) sınır yüzünden otomatik kısaltıldı — videoyla aynı anlam
+        return LoadedAnimation(AnimationClip(frames, durations.toIntArray()), sourceTotal, fps, trimmed = selectedEnd - startMs > maxDurationMs)
     }
 
     /** GIF'in süresi, kare hızı ve kırpma ekranı için küçük resimler (en fazla [thumbnails] tane, [thumbSize] px). */

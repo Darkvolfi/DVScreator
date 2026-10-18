@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 ve öncesi yedekleme kuralları (bulut yedeği): data_extraction_rules.xml ile aynı gerekçe.
+     Yalnızca paketler; kaynak videolar 25 MB sınırını aşıp yedeğin tamamını engellemesin. -->
+<full-backup-content>
+    <include domain="file" path="wa_packs/" />
+</full-backup-content>

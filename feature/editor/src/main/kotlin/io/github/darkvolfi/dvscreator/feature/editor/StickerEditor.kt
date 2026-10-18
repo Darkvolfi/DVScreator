@@ -566,9 +566,10 @@ private fun readStillMeta(context: Context, uri: Uri, mimeType: String): SourceM
     return SourceMeta.Still(w, h, loaded.image.toBitmap().asImageBitmap(), loaded.image, timeline)
 }
 
-/** Seçilen aralıkta çıkarılacak kare hızı: video planlanan hıza indirilir, GIF kendi kareleriyle kalır. */
+/** Seçilen aralıkta çıkarılacak kare hızı: video planlanan hıza indirilir, GIF kendi kareleriyle kalır (en fazla MAX_FRAMES kare). */
 private fun plannedFps(selMs: Int, timeline: Timeline, isVideo: Boolean): Double =
-    if (isVideo) AnimationLoader.plannedFps(selMs, timeline.fps) else timeline.fps
+    if (isVideo) AnimationLoader.plannedFps(selMs, timeline.fps)
+    else minOf(timeline.fps, AnimationLoader.MAX_FRAMES * 1000.0 / selMs.coerceAtLeast(1))
 
 private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {
     val retriever = MediaMetadataRetriever()

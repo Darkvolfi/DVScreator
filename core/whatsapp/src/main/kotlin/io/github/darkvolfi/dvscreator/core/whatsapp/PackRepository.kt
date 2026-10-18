@@ -62,29 +62,38 @@ class PackRepository(context: Context) {
         val id = UUID.randomUUID().toString().replace("-", "").take(12)
         val ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: "bin"
         val sourceFile = File(sourcesDir, "$id.$ext")
-        withContext(Dispatchers.IO) {
-            appContext.contentResolver.openInputStream(source)?.use { input -> sourceFile.outputStream().use { input.copyTo(it) } }
-                ?: error("Dosya açılamadı")
-        }
-        val created = try {
-            produce(sourceFile, mimeType, recipe, onProgress)
+        // Paket dolu ya da silinmişse uzun üretime hiç başlama
+        withContext(Dispatchers.IO) { checkRoom(packId) }
+        try {
+            withContext(Dispatchers.IO) {
+                appContext.contentResolver.openInputStream(source)?.use { input -> sourceFile.outputStream().use { input.copyTo(it) } }
+                    ?: error("Dosya açılamadı")
+            }
+            val created = produce(sourceFile, mimeType, recipe, onProgress)
+            edit {
+                val pack = checkRoom(packId)
+                val fileName = "s_$id.webp"
+                store.writeFile(packId, fileName, created.webp)
+                val updated = pack.copy(
+                    stickers = pack.stickers + StickerEntry(fileName, listOf(DEFAULT_EMOJI), sourceFile = sourceFile.name, recipe = recipe),
+                    imageDataVersion = pack.imageDataVersion + 1,
+                )
+                if (pack.stickers.isEmpty()) store.writeFile(packId, TRAY_FILE, StickerFactory.trayIcon(created.webp))
+                store.saveManifest(updated)
+            }
+            return created
         } catch (e: Throwable) {
+            // Pakete girmeyen kaynağın kopyası kalmasın (üretim, "paket dolu" ya da yazma hatası)
             sourceFile.delete()
             throw e
         }
-        edit {
-            val pack = requireNotNull(store.pack(packId)) { "paket bulunamadı" }
-            check(pack.stickers.size < WhatsAppLimits.PACK_MAX_STICKERS) { "Paket dolu (en fazla ${WhatsAppLimits.PACK_MAX_STICKERS} sticker)" }
-            val fileName = "s_$id.webp"
-            store.writeFile(packId, fileName, created.webp)
-            val updated = pack.copy(
-                stickers = pack.stickers + StickerEntry(fileName, listOf(DEFAULT_EMOJI), sourceFile = sourceFile.name, recipe = recipe),
-                imageDataVersion = pack.imageDataVersion + 1,
-            )
-            if (pack.stickers.isEmpty()) store.writeFile(packId, TRAY_FILE, StickerFactory.trayIcon(created.webp))
-            store.saveManifest(updated)
-        }
-        return created
+    }
+
+    /** @return paket; yoksa ya da doluysa [IllegalStateException] (mesajı kullanıcıya gösterilir). */
+    private fun checkRoom(packId: String): PackManifest {
+        val pack = checkNotNull(store.pack(packId)) { "Paket bulunamadı" }
+        check(pack.stickers.size < WhatsAppLimits.PACK_MAX_STICKERS) { "Paket dolu (en fazla ${WhatsAppLimits.PACK_MAX_STICKERS} sticker)" }
+        return pack
     }
 
     /**

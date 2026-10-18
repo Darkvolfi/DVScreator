@@ -2,7 +2,10 @@ package io.github.darkvolfi.dvscreator.feature.packs
 
 import android.app.Application
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.darkvolfi.dvscreator.core.imaging.AnimationTooLargeException
@@ -19,7 +22,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
@@ -75,6 +81,20 @@ sealed interface AddState {
  */
 class PacksViewModel(application: Application) : AndroidViewModel(application) {
     val repository = PackRepository(application)
+
+    /**
+     * Beklenmeyen hatalar (disk dolu, bozuk paket dosyası…) uygulamayı çökertmesin: kaydedilir ve
+     * kısa bir mesajla gösterilir. Sonucunu ekranda gösteren işlemler hatalarını ayrıca kendileri yakalar.
+     */
+    private val errorHandler = CoroutineExceptionHandler { _, e ->
+        Log.e(TAG, "işlem başarısız", e)
+        val app = getApplication<Application>()
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(app, app.getString(R.string.operation_failed, errorText(e)), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun launchSafely(block: suspend CoroutineScope.() -> Unit): Job = viewModelScope.launch(errorHandler, block = block)
     val packs: StateFlow<List<PackManifest>> = repository.packs
 
     private val _addState = MutableStateFlow<Map<String, AddState>>(emptyMap())
@@ -108,15 +128,29 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
     private fun popEdit(packId: String) = _pendingEdits.update { map -> map + (packId to map[packId].orEmpty().drop(1)) }
 
     fun createPack(name: String, onCreated: (String) -> Unit) {
-        viewModelScope.launch { onCreated(repository.createPack(name).identifier) }
+        launchSafely { onCreated(repository.createPack(name).identifier) }
     }
 
     /** Aynı anda tek kaynak işlenir: iki video birlikte belleğe (~150 MB/klip) sığmayabilir. */
     private val processing = Mutex()
 
+    /**
+     * Pakete eklenmek üzere işlenen ya da işlenmeyi bekleyen kaynak sayısı (paket kimliği → sayı).
+     * Boş yer hesabında sayılır: aksi hâlde aynı anda yapılan içe aktarma paketi doldurur ve uzun
+     * video işlemesi sonunda "paket dolu" ile boşa gider.
+     */
+    private val _inFlight = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val inFlight: StateFlow<Map<String, Int>> = _inFlight.asStateFlow()
+
+    private fun addInFlight(packId: String, delta: Int) = _inFlight.update { map ->
+        val n = (map[packId] ?: 0) + delta
+        if (n > 0) map + (packId to n) else map - packId
+    }
+
     private fun addStickers(packId: String, sources: List<StickerSource>) {
         if (sources.isEmpty()) return
-        viewModelScope.launch {
+        addInFlight(packId, sources.size)
+        launchSafely {
             processing.withLock {
                 var remaining = sources.size
                 for (source in sources) {
@@ -136,6 +170,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
                         },
                     )
                     remaining--
+                    addInFlight(packId, -1)
                     _addState.update { map ->
                         val results = map[packId]?.results.orEmpty() + item
                         map + (packId to if (remaining > 0) AddState.Working(remaining, results) else AddState.Finished(results))
@@ -156,7 +191,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
     fun onQuickEdited(recipe: EditRecipe) {
         val source = (_quick.value as? QuickState.Editing)?.source ?: return
         _quick.value = QuickState.Working(null)
-        viewModelScope.launch {
+        launchSafely {
             processing.withLock {
                 _quick.value = runCatching {
                     repository.createLoose(source.uri, source.mimeType, recipe) { p -> _quick.update { if (it is QuickState.Working) QuickState.Working(p) else it } }
@@ -172,7 +207,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
     fun addQuickToPack(baseName: String, onAdded: (PackManifest) -> Unit) {
         val done = _quick.value as? QuickState.Done ?: return
         if (done.packId != null) return
-        viewModelScope.launch {
+        launchSafely {
             val pack = repository.addToQuickPack(done.sticker.webp, done.recipe, baseName)
             _quick.update { if (it === done) done.copy(packId = pack.identifier) else it }
             onAdded(pack)
@@ -186,7 +221,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
     val importResult: StateFlow<Map<String, ImportStatus>> = _importResult.asStateFlow()
 
     fun importReceived(packId: String, stickers: List<ReceivedSticker>) {
-        viewModelScope.launch {
+        launchSafely {
             _importResult.update { it + (packId to ImportStatus(0, stickers.size)) }
             val outcome = importInto(packId, stickers) { done, total, re ->
                 _importResult.update { it + (packId to ImportStatus(done, total, re)) }
@@ -197,9 +232,11 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
 
     private suspend fun importInto(packId: String, stickers: List<ReceivedSticker>, onProgress: (Int, Int, Int) -> Unit): ImportOutcome {
         val folder = ReceivedStickers(getApplication())
-        val items = withContext(Dispatchers.IO) { stickers.mapNotNull { s -> folder.read(s)?.let { s.name to it } } }
-        return runCatching { repository.importReceived(packId, items, onProgress) }
-            .getOrElse { e -> ImportOutcome(0, 0, listOf(e.message ?: e.toString())) }
+        // Okuma hatası da (izin geri alındı, dosya silindi) sonuç olarak gösterilir; durum "sürüyor"da kalmasın
+        return runCatching {
+            val items = withContext(Dispatchers.IO) { stickers.mapNotNull { s -> folder.read(s)?.let { s.name to it } } }
+            repository.importReceived(packId, items, onProgress)
+        }.getOrElse { e -> Log.e(TAG, "içe aktarılamadı", e); ImportOutcome(0, 0, listOf(e.message ?: e.toString())) }
     }
 
     fun dismissImportResult(packId: String) = _importResult.update { it - packId }
@@ -210,7 +247,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
      * Sonuç, ekranın açıldığı [resultPackId] paketinde gösterilir.
      */
     fun importAsNewPacks(resultPackId: String, name: String, stickers: List<ReceivedSticker>) {
-        viewModelScope.launch {
+        launchSafely {
             val chunks = splitForPacks(stickers)
             val names = chunks.indices.map { i -> if (chunks.size > 1) "$name ${i + 1}" else name }
             var added = 0
@@ -219,7 +256,15 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
             var offset = 0
             _importResult.update { it + (resultPackId to ImportStatus(0, stickers.size, newPacks = names)) }
             for ((i, chunk) in chunks.withIndex()) {
-                val pack = repository.createPack(names[i])
+                val created = runCatching { repository.createPack(names[i]) }
+                val pack = created.getOrNull()
+                if (pack == null) {
+                    val e = created.exceptionOrNull()
+                    Log.e(TAG, "paket oluşturulamadı", e)
+                    rejected += "${names[i]}: ${e?.message ?: e}"
+                    offset += chunk.size
+                    continue
+                }
                 val before = offset
                 val r = importInto(pack.identifier, chunk) { done, _, re ->
                     _importResult.update { it + (resultPackId to ImportStatus(before + done, stickers.size, reencoded + re, newPacks = names)) }
@@ -258,10 +303,10 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun removeSticker(packId: String, imageFile: String) = viewModelScope.launch { repository.removeSticker(packId, imageFile) }
+    fun removeSticker(packId: String, imageFile: String) = launchSafely { repository.removeSticker(packId, imageFile) }
     fun setEmojis(packId: String, imageFile: String, emojis: List<String>) =
-        viewModelScope.launch { repository.setEmojis(packId, imageFile, emojis) }
-    fun rename(packId: String, name: String) = viewModelScope.launch { repository.rename(packId, name) }
-    fun deletePack(packId: String) = viewModelScope.launch { repository.deletePack(packId) }
+        launchSafely { repository.setEmojis(packId, imageFile, emojis) }
+    fun rename(packId: String, name: String) = launchSafely { repository.rename(packId, name) }
+    fun deletePack(packId: String) = launchSafely { repository.deletePack(packId) }
 
 }
