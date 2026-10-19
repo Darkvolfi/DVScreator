@@ -21,4 +21,7 @@
     <string name="settings_language">Lingua</string>
     <string name="settings_language_system_detail">Lingua del telefono (%1$s)</string>
     <string name="component_isnet">Modello di sfondo IS-Net (DIS)</string>
+    <string name="settings_support">Assistenza</string>
+    <string name="settings_support_text">Domande, errori o idee? Scrivici.</string>
+    <string name="settings_support_send">Invia email</string>
 </resources>

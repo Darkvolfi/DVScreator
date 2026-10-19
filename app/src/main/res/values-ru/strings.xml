@@ -21,4 +21,7 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_system_detail">Язык телефона (%1$s)</string>
     <string name="component_isnet">Модель фона IS-Net (DIS)</string>
+    <string name="settings_support">Поддержка</string>
+    <string name="settings_support_text">Вопросы, ошибки или идеи? Напишите нам.</string>
+    <string name="settings_support_send">Написать письмо</string>
 </resources>

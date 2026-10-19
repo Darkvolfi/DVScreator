@@ -21,4 +21,7 @@
     <string name="settings_language">भाषा</string>
     <string name="settings_language_system_detail">फ़ोन की भाषा (%1$s)</string>
     <string name="component_isnet">IS-Net (DIS) बैकग्राउंड मॉडल</string>
+    <string name="settings_support">सहायता</string>
+    <string name="settings_support_text">कोई सवाल, गड़बड़ी या सुझाव? हमें लिखें।</string>
+    <string name="settings_support_send">ईमेल भेजें</string>
 </resources>

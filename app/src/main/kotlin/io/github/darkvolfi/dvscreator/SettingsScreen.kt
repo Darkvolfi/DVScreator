@@ -6,8 +6,9 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.res.Resources
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.TextButton
@@ -64,6 +65,7 @@ private val COMPONENTS = listOf(
 )
 
 private const val SOURCE_URL = "https://github.com/Darkvolfi/DVScreator"
+private const val SUPPORT_EMAIL = "support@darkvolfi.com"
 
 /** Bileşen listesinde adı çevrilen tek satır (bkz. R.string.component_isnet). */
 private const val ISNET_MODEL = "isnet"
@@ -98,6 +100,18 @@ fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 4.dp)) {
                     FilledTonalButton(onClick = onOpenLicense) { Text(stringResource(R.string.settings_license_read)) }
                     OutlinedButton(onClick = { openUrl(context, SOURCE_URL) }) { Text(stringResource(R.string.settings_source)) }
+                }
+            }
+        }
+
+        item { SectionTitle(stringResource(R.string.settings_support)) }
+        item {
+            InfoCard {
+                Text(stringResource(R.string.settings_support_text), style = MaterialTheme.typography.bodyMedium)
+                // Seçilebilir: e-posta uygulaması yoksa adres kopyalanabilsin
+                SelectionContainer { Text(SUPPORT_EMAIL, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary) }
+                FilledTonalButton(onClick = { sendEmail(context, SUPPORT_EMAIL, "DVScreator $version") }, modifier = Modifier.padding(top = 4.dp)) {
+                    Text(stringResource(R.string.settings_support_send))
                 }
             }
         }
@@ -242,9 +256,22 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
+/** E-posta uygulamasını adres ve konu dolu olarak açar (uygulamanın kendisi hiçbir şey göndermez). */
+private fun sendEmail(context: Context, address: String, subject: String) {
+    val intent = Intent(Intent.ACTION_SENDTO, "mailto:".toUri()).apply {
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+    }
+    try {
+        context.startActivity(intent)
+    } catch (_: ActivityNotFoundException) {
+        // E-posta uygulaması yok: adres ekranda yazılı, kullanıcı kopyalayabilir
+    }
+}
+
 private fun openUrl(context: Context, url: String) {
     try {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     } catch (_: ActivityNotFoundException) {
         // Tarayıcı yoksa yapılacak bir şey yok
     }

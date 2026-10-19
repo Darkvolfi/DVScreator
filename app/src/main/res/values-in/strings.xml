@@ -21,4 +21,7 @@
     <string name="settings_language">Bahasa</string>
     <string name="settings_language_system_detail">Bahasa ponsel (%1$s)</string>
     <string name="component_isnet">Model latar belakang IS-Net (DIS)</string>
+    <string name="settings_support">Dukungan</string>
+    <string name="settings_support_text">Ada pertanyaan, bug, atau ide? Kirimi kami email.</string>
+    <string name="settings_support_send">Kirim email</string>
 </resources>

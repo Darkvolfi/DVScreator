@@ -21,4 +21,7 @@
     <string name="settings_language">Dil</string>
     <string name="settings_language_system_detail">Telefonun dili (%1$s)</string>
     <string name="component_isnet">IS-Net (DIS) arka plan modeli</string>
+    <string name="settings_support">Destek</string>
+    <string name="settings_support_text">Soru, hata bildirimi ya da fikir mi var? Bize yazın.</string>
+    <string name="settings_support_send">E-posta gönder</string>
 </resources>

@@ -21,4 +21,7 @@
     <string name="settings_language">Sprache</string>
     <string name="settings_language_system_detail">Sprache des Handys (%1$s)</string>
     <string name="component_isnet">Hintergrundmodell IS-Net (DIS)</string>
+    <string name="settings_support">Support</string>
+    <string name="settings_support_text">Fragen, Fehler oder Ideen? Schreib uns.</string>
+    <string name="settings_support_send">E-Mail senden</string>
 </resources>

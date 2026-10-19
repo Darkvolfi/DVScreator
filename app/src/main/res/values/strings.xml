@@ -24,4 +24,7 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_system_detail">Phone language (%1$s)</string>
     <string name="component_isnet">IS-Net (DIS) background model</string>
+    <string name="settings_support">Support</string>
+    <string name="settings_support_text">Questions, bug reports or ideas? Write to us.</string>
+    <string name="settings_support_send">Send email</string>
 </resources>
