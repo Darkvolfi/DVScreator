@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">Редактирование стикера</string>
+    <string name="editor_mode_square">Квадратная обрезка</string>
+    <string name="editor_mode_fit">Изображение целиком</string>
+    <string name="editor_crop_hint">Перетащите рамку, чтобы сдвинуть её; меняйте размер двумя пальцами или ползунком.</string>
+    <string name="editor_fit_hint">Изображение сохраняется целиком; пустые края остаются прозрачными.</string>
+    <string name="editor_skip">Пропустить</string>
+    <string name="editor_confirm">Создать стикер</string>
+    <string name="editor_remove_bg">Удалить фон</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="editor_tool_text">Текст</string>
+    <string name="editor_rotate">↻ Повернуть</string>
+    <string name="editor_margin">Отступ</string>
+    <string name="editor_outline">Обводка</string>
+    <string name="editor_see_final">Откройте «Текст», чтобы увидеть готовый стикер.</string>
+    <string name="text_add">Добавить текст</string>
+    <string name="text_edit">Изменить</string>
+    <string name="text_delete">Удалить</string>
+    <string name="text_size">Размер</string>
+    <string name="text_hint">Это готовый стикер. Нажмите на текст, чтобы выбрать его, перетаскивайте для перемещения, меняйте размер двумя пальцами.</string>
+    <string name="text_dialog_title">Текст</string>
+    <string name="text_outline">Обводка</string>
+    <string name="editor_tool_crop">Обрезка</string>
+    <string name="editor_tool_erase">Ластик</string>
+    <string name="editor_tool_restore">Вернуть</string>
+    <string name="editor_brush">Кисть</string>
+    <string name="editor_erase_hint">Рисуйте одним пальцем, масштабируйте и двигайте двумя. Стёртые области становятся прозрачными; «Вернуть» восстанавливает оригинал.</string>
+    <string name="editor_undo">↶ Отменить</string>
+    <string name="editor_redo">↷ Повторить</string>
+    <string name="editor_clear_strokes">Очистить всё</string>
+    <string name="editor_remove_bg_hint">Выполняется моделью ИИ на вашем телефоне; ничего не загружается.</string>
+    <string name="editor_remove_bg_hint_video">Каждый кадр обрабатывается отдельно: примерно на %1$d с дольше.</string>
+    <string name="editor_anim_preparing">Подготовка анимированного просмотра: %1$d / %2$d кадров</string>
+    <string name="editor_add_rest">Добавить оставшиеся (%1$d) как есть</string>
+
+    <string name="trim_selection">%1$s с – %2$s с (%3$s с)</string>
+    <string name="trim_estimate">≈ %1$s кадр/с, кадров: %2$d</string>
+    <string name="trim_hint_short">Чем короче фрагмент, тем выше качество в пределах 500 КБ.</string>
+    <string name="trim_hint_long">Длинный фрагмент: чтобы уложиться в 500 КБ, может понадобиться снизить качество или частоту кадров. Короче — значит чётче.</string>
+</resources>

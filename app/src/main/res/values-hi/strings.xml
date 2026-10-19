@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">क्वालिटी लैब</string>
+    <string name="lab_subtitle">512×512 स्टिकर बनाने और माप देखने के लिए कोई फ़ोटो, वीडियो या GIF चुनें।</string>
+    <string name="lab_pick">फ़ोटो / वीडियो / GIF चुनें</string>
+    <string name="lab_working">प्रोसेस हो रहा है… वीडियो में 5–30 सेकंड लग सकते हैं।</string>
+    <string name="lab_error">गड़बड़ी: %1$s</string>
+
+    <string name="settings_keyboard">स्टिकर कीबोर्ड</string>
+    <string name="settings_privacy">निजता</string>
+    <string name="settings_privacy_text">इस ऐप के पास इंटरनेट की अनुमति नहीं है। आपकी फ़ोटो, वीडियो और स्टिकर कभी फ़ोन से बाहर नहीं जाते; बैकग्राउंड हटाना भी फ़ोन पर ही एक लोकल AI मॉडल से होता है।</string>
+    <string name="settings_about">जानकारी</string>
+    <string name="settings_version">वर्शन %1$s</string>
+    <string name="settings_license_title">GNU GPL v3.0 लाइसेंस</string>
+    <string name="settings_license_text">DVScreator मुफ़्त और ओपन सोर्स सॉफ़्टवेयर है। आप इसे इस्तेमाल कर सकते हैं, इसका सोर्स कोड पढ़ सकते हैं, बदल सकते हैं और शेयर कर सकते हैं। अगर आप बदले हुए वर्शन बाँटते हैं, तो उन्हें इसी लाइसेंस के तहत सोर्स कोड के साथ शेयर करना होगा। यह सॉफ़्टवेयर बिना किसी वारंटी के दिया जाता है।</string>
+    <string name="settings_license_read">लाइसेंस का टेक्स्ट</string>
+    <string name="settings_source">सोर्स कोड</string>
+    <string name="settings_components">ओपन सोर्स कॉम्पोनेंट</string>
+    <string name="settings_developer">डेवलपर</string>
+    <string name="settings_lab_text">स्टिकर की क्वालिटी और साइज़ मापने के लिए टेस्ट स्क्रीन।</string>
+    <string name="settings_language">भाषा</string>
+    <string name="settings_language_system_detail">फ़ोन की भाषा (%1$s)</string>
+    <string name="component_isnet">IS-Net (DIS) बैकग्राउंड मॉडल</string>
+</resources>

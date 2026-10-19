@@ -26,6 +26,8 @@ import java.util.UUID
  */
 class PackRepository(context: Context) {
     private val appContext = context.applicationContext
+    /** Kullanıcıya gösterilen mesajlar için; her seferinde okunur ki uygulama dili değişince güncel olsun. */
+    private val res get() = appContext.resources
     private val store = PackStore(appContext)
     private val sourcesDir = File(appContext.filesDir, "sources").apply { mkdirs() }
     private val mutex = Mutex()
@@ -67,7 +69,7 @@ class PackRepository(context: Context) {
         try {
             withContext(Dispatchers.IO) {
                 appContext.contentResolver.openInputStream(source)?.use { input -> sourceFile.outputStream().use { input.copyTo(it) } }
-                    ?: error("Dosya açılamadı")
+                    ?: error(res.getString(R.string.file_open_failed))
             }
             val created = produce(sourceFile, mimeType, recipe, onProgress)
             edit {
@@ -91,8 +93,8 @@ class PackRepository(context: Context) {
 
     /** @return paket; yoksa ya da doluysa [IllegalStateException] (mesajı kullanıcıya gösterilir). */
     private fun checkRoom(packId: String): PackManifest {
-        val pack = checkNotNull(store.pack(packId)) { "Paket bulunamadı" }
-        check(pack.stickers.size < WhatsAppLimits.PACK_MAX_STICKERS) { "Paket dolu (en fazla ${WhatsAppLimits.PACK_MAX_STICKERS} sticker)" }
+        val pack = checkNotNull(store.pack(packId)) { res.getString(R.string.pack_not_found) }
+        check(pack.stickers.size < WhatsAppLimits.PACK_MAX_STICKERS) { res.getString(R.string.pack_full, WhatsAppLimits.PACK_MAX_STICKERS) }
         return pack
     }
 
@@ -110,7 +112,7 @@ class PackRepository(context: Context) {
         val sourceFile = File(appContext.cacheDir, "loose_source.$ext")
         withContext(Dispatchers.IO) {
             appContext.contentResolver.openInputStream(source)?.use { input -> sourceFile.outputStream().use { input.copyTo(it) } }
-                ?: error("Dosya açılamadı")
+                ?: error(res.getString(R.string.file_open_failed))
         }
         return try {
             produce(sourceFile, mimeType, recipe, onProgress)
@@ -167,7 +169,7 @@ class PackRepository(context: Context) {
         /** (işlenen, toplam, yeniden sıkıştırılan) — yeniden sıkıştırma sticker başına birkaç saniye sürer. */
         onProgress: (Int, Int, Int) -> Unit = { _, _, _ -> },
     ): ImportOutcome {
-        val room = WhatsAppLimits.PACK_MAX_STICKERS - (requireNotNull(store.pack(packId)) { "paket bulunamadı" }.stickers.size)
+        val room = WhatsAppLimits.PACK_MAX_STICKERS - (checkNotNull(store.pack(packId)) { res.getString(R.string.pack_not_found) }.stickers.size)
         val rejected = mutableListOf<String>()
         val ready = mutableListOf<StickerImport.Result.Ok>()
         var reencoded = 0
@@ -175,18 +177,18 @@ class PackRepository(context: Context) {
         for ((i, item) in items.withIndex()) {
             val (name, bytes) = item
             onProgress(i, items.size, reencoded)
-            if (ready.size >= room) { rejected += "$name: paket dolu (en fazla ${WhatsAppLimits.PACK_MAX_STICKERS})"; continue }
+            if (ready.size >= room) { rejected += res.getString(R.string.import_reason_pack_full, name, WhatsAppLimits.PACK_MAX_STICKERS); continue }
             when (val r = StickerImport.prepare(bytes)) {
-                is StickerImport.Result.Rejected -> rejected += "$name: ${r.reason}"
+                is StickerImport.Result.Rejected -> rejected += res.getString(R.string.import_reason_item, name, r.reason.text(res))
                 is StickerImport.Result.Ok -> ready += r
                 is StickerImport.Result.NeedsReencode -> runCatching<StickerImport.Result.Ok> { withContext(Dispatchers.Default) { StickerImport.reencode(bytes) } }
                     .onSuccess { ready += it; reencoded++ }
-                    .onFailure { e -> rejected += "$name: ${r.reason}, sığdırılamadı (${e.message})" }
+                    .onFailure { e -> rejected += res.getString(R.string.import_reason_reencode_failed, name, r.reason.text(res), e.message.orEmpty()) }
             }
         }
         onProgress(items.size, items.size, reencoded)
         return edit {
-            val pack = requireNotNull(store.pack(packId)) { "paket bulunamadı" }
+            val pack = checkNotNull(store.pack(packId)) { res.getString(R.string.pack_not_found) }
             val fits = ready.take(WhatsAppLimits.PACK_MAX_STICKERS - pack.stickers.size)
             val added = fits.map { r ->
                 val fileName = "s_" + UUID.randomUUID().toString().replace("-", "").take(12) + ".webp"
@@ -233,7 +235,7 @@ class PackRepository(context: Context) {
     }
 
     fun validate(packId: String): List<String> =
-        store.pack(packId)?.let { PackValidator.validate(it, store) } ?: listOf("Paket bulunamadı.")
+        store.pack(packId)?.let { PackValidator.validate(it, store, res) } ?: listOf(res.getString(R.string.pack_not_found))
 
     fun stickerBytes(packId: String, imageFile: String): ByteArray? = store.readFile(packId, imageFile)
 

@@ -18,4 +18,7 @@
     <string name="settings_components">Açık kaynak bileşenler</string>
     <string name="settings_developer">Geliştirici</string>
     <string name="settings_lab_text">Sticker kalitesini ve boyutunu ölçmek için deneme ekranı.</string>
+    <string name="settings_language">Dil</string>
+    <string name="settings_language_system_detail">Telefonun dili (%1$s)</string>
+    <string name="component_isnet">IS-Net (DIS) arka plan modeli</string>
 </resources>

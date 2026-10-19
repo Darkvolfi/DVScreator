@@ -2,6 +2,7 @@ package io.github.darkvolfi.dvscreator.core.whatsapp
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.provider.DocumentsContract
 import io.github.darkvolfi.dvscreator.core.imaging.AnimationClip
@@ -213,26 +214,39 @@ object StickerImport {
     sealed interface Result {
         class Ok(val webp: ByteArray, val emojis: List<String>) : Result
         /** Olduğu gibi eklenemez ama yeniden sıkıştırılarak eklenebilir. */
-        class NeedsReencode(val reason: String) : Result
-        class Rejected(val reason: String) : Result
+        class NeedsReencode(val reason: Reason) : Result
+        class Rejected(val reason: Reason) : Result
+    }
+
+    /** Neden eklenemediği; metin uygulamanın dilinde [text] ile üretilir. */
+    sealed interface Reason {
+        fun text(res: Resources): String
+
+        data object NotWebp : Reason { override fun text(res: Resources) = res.getString(R.string.import_reason_not_webp) }
+        data class WrongSize(val width: Int, val height: Int) : Reason {
+            override fun text(res: Resources) = res.getString(R.string.import_reason_wrong_size, width, height)
+        }
+        data object BadDurations : Reason { override fun text(res: Resources) = res.getString(R.string.import_reason_bad_durations) }
+        data object WrapFailed : Reason { override fun text(res: Resources) = res.getString(R.string.import_reason_wrap_failed) }
+        data class TooBig(val kb: Int) : Reason { override fun text(res: Resources) = res.getString(R.string.import_reason_too_big, kb) }
     }
 
     fun prepare(bytes: ByteArray): Result {
         val L = WhatsAppLimits
-        val info = runCatching { NativeWebp.info(bytes) }.getOrNull() ?: return Result.Rejected("geçerli bir WebP değil")
+        val info = runCatching { NativeWebp.info(bytes) }.getOrNull() ?: return Result.Rejected(Reason.NotWebp)
         if (info.canvasWidth != L.STICKER_SIZE_PX || info.canvasHeight != L.STICKER_SIZE_PX) {
-            return Result.Rejected("${info.canvasWidth}×${info.canvasHeight}; 512×512 olmalı")
+            return Result.Rejected(Reason.WrongSize(info.canvasWidth, info.canvasHeight))
         }
         val webp = if (info.frameCount >= L.ANIMATED_MIN_FRAMES) {
             if (info.frameDurationsMs.any { it < L.ANIMATED_MIN_FRAME_DURATION_MS } || info.totalDurationMs > L.ANIMATED_MAX_TOTAL_DURATION_MS) {
-                return Result.NeedsReencode("kare süreleri WhatsApp kurallarına uymuyor")
+                return Result.NeedsReencode(Reason.BadDurations)
             }
             bytes
         } else {
             runCatching { NativeWebp.staticAsAnimation(bytes, L.STICKER_SIZE_PX, L.STICKER_SIZE_PX) }.getOrNull()
-                ?: return Result.Rejected("sarılamadı")
+                ?: return Result.Rejected(Reason.WrapFailed)
         }
-        if (webp.size > L.ANIMATED_STICKER_MAX_BYTES) return Result.NeedsReencode("${webp.size / 1024} KB")
+        if (webp.size > L.ANIMATED_STICKER_MAX_BYTES) return Result.NeedsReencode(Reason.TooBig(webp.size / 1024))
         return Result.Ok(webp, emojisOf(bytes))
     }
 

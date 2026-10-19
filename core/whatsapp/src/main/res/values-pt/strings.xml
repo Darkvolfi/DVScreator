@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validate_too_few">O pacote tem %1$d figurinhas; o WhatsApp precisa de pelo menos %2$d.</string>
+    <string name="validate_too_many">O pacote tem %1$d figurinhas; o WhatsApp aceita no máximo %2$d.</string>
+    <string name="validate_name_blank">O nome do pacote não pode ficar vazio.</string>
+    <string name="validate_name_long">O nome do pacote pode ter no máximo %1$d caracteres.</string>
+    <string name="validate_publisher_long">O nome do autor pode ter no máximo %1$d caracteres.</string>
+    <string name="validate_tray_missing">Falta o ícone do pacote.</string>
+    <string name="validate_tray_size">O ícone do pacote tem %1$d KB; o limite é %2$d KB.</string>
+    <string name="validate_tray_dims">O ícone do pacote tem %1$d×%2$d; precisa ter %3$d×%3$d.</string>
+    <string name="validate_sticker_label">Figurinha %1$d</string>
+    <string name="validate_emoji_min">%1$s: escolha pelo menos um emoji.</string>
+    <string name="validate_emoji_max">%1$s: no máximo %2$d emojis.</string>
+    <string name="validate_a11y_long">%1$s: a descrição pode ter no máximo %2$d caracteres.</string>
+    <string name="validate_file_missing">%1$s: arquivo não encontrado.</string>
+    <string name="validate_file_size">%1$s: %2$s; o limite é %3$s.</string>
+    <string name="validate_not_webp">%1$s: não é um WebP válido.</string>
+    <string name="validate_dims">%1$s: %2$d×%3$d; precisa ter %4$d×%4$d.</string>
+    <string name="validate_min_frames">%1$s: um pacote animado precisa de pelo menos %2$d quadros.</string>
+    <string name="validate_frame_duration">%1$s: cada quadro precisa durar pelo menos %2$d ms.</string>
+    <string name="validate_total_duration">%1$s: a animação dura %2$s s; no máximo %3$d s.</string>
+    <string name="validate_static_animated">%1$s: um pacote estático não pode ter figurinhas animadas.</string>
+    <string name="size_kb">%1$s KB</string>
+
+    <string name="pack_not_found">Pacote não encontrado.</string>
+    <string name="pack_full">O pacote está cheio (no máximo %1$d figurinhas).</string>
+    <string name="file_open_failed">Não foi possível abrir o arquivo.</string>
+
+    <string name="import_reason_pack_full">%1$s: o pacote está cheio (no máximo %2$d)</string>
+    <string name="import_reason_reencode_failed">%1$s: %2$s, não foi possível ajustar (%3$s)</string>
+    <string name="import_reason_not_webp">não é um WebP válido</string>
+    <string name="import_reason_wrong_size">%1$d×%2$d; precisa ter 512×512</string>
+    <string name="import_reason_bad_durations">a duração dos quadros não segue as regras do WhatsApp</string>
+    <string name="import_reason_wrap_failed">não foi possível converter</string>
+    <string name="import_reason_too_big">%1$d KB</string>
+    <string name="import_reason_item">%1$s: %2$s</string>
+</resources>

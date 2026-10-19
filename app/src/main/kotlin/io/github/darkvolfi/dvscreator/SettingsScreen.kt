@@ -1,9 +1,21 @@
 package io.github.darkvolfi.dvscreator
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.Role
+import io.github.darkvolfi.dvscreator.feature.packs.language.AppLanguage
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,7 +55,7 @@ import io.github.darkvolfi.dvscreator.feature.packs.R as PacksR
 private val COMPONENTS = listOf(
     "libwebp" to "BSD-3-Clause · Google",
     "ONNX Runtime" to "MIT · Microsoft",
-    "IS-Net (DIS) arka plan modeli" to "Apache-2.0",
+    ISNET_MODEL to "Apache-2.0",
     "Glide GIF decoder" to "BSD, MIT, Apache-2.0",
     "Jetpack Compose, AndroidX, Room" to "Apache-2.0",
     "Kotlin, kotlinx.coroutines, kotlinx.serialization" to "Apache-2.0",
@@ -52,6 +64,9 @@ private val COMPONENTS = listOf(
 )
 
 private const val SOURCE_URL = "https://github.com/Darkvolfi/DVScreator"
+
+/** Bileşen listesinde adı çevrilen tek satır (bkz. R.string.component_isnet). */
+private const val ISNET_MODEL = "isnet"
 
 @Composable
 fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () -> Unit, modifier: Modifier = Modifier) {
@@ -63,6 +78,9 @@ fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () 
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item { TitleBar(stringResource(PacksR.string.settings_title), onBack) }
+
+        item { SectionTitle(stringResource(R.string.settings_language)) }
+        item { LanguageCard() }
 
         item { SectionTitle(stringResource(R.string.settings_keyboard)) }
         item { KeyboardCard() }
@@ -89,7 +107,7 @@ fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () 
             InfoCard {
                 COMPONENTS.forEachIndexed { i, (name, license) ->
                     if (i > 0) HorizontalDivider(Modifier.padding(vertical = 8.dp))
-                    Text(name, style = MaterialTheme.typography.bodyMedium)
+                    Text(if (name == ISNET_MODEL) stringResource(R.string.component_isnet) else name, style = MaterialTheme.typography.bodyMedium)
                     Text(license, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -162,6 +180,66 @@ private fun InfoCard(content: @Composable () -> Unit) {
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) { content() }
     }
+}
+
+/** Uygulama dili: telefonun dili (varsayılan) ya da desteklenen dillerden biri. */
+@Composable
+private fun LanguageCard() {
+    val context = LocalContext.current
+    val current = remember { AppLanguage.current(context) }
+    var choosing by remember { mutableStateOf(false) }
+    val systemLanguage = remember {
+        Resources.getSystem().configuration.locales[0].let { it.getDisplayLanguage(it).replaceFirstChar { c -> c.titlecase(it) } }
+    }
+    val systemLabel = stringResource(R.string.settings_language_system_detail, systemLanguage)
+    val label = AppLanguage.SUPPORTED.firstOrNull { it.first == current }?.second ?: systemLabel
+
+    Card(
+        onClick = { choosing = true },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+    ) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+            Icon(painterResource(PacksR.drawable.ic_chevron_right), contentDescription = null)
+        }
+    }
+
+    if (choosing) {
+        fun choose(tag: String?) {
+            choosing = false
+            if (tag != current) context.findActivity()?.let { AppLanguage.set(it, tag) }
+        }
+        AlertDialog(
+            onDismissRequest = { choosing = false },
+            title = { Text(stringResource(R.string.settings_language)) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    LanguageOption(systemLabel, selected = current == null) { choose(null) }
+                    for ((tag, name) in AppLanguage.SUPPORTED) LanguageOption(name, selected = current == tag) { choose(tag) }
+                }
+            },
+            confirmButton = { TextButton(onClick = { choosing = false }) { Text(stringResource(PacksR.string.cancel)) } },
+        )
+    }
+}
+
+@Composable
+private fun LanguageOption(name: String, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().selectable(selected = selected, onClick = onClick, role = Role.RadioButton).padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Text(name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(start = 12.dp))
+    }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 private fun openUrl(context: Context, url: String) {

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">Sticker bearbeiten</string>
+    <string name="editor_mode_square">Quadratisch zuschneiden</string>
+    <string name="editor_mode_fit">Ganzes Bild</string>
+    <string name="editor_crop_hint">Ziehe den Rahmen, um ihn zu verschieben; zum Ändern der Größe zwei Finger oder den Schieberegler benutzen.</string>
+    <string name="editor_fit_hint">Das ganze Bild bleibt erhalten; leere Ränder bleiben transparent.</string>
+    <string name="editor_skip">Überspringen</string>
+    <string name="editor_confirm">Sticker erstellen</string>
+    <string name="editor_remove_bg">Hintergrund entfernen</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="editor_tool_text">Text</string>
+    <string name="editor_rotate">↻ Drehen</string>
+    <string name="editor_margin">Rand</string>
+    <string name="editor_outline">Kontur</string>
+    <string name="editor_see_final">Öffne „Text“, um den fertigen Sticker zu sehen.</string>
+    <string name="text_add">Text hinzufügen</string>
+    <string name="text_edit">Bearbeiten</string>
+    <string name="text_delete">Löschen</string>
+    <string name="text_size">Größe</string>
+    <string name="text_hint">Das ist der fertige Sticker. Tippe auf einen Text, um ihn auszuwählen, ziehe zum Verschieben, und ändere die Größe mit zwei Fingern.</string>
+    <string name="text_dialog_title">Text</string>
+    <string name="text_outline">Kontur</string>
+    <string name="editor_tool_crop">Zuschneiden</string>
+    <string name="editor_tool_erase">Radieren</string>
+    <string name="editor_tool_restore">Wiederherstellen</string>
+    <string name="editor_brush">Pinsel</string>
+    <string name="editor_erase_hint">Mit einem Finger malen, mit zwei zoomen und verschieben. Radierte Stellen werden transparent; „Wiederherstellen“ holt das Original zurück.</string>
+    <string name="editor_undo">↶ Rückgängig</string>
+    <string name="editor_redo">↷ Wiederholen</string>
+    <string name="editor_clear_strokes">Alles löschen</string>
+    <string name="editor_remove_bg_hint">Wird von einem KI-Modell auf deinem Handy erledigt; nichts wird hochgeladen.</string>
+    <string name="editor_remove_bg_hint_video">Jedes Bild wird einzeln verarbeitet: etwa %1$d s länger.</string>
+    <string name="editor_anim_preparing">Animierte Vorschau wird vorbereitet: %1$d / %2$d Bilder</string>
+    <string name="editor_add_rest">Die übrigen %1$d unverändert hinzufügen</string>
+
+    <string name="trim_selection">%1$s s – %2$s s (%3$s s)</string>
+    <string name="trim_estimate">≈ %1$s fps, %2$d Bilder</string>
+    <string name="trim_hint_short">Kürzere Auswahl = höhere Qualität im 500-KB-Limit.</string>
+    <string name="trim_hint_long">Lange Auswahl: Der Sticker braucht für 500 KB eventuell weniger Qualität oder Bildrate. Kürzer = schärfer.</string>
+</resources>

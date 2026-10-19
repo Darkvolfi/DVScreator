@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">مختبر الجودة</string>
+    <string name="lab_subtitle">اختر صورة أو فيديو أو GIF لتحويله إلى ملصق بحجم 512×512 ومشاهدة القياسات.</string>
+    <string name="lab_pick">اختيار صورة / فيديو / GIF</string>
+    <string name="lab_working">جارٍ المعالجة… قد تستغرق مقاطع الفيديو من 5 إلى 30 ثانية.</string>
+    <string name="lab_error">خطأ: %1$s</string>
+
+    <string name="settings_keyboard">لوحة مفاتيح الملصقات</string>
+    <string name="settings_privacy">الخصوصية</string>
+    <string name="settings_privacy_text">لا يملك التطبيق إذن الوصول إلى الإنترنت. لا تغادر صورك ومقاطع الفيديو والملصقات هاتفك أبدًا؛ وإزالة الخلفية تتم أيضًا على الهاتف بنموذج ذكاء اصطناعي محلي.</string>
+    <string name="settings_about">حول</string>
+    <string name="settings_version">الإصدار %1$s</string>
+    <string name="settings_license_title">ترخيص GNU GPL v3.0</string>
+    <string name="settings_license_text">DVScreator برنامج حر ومفتوح المصدر. يمكنك استخدامه ودراسة شفرته المصدرية وتعديله ومشاركته. إذا وزّعت نسخًا معدّلة فعليك مشاركتها بالترخيص نفسه مع شفرتها المصدرية. يُقدَّم البرنامج دون أي ضمان.</string>
+    <string name="settings_license_read">نص الترخيص</string>
+    <string name="settings_source">الشفرة المصدرية</string>
+    <string name="settings_components">مكوّنات مفتوحة المصدر</string>
+    <string name="settings_developer">المطوّر</string>
+    <string name="settings_lab_text">شاشة اختبار لقياس جودة الملصقات وحجمها.</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_language_system_detail">لغة الهاتف (%1$s)</string>
+    <string name="component_isnet">نموذج الخلفية IS-Net (DIS)</string>
+</resources>

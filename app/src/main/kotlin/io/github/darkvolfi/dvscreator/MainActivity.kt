@@ -1,5 +1,6 @@
 package io.github.darkvolfi.dvscreator
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -14,12 +15,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import io.github.darkvolfi.dvscreator.feature.packs.PacksRoot
+import io.github.darkvolfi.dvscreator.feature.packs.language.AppLanguage
 import io.github.darkvolfi.dvscreator.ui.theme.DVScreatorTheme
 
 /** Üst düzey ekranlar: ana ekran (paketler) ve sağ üstteki ayarlar düğmesinden açılanlar. */
 private enum class Screen { HOME, SETTINGS, LICENSE, LAB }
 
 class MainActivity : ComponentActivity() {
+    /** Android 12 ve öncesi: Ayarlar'da seçilen dil (13+ sistem kendisi uygular). */
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(AppLanguage.wrap(newBase))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

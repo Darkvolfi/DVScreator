@@ -110,4 +110,6 @@
     <string name="home_new_pack_subtitle">A pack to add to WhatsApp</string>
     <string name="settings_title">Settings</string>
     <string name="operation_failed">Couldn\'t complete: %1$s</string>
+    <string name="error_too_large">Even at the lowest quality it is %1$s; the limit is %2$s. Pick a shorter part.</string>
+    <string name="error_out_of_memory">Not enough memory — try a shorter video.</string>
 </resources>

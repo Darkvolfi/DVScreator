@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Qualitätslabor</string>
+    <string name="lab_subtitle">Wähle ein Foto, Video oder GIF, um daraus einen 512×512-Sticker zu machen und die Messwerte zu sehen.</string>
+    <string name="lab_pick">Foto / Video / GIF wählen</string>
+    <string name="lab_working">Wird verarbeitet … Videos können 5–30 Sekunden dauern.</string>
+    <string name="lab_error">Fehler: %1$s</string>
+
+    <string name="settings_keyboard">Sticker-Tastatur</string>
+    <string name="settings_privacy">Datenschutz</string>
+    <string name="settings_privacy_text">Die App hat keine Internetberechtigung. Deine Fotos, Videos und Sticker verlassen nie das Handy; auch das Entfernen des Hintergrunds läuft mit einem KI-Modell direkt auf dem Handy.</string>
+    <string name="settings_about">Info</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_license_title">Lizenz GNU GPL v3.0</string>
+    <string name="settings_license_text">DVScreator ist freie Open-Source-Software. Du darfst sie nutzen, ihren Quellcode studieren, verändern und weitergeben. Wenn du veränderte Versionen verbreitest, musst du sie unter derselben Lizenz zusammen mit dem Quellcode weitergeben. Die Software wird ohne jede Gewährleistung bereitgestellt.</string>
+    <string name="settings_license_read">Lizenztext</string>
+    <string name="settings_source">Quellcode</string>
+    <string name="settings_components">Open-Source-Komponenten</string>
+    <string name="settings_developer">Entwickler</string>
+    <string name="settings_lab_text">Testbildschirm zum Messen von Qualität und Größe der Sticker.</string>
+    <string name="settings_language">Sprache</string>
+    <string name="settings_language_system_detail">Sprache des Handys (%1$s)</string>
+    <string name="component_isnet">Hintergrundmodell IS-Net (DIS)</string>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">Editar figurinha</string>
+    <string name="editor_mode_square">Recorte quadrado</string>
+    <string name="editor_mode_fit">Imagem inteira</string>
+    <string name="editor_crop_hint">Arraste o quadro para movê-lo; faça pinça ou use o controle deslizante para mudar o tamanho.</string>
+    <string name="editor_fit_hint">A imagem inteira é mantida; as laterais vazias ficam transparentes.</string>
+    <string name="editor_skip">Pular</string>
+    <string name="editor_confirm">Criar figurinha</string>
+    <string name="editor_remove_bg">Remover fundo</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="editor_tool_text">Texto</string>
+    <string name="editor_rotate">↻ Girar</string>
+    <string name="editor_margin">Margem</string>
+    <string name="editor_outline">Contorno</string>
+    <string name="editor_see_final">Abra “Texto” para ver a figurinha pronta.</string>
+    <string name="text_add">Adicionar texto</string>
+    <string name="text_edit">Editar</string>
+    <string name="text_delete">Excluir</string>
+    <string name="text_size">Tamanho</string>
+    <string name="text_hint">Esta é a figurinha final. Toque em um texto para selecioná-lo, arraste para mover e faça pinça para mudar o tamanho.</string>
+    <string name="text_dialog_title">Texto</string>
+    <string name="text_outline">Contorno</string>
+    <string name="editor_tool_crop">Recortar</string>
+    <string name="editor_tool_erase">Apagar</string>
+    <string name="editor_tool_restore">Restaurar</string>
+    <string name="editor_brush">Pincel</string>
+    <string name="editor_erase_hint">Desenhe com um dedo; dê zoom e mova com dois. O que for apagado fica transparente; “Restaurar” traz o original de volta.</string>
+    <string name="editor_undo">↶ Desfazer</string>
+    <string name="editor_redo">↷ Refazer</string>
+    <string name="editor_clear_strokes">Limpar tudo</string>
+    <string name="editor_remove_bg_hint">Feito no seu celular por um modelo de IA; nada é enviado.</string>
+    <string name="editor_remove_bg_hint_video">Cada quadro é processado separadamente: cerca de %1$d s a mais.</string>
+    <string name="editor_anim_preparing">Preparando prévia animada: %1$d / %2$d quadros</string>
+    <string name="editor_add_rest">Adicionar os %1$d restantes como estão</string>
+
+    <string name="trim_selection">%1$s s – %2$s s (%3$s s)</string>
+    <string name="trim_estimate">≈ %1$s fps, %2$d quadros</string>
+    <string name="trim_hint_short">Seleção mais curta = mais qualidade dentro do limite de 500 KB.</string>
+    <string name="trim_hint_long">Seleção longa: a figurinha pode precisar de menos qualidade ou quadros para caber em 500 KB. Mais curta = mais nítida.</string>
+</resources>

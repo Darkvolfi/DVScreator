@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">Modifica sticker</string>
+    <string name="editor_mode_square">Ritaglio quadrato</string>
+    <string name="editor_mode_fit">Immagine intera</string>
+    <string name="editor_crop_hint">Trascina la cornice per spostarla; avvicina due dita o usa il cursore per ridimensionarla.</string>
+    <string name="editor_fit_hint">L’immagine resta intera; i lati vuoti restano trasparenti.</string>
+    <string name="editor_skip">Salta</string>
+    <string name="editor_confirm">Crea sticker</string>
+    <string name="editor_remove_bg">Rimuovi sfondo</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annulla</string>
+    <string name="editor_tool_text">Testo</string>
+    <string name="editor_rotate">↻ Ruota</string>
+    <string name="editor_margin">Margine</string>
+    <string name="editor_outline">Contorno</string>
+    <string name="editor_see_final">Apri “Testo” per vedere lo sticker finito.</string>
+    <string name="text_add">Aggiungi testo</string>
+    <string name="text_edit">Modifica</string>
+    <string name="text_delete">Elimina</string>
+    <string name="text_size">Dimensione</string>
+    <string name="text_hint">Questo è lo sticker finale. Tocca un testo per selezionarlo, trascinalo per spostarlo, usa due dita per ridimensionarlo.</string>
+    <string name="text_dialog_title">Testo</string>
+    <string name="text_outline">Contorno</string>
+    <string name="editor_tool_crop">Ritaglia</string>
+    <string name="editor_tool_erase">Cancella</string>
+    <string name="editor_tool_restore">Ripristina</string>
+    <string name="editor_brush">Pennello</string>
+    <string name="editor_erase_hint">Disegna con un dito, ingrandisci e sposta con due. Le parti cancellate diventano trasparenti; “Ripristina” riporta l’originale.</string>
+    <string name="editor_undo">↶ Annulla</string>
+    <string name="editor_redo">↷ Ripeti</string>
+    <string name="editor_clear_strokes">Cancella tutto</string>
+    <string name="editor_remove_bg_hint">Lo fa un modello di IA sul tuo telefono; non viene caricato nulla.</string>
+    <string name="editor_remove_bg_hint_video">Ogni fotogramma viene elaborato separatamente: circa %1$d s in più.</string>
+    <string name="editor_anim_preparing">Preparazione anteprima animata: %1$d / %2$d fotogrammi</string>
+    <string name="editor_add_rest">Aggiungi i restanti %1$d così come sono</string>
+
+    <string name="trim_selection">%1$s s – %2$s s (%3$s s)</string>
+    <string name="trim_estimate">≈ %1$s fps, %2$d fotogrammi</string>
+    <string name="trim_hint_short">Selezione più breve = qualità più alta nel limite di 500 KB.</string>
+    <string name="trim_hint_long">Selezione lunga: per stare in 500 KB lo sticker potrebbe richiedere meno qualità o fotogrammi. Più breve = più nitido.</string>
+</resources>

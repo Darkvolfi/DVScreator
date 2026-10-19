@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validate_too_few">تحتوي الحزمة على %1$d ملصقات؛ ويحتاج واتساب إلى %2$d على الأقل.</string>
+    <string name="validate_too_many">تحتوي الحزمة على %1$d ملصقًا؛ ويقبل واتساب %2$d على الأكثر.</string>
+    <string name="validate_name_blank">لا يمكن أن يكون اسم الحزمة فارغًا.</string>
+    <string name="validate_name_long">يمكن أن يتكون اسم الحزمة من %1$d حرفًا على الأكثر.</string>
+    <string name="validate_publisher_long">يمكن أن يتكون اسم الناشر من %1$d حرفًا على الأكثر.</string>
+    <string name="validate_tray_missing">أيقونة الحزمة مفقودة.</string>
+    <string name="validate_tray_size">حجم أيقونة الحزمة %1$d كيلوبايت؛ والحد %2$d كيلوبايت.</string>
+    <string name="validate_tray_dims">أيقونة الحزمة %1$d×%2$d؛ ويجب أن تكون %3$d×%3$d.</string>
+    <string name="validate_sticker_label">الملصق %1$d</string>
+    <string name="validate_emoji_min">%1$s: اختر رمزًا تعبيريًا واحدًا على الأقل.</string>
+    <string name="validate_emoji_max">%1$s: %2$d رموز تعبيرية على الأكثر.</string>
+    <string name="validate_a11y_long">%1$s: يمكن أن يتكون الوصف من %2$d حرفًا على الأكثر.</string>
+    <string name="validate_file_missing">%1$s: الملف غير موجود.</string>
+    <string name="validate_file_size">%1$s: %2$s؛ والحد %3$s.</string>
+    <string name="validate_not_webp">%1$s: ليس ملف WebP صالحًا.</string>
+    <string name="validate_dims">%1$s: %2$d×%3$d؛ ويجب أن يكون %4$d×%4$d.</string>
+    <string name="validate_min_frames">%1$s: تحتاج الحزمة المتحركة إلى %2$d لقطات على الأقل.</string>
+    <string name="validate_frame_duration">%1$s: يجب أن تستمر كل لقطة %2$d ملّي ثانية على الأقل.</string>
+    <string name="validate_total_duration">%1$s: مدة الحركة %2$s ث؛ والحد الأقصى %3$d ث.</string>
+    <string name="validate_static_animated">%1$s: لا يمكن أن تحتوي الحزمة الثابتة على ملصقات متحركة.</string>
+    <string name="size_kb">%1$s كيلوبايت</string>
+
+    <string name="pack_not_found">الحزمة غير موجودة.</string>
+    <string name="pack_full">الحزمة ممتلئة (%1$d ملصقًا على الأكثر).</string>
+    <string name="file_open_failed">تعذّر فتح الملف.</string>
+
+    <string name="import_reason_pack_full">%1$s: الحزمة ممتلئة (%2$d على الأكثر)</string>
+    <string name="import_reason_reencode_failed">%1$s: %2$s، تعذّر تقليص حجمه (%3$s)</string>
+    <string name="import_reason_not_webp">ليس ملف WebP صالحًا</string>
+    <string name="import_reason_wrong_size">%1$d×%2$d؛ ويجب أن يكون 512×512</string>
+    <string name="import_reason_bad_durations">مدد اللقطات لا تتوافق مع قواعد واتساب</string>
+    <string name="import_reason_wrap_failed">تعذّر التحويل</string>
+    <string name="import_reason_too_big">%1$d كيلوبايت</string>
+    <string name="import_reason_item">%1$s: %2$s</string>
+</resources>

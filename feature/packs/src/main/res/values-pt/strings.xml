@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="back">Voltar</string>
+
+    <string name="packs_title">Meus pacotes</string>
+    <string name="packs_new">Novo pacote</string>
+    <string name="packs_name">Nome do pacote</string>
+    <string name="packs_empty">Ainda não há pacotes. Crie um e adicione fotos, vídeos ou GIFs.</string>
+    <string name="packs_count">%1$d / %2$d figurinhas</string>
+
+    <string name="pack_rules">%1$d figurinhas · o WhatsApp precisa de %2$d–%3$d. Toque em uma figurinha para escolher emojis ou excluí-la.</string>
+    <string name="pack_add_sticker">Adicionar foto / vídeo / GIF</string>
+    <string name="pack_working">Preparando figurinha… (faltam %1$d; vídeos podem levar 5–30 s)</string>
+    <string name="pack_add_failed">Não foi possível adicionar a figurinha: %1$s</string>
+    <string name="pack_added_summary">Adicionada: %1$s · %2$s · SSIM %3$s · %4$s s</string>
+    <string name="pack_added_video">%1$d quadros, %2$s fps.</string>
+    <string name="pack_added_reduced">A taxa de quadros foi reduzida para caber em 500 KB.</string>
+    <string name="pack_added_trimmed">Cortada para 10 s.</string>
+    <string name="pack_added_degraded">⚠️ Qualidade baixa: este trecho não coube em 500 KB com boa qualidade. Exclua e escolha um trecho mais curto para uma figurinha mais nítida.</string>
+    <string name="pack_results_dismiss">Limpar resultados</string>
+    <string name="progress_extracting">Lendo quadros: %1$d / %2$d</string>
+    <string name="progress_encoding">Comprimindo: tentativa %1$d (%2$d quadros)</string>
+    <string name="progress_measuring">Medindo a qualidade…</string>
+    <string name="pack_rename">Renomear pacote</string>
+    <string name="pack_delete">Excluir</string>
+    <string name="pack_delete_title">Excluir este pacote?</string>
+    <string name="pack_delete_text">O pacote e suas figurinhas são removidos deste app. As figurinhas já adicionadas ao WhatsApp também podem sumir de lá.</string>
+    <string name="pack_no_whatsapp">O WhatsApp não está instalado.</string>
+    <string name="pack_add_whatsapp">Adicionar ao WhatsApp</string>
+    <string name="pack_add_business">Adicionar ao WhatsApp Business</string>
+    <string name="pack_update_whatsapp">Atualizar no WhatsApp</string>
+    <string name="pack_update_business">Atualizar no WhatsApp Business</string>
+
+    <string name="mode_lossless">Sem perdas</string>
+    <string name="mode_near_lossless">Quase sem perdas (%1$d)</string>
+    <string name="mode_lossy">Com perdas (qualidade %1$d)</string>
+
+    <string name="wa_added">✅ Adicionado ao WhatsApp.</string>
+    <string name="wa_updated">✅ Atualizado no WhatsApp.</string>
+    <string name="wa_already_added">Este pacote já está no WhatsApp; a atualização foi cancelada. Toque em “Atualizar no WhatsApp” de novo para enviar as alterações.</string>
+    <string name="wa_cancelled">O pacote não foi adicionado (cancelado).</string>
+    <string name="wa_rejected">❌ O WhatsApp recusou o pacote: %1$s</string>
+    <string name="wa_invalid">Corrija isto antes de adicionar ao WhatsApp:</string>
+
+    <string name="sticker_emojis_title">Emojis da figurinha</string>
+    <string name="sticker_emojis_hint">Escolha de 1 a 3 emojis. O WhatsApp usa esses emojis para sugerir esta figurinha.</string>
+    <string name="sticker_delete">Excluir figurinha</string>
+
+    <string name="quick_start">Criar uma figurinha avulsa</string>
+    <string name="quick_title">Figurinha avulsa</string>
+    <string name="quick_working">Preparando figurinha…</string>
+    <string name="quick_pack_name">Figurinhas rápidas</string>
+    <string name="quick_explain">O WhatsApp não permite enviar uma figurinha avulsa para uma conversa (ela chega como foto). Por isso a figurinha vai para o pacote “Figurinhas rápidas”: adicione o pacote ao WhatsApp uma vez e depois só confirme a atualização a cada figurinha nova.</string>
+    <string name="quick_add_whatsapp">Adicionar ao pacote rápido → WhatsApp</string>
+    <string name="quick_add_business">Adicionar ao pacote rápido → WhatsApp Business</string>
+    <string name="quick_need_more">Adicionada a “%1$s” (%2$d figurinhas). O WhatsApp precisa de pelo menos 3 figurinhas por pacote: crie mais %3$d e ele será adicionado ao WhatsApp.</string>
+    <string name="quick_added">Adicionada a “%1$s” (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ No WhatsApp. Ela aparece dentro do pacote no seu painel de figurinhas.</string>
+    <string name="quick_wa_already">O pacote já está no WhatsApp; a atualização não foi confirmada. Toque em “Atualizar no WhatsApp” para a nova figurinha aparecer.</string>
+    <string name="quick_wa_cancelled">Não foi adicionado ao WhatsApp (cancelado).</string>
+    <string name="quick_share_other">Compartilhar com outro app (chega como foto no WhatsApp)</string>
+    <string name="quick_done">Concluído</string>
+
+    <string name="pack_import_whatsapp">Importar do WhatsApp</string>
+    <string name="import_title">Figurinhas recebidas no WhatsApp</string>
+    <string name="import_explain">O WhatsApp guarda numa pasta as figurinhas que você recebe nas conversas. Permita o acesso a essa pasta uma vez: na próxima tela toque em “Usar esta pasta”.</string>
+    <string name="import_privacy">O app só lê esta pasta. As figurinhas são copiadas como estão: sem recompressão, sem perda de qualidade.</string>
+    <string name="import_grant">Escolher a pasta de figurinhas do WhatsApp</string>
+    <string name="import_wrong_folder">Esta não parece ser a pasta de figurinhas do WhatsApp; algumas figurinhas podem faltar.</string>
+    <string name="import_change_folder">Escolher outra pasta</string>
+    <string name="import_empty">Nenhuma figurinha encontrada nesta pasta.</string>
+    <string name="import_selected">%1$d selecionadas (máx. %2$d) · %3$d figurinhas</string>
+    <string name="import_add">Adicionar ao pacote</string>
+    <string name="import_result">%1$d figurinhas importadas.</string>
+    <string name="import_rejected">Ignoradas:</string>
+    <string name="import_view_all">Todas</string>
+    <string name="import_view_packs">Por pacote</string>
+    <string name="import_scanning">Lendo nomes dos pacotes: %1$d / %2$d</string>
+    <string name="import_no_pack">Pacote desconhecido</string>
+    <string name="import_select_all">Selecionar tudo</string>
+    <string name="import_new_pack">Criar um pacote novo</string>
+    <string name="import_new_packs_split">Criar %1$d pacotes novos (máx. 30 cada)</string>
+    <string name="import_progress">Importando: %1$d / %2$d</string>
+    <string name="import_reencoding_note">Figurinhas com mais de 500 KB estão sendo recomprimidas (alguns segundos cada).</string>
+    <string name="import_reencoded">%1$d figurinhas foram recomprimidas para caber no limite de 500 KB.</string>
+    <string name="import_shared_title">Pacotes completos compartilhados</string>
+    <string name="import_shared_explain">Quando um pacote inteiro é compartilhado numa conversa, o WhatsApp o salva em outra pasta. Permita também essa pasta para ver os pacotes completos.</string>
+    <string name="import_shared_grant">Escolher a pasta de pacotes compartilhados</string>
+    <string name="import_shared_badge">pacote completo</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">Voltar ao teclado anterior</string>
+    <string name="keyboard_recent">Enviadas recentemente</string>
+    <string name="keyboard_empty">Ainda não há figurinhas. Crie algumas no DVScreator e elas aparecerão aqui.</string>
+    <string name="keyboard_recent_empty">As figurinhas que você enviar aparecem aqui. Escolha um pacote acima.</string>
+    <string name="keyboard_not_supported">Este campo de texto não aceita figurinhas.</string>
+    <string name="keyboard_card_title">Teclado de figurinhas</string>
+    <string name="keyboard_card_text">Envie figurinhas sem adicionar um pacote: numa conversa, troque o teclado para “DVScreator Sticker” e toque numa figurinha; ela é enviada como figurinha. Este teclado não digita nem lê o que você digita; o Android mostra um aviso genérico para qualquer teclado.</string>
+    <string name="keyboard_enable">1. Ativar nas Configurações</string>
+    <string name="keyboard_pick">2. Escolher teclado</string>
+    <string name="keyboard_ready">✅ Teclado ativado. Numa conversa, escolha “DVScreator Sticker” no seletor de teclado; toque no ícone de teclado lá embaixo para voltar.</string>
+    <string name="save_to_gallery">Salvar na galeria (para o Teclado Samsung)</string>
+    <string name="saved_to_gallery">Salvo em Pictures/DVScreator. No Teclado Samsung: aba de figurinhas → + (Criar figurinha) → escolha esta imagem.</string>
+    <string name="save_failed">Não foi possível salvar na galeria.</string>
+
+    <string name="home_title">Minhas figurinhas</string>
+    <string name="home_quick_subtitle">Crie e envie pelo teclado</string>
+    <string name="home_new_pack_subtitle">Um pacote para adicionar ao WhatsApp</string>
+    <string name="settings_title">Configurações</string>
+    <string name="operation_failed">Não foi possível concluir: %1$s</string>
+    <string name="error_too_large">Mesmo na menor qualidade fica com %1$s; o limite é %2$s. Escolha um trecho mais curto.</string>
+    <string name="error_out_of_memory">Memória insuficiente; tente um vídeo mais curto.</string>
+</resources>

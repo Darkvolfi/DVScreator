@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="back">Atrás</string>
+
+    <string name="packs_title">Mis paquetes</string>
+    <string name="packs_new">Nuevo paquete</string>
+    <string name="packs_name">Nombre del paquete</string>
+    <string name="packs_empty">Aún no hay paquetes. Crea uno y añádele fotos, vídeos o GIF.</string>
+    <string name="packs_count">%1$d / %2$d stickers</string>
+
+    <string name="pack_rules">%1$d stickers · WhatsApp necesita %2$d–%3$d. Toca un sticker para elegir emojis o eliminarlo.</string>
+    <string name="pack_add_sticker">Añadir foto / vídeo / GIF</string>
+    <string name="pack_working">Preparando sticker… (quedan %1$d; los vídeos pueden tardar 5–30 s)</string>
+    <string name="pack_add_failed">No se pudo añadir el sticker: %1$s</string>
+    <string name="pack_added_summary">Añadido: %1$s · %2$s · SSIM %3$s · %4$s s</string>
+    <string name="pack_added_video">%1$d fotogramas, %2$s fps.</string>
+    <string name="pack_added_reduced">Se redujo la tasa de fotogramas para caber en 500 KB.</string>
+    <string name="pack_added_trimmed">Recortado a 10 s.</string>
+    <string name="pack_added_degraded">⚠️ Calidad baja: esta parte no cabía en 500 KB con buena calidad. Elimínalo y elige una parte más corta para un sticker más nítido.</string>
+    <string name="pack_results_dismiss">Borrar resultados</string>
+    <string name="progress_extracting">Leyendo fotogramas: %1$d / %2$d</string>
+    <string name="progress_encoding">Comprimiendo: intento %1$d (%2$d fotogramas)</string>
+    <string name="progress_measuring">Midiendo la calidad…</string>
+    <string name="pack_rename">Cambiar nombre</string>
+    <string name="pack_delete">Eliminar</string>
+    <string name="pack_delete_title">¿Eliminar este paquete?</string>
+    <string name="pack_delete_text">El paquete y sus stickers se eliminan de esta app. Los stickers ya añadidos a WhatsApp también pueden desaparecer allí.</string>
+    <string name="pack_no_whatsapp">WhatsApp no está instalado.</string>
+    <string name="pack_add_whatsapp">Añadir a WhatsApp</string>
+    <string name="pack_add_business">Añadir a WhatsApp Business</string>
+    <string name="pack_update_whatsapp">Actualizar en WhatsApp</string>
+    <string name="pack_update_business">Actualizar en WhatsApp Business</string>
+
+    <string name="mode_lossless">Sin pérdida</string>
+    <string name="mode_near_lossless">Casi sin pérdida (%1$d)</string>
+    <string name="mode_lossy">Con pérdida (calidad %1$d)</string>
+
+    <string name="wa_added">✅ Añadido a WhatsApp.</string>
+    <string name="wa_updated">✅ Actualizado en WhatsApp.</string>
+    <string name="wa_already_added">Este paquete ya está en WhatsApp; la actualización se canceló. Pulsa de nuevo “Actualizar en WhatsApp” para enviar los cambios.</string>
+    <string name="wa_cancelled">El paquete no se añadió (cancelado).</string>
+    <string name="wa_rejected">❌ WhatsApp rechazó el paquete: %1$s</string>
+    <string name="wa_invalid">Corrige esto antes de añadirlo a WhatsApp:</string>
+
+    <string name="sticker_emojis_title">Emojis del sticker</string>
+    <string name="sticker_emojis_hint">Elige de 1 a 3 emojis. WhatsApp los usa para sugerir este sticker.</string>
+    <string name="sticker_delete">Eliminar sticker</string>
+
+    <string name="quick_start">Crear un solo sticker</string>
+    <string name="quick_title">Sticker suelto</string>
+    <string name="quick_working">Preparando sticker…</string>
+    <string name="quick_pack_name">Stickers rápidos</string>
+    <string name="quick_explain">WhatsApp no permite enviar un solo sticker a un chat (llega como foto). Por eso el sticker va al paquete “Stickers rápidos”: añade el paquete a WhatsApp una vez y luego solo confirma la actualización con cada sticker nuevo.</string>
+    <string name="quick_add_whatsapp">Añadir al paquete rápido → WhatsApp</string>
+    <string name="quick_add_business">Añadir al paquete rápido → WhatsApp Business</string>
+    <string name="quick_need_more">Añadido a “%1$s” (%2$d stickers). WhatsApp necesita al menos 3 stickers por paquete: crea %3$d más y se añadirá a WhatsApp.</string>
+    <string name="quick_added">Añadido a “%1$s” (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ En WhatsApp. Aparece dentro del paquete en tu panel de stickers.</string>
+    <string name="quick_wa_already">El paquete ya está en WhatsApp; la actualización no se confirmó. Toca “Actualizar en WhatsApp” para que aparezca el nuevo sticker.</string>
+    <string name="quick_wa_cancelled">No se añadió a WhatsApp (cancelado).</string>
+    <string name="quick_share_other">Compartir con otra app (llega como foto en WhatsApp)</string>
+    <string name="quick_done">Listo</string>
+
+    <string name="pack_import_whatsapp">Importar de WhatsApp</string>
+    <string name="import_title">Stickers recibidos en WhatsApp</string>
+    <string name="import_explain">WhatsApp guarda en una carpeta los stickers que recibes en los chats. Permite el acceso a esa carpeta una vez: en la siguiente pantalla toca “Usar esta carpeta”.</string>
+    <string name="import_privacy">La app solo lee esta carpeta. Los stickers se copian tal cual: sin recomprimir y sin pérdida de calidad.</string>
+    <string name="import_grant">Elegir la carpeta de stickers de WhatsApp</string>
+    <string name="import_wrong_folder">No parece la carpeta de stickers de WhatsApp; puede que falten stickers.</string>
+    <string name="import_change_folder">Elegir otra carpeta</string>
+    <string name="import_empty">No se encontraron stickers en esta carpeta.</string>
+    <string name="import_selected">%1$d seleccionados (máx. %2$d) · %3$d stickers</string>
+    <string name="import_add">Añadir al paquete</string>
+    <string name="import_result">Se importaron %1$d stickers.</string>
+    <string name="import_rejected">Omitidos:</string>
+    <string name="import_view_all">Todos</string>
+    <string name="import_view_packs">Por paquete</string>
+    <string name="import_scanning">Leyendo nombres de paquetes: %1$d / %2$d</string>
+    <string name="import_no_pack">Paquete desconocido</string>
+    <string name="import_select_all">Seleccionar todo</string>
+    <string name="import_new_pack">Crear un paquete nuevo</string>
+    <string name="import_new_packs_split">Crear %1$d paquetes nuevos (máx. 30 cada uno)</string>
+    <string name="import_progress">Importando: %1$d / %2$d</string>
+    <string name="import_reencoding_note">Los stickers de más de 500 KB se están recomprimiendo (unos segundos cada uno).</string>
+    <string name="import_reencoded">%1$d stickers se recomprimieron para caber en el límite de 500 KB.</string>
+    <string name="import_shared_title">Paquetes completos compartidos</string>
+    <string name="import_shared_explain">Cuando se comparte un paquete completo en un chat, WhatsApp lo guarda en otra carpeta. Permite también esa carpeta para ver los paquetes completos.</string>
+    <string name="import_shared_grant">Elegir la carpeta de paquetes compartidos</string>
+    <string name="import_shared_badge">paquete completo</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">Volver al teclado anterior</string>
+    <string name="keyboard_recent">Enviados recientemente</string>
+    <string name="keyboard_empty">Aún no hay stickers. Crea algunos en DVScreator y aparecerán aquí.</string>
+    <string name="keyboard_recent_empty">Aquí aparecen los stickers que envías. Elige un paquete arriba.</string>
+    <string name="keyboard_not_supported">Este campo de texto no acepta stickers.</string>
+    <string name="keyboard_card_title">Teclado de stickers</string>
+    <string name="keyboard_card_text">Envía stickers sin añadir un paquete: en un chat cambia el teclado a “DVScreator Sticker” y toca un sticker; se envía como sticker. Este teclado no escribe ni lee lo que escribes; Android muestra un aviso genérico para cualquier teclado.</string>
+    <string name="keyboard_enable">1. Activar en Ajustes</string>
+    <string name="keyboard_pick">2. Elegir teclado</string>
+    <string name="keyboard_ready">✅ Teclado activado. En un chat elige “DVScreator Sticker” en el selector de teclado; toca el icono del teclado abajo del todo para volver.</string>
+    <string name="save_to_gallery">Guardar en la galería (para Samsung Keyboard)</string>
+    <string name="saved_to_gallery">Guardado en Pictures/DVScreator. En Samsung Keyboard: pestaña de stickers → + (Crear sticker) → elige esta imagen.</string>
+    <string name="save_failed">No se pudo guardar en la galería.</string>
+
+    <string name="home_title">Mis stickers</string>
+    <string name="home_quick_subtitle">Créalo y envíalo con el teclado</string>
+    <string name="home_new_pack_subtitle">Un paquete para añadir a WhatsApp</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="operation_failed">No se pudo completar: %1$s</string>
+    <string name="error_too_large">Incluso con la calidad más baja ocupa %1$s; el límite es %2$s. Elige una parte más corta.</string>
+    <string name="error_out_of_memory">No hay suficiente memoria; prueba con un vídeo más corto.</string>
+</resources>

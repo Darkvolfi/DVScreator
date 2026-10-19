@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">Edit stiker</string>
+    <string name="editor_mode_square">Potong persegi</string>
+    <string name="editor_mode_fit">Seluruh gambar</string>
+    <string name="editor_crop_hint">Seret bingkai untuk memindahkannya; cubit atau gunakan penggeser untuk mengubah ukuran.</string>
+    <string name="editor_fit_hint">Seluruh gambar dipertahankan; sisi yang kosong tetap transparan.</string>
+    <string name="editor_skip">Lewati</string>
+    <string name="editor_confirm">Buat stiker</string>
+    <string name="editor_remove_bg">Hapus latar belakang</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Batal</string>
+    <string name="editor_tool_text">Teks</string>
+    <string name="editor_rotate">↻ Putar</string>
+    <string name="editor_margin">Margin</string>
+    <string name="editor_outline">Garis tepi</string>
+    <string name="editor_see_final">Buka “Teks” untuk melihat stiker jadi.</string>
+    <string name="text_add">Tambah teks</string>
+    <string name="text_edit">Edit</string>
+    <string name="text_delete">Hapus</string>
+    <string name="text_size">Ukuran</string>
+    <string name="text_hint">Inilah stiker akhirnya. Ketuk teks untuk memilihnya, seret untuk memindahkan, cubit untuk mengubah ukuran.</string>
+    <string name="text_dialog_title">Teks</string>
+    <string name="text_outline">Garis tepi</string>
+    <string name="editor_tool_crop">Potong</string>
+    <string name="editor_tool_erase">Hapus</string>
+    <string name="editor_tool_restore">Pulihkan</string>
+    <string name="editor_brush">Kuas</string>
+    <string name="editor_erase_hint">Gambar dengan satu jari, perbesar dan geser dengan dua jari. Bagian yang dihapus menjadi transparan; “Pulihkan” mengembalikan aslinya.</string>
+    <string name="editor_undo">↶ Urungkan</string>
+    <string name="editor_redo">↷ Ulangi</string>
+    <string name="editor_clear_strokes">Hapus semua</string>
+    <string name="editor_remove_bg_hint">Dilakukan di ponsel Anda oleh model AI; tidak ada yang diunggah.</string>
+    <string name="editor_remove_bg_hint_video">Setiap bingkai diproses terpisah: sekitar %1$d dtk tambahan.</string>
+    <string name="editor_anim_preparing">Menyiapkan pratinjau animasi: %1$d / %2$d bingkai</string>
+    <string name="editor_add_rest">Tambahkan %1$d sisanya apa adanya</string>
+
+    <string name="trim_selection">%1$s dtk – %2$s dtk (%3$s dtk)</string>
+    <string name="trim_estimate">≈ %1$s fps, %2$d bingkai</string>
+    <string name="trim_hint_short">Pilihan lebih pendek = kualitas lebih tinggi dalam batas 500 KB.</string>
+    <string name="trim_hint_long">Pilihan panjang: stiker mungkin perlu kualitas atau frame rate lebih rendah agar muat dalam 500 KB. Lebih pendek = lebih tajam.</string>
+</resources>

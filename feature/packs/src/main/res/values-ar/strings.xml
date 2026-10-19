@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">حسنًا</string>
+    <string name="cancel">إلغاء</string>
+    <string name="back">رجوع</string>
+
+    <string name="packs_title">حزمي</string>
+    <string name="packs_new">حزمة جديدة</string>
+    <string name="packs_name">اسم الحزمة</string>
+    <string name="packs_empty">لا توجد حزم بعد. أنشئ حزمة وأضف إليها صورًا أو مقاطع فيديو أو GIF.</string>
+    <string name="packs_count">%1$d / %2$d ملصق</string>
+
+    <string name="pack_rules">%1$d ملصق · يحتاج واتساب إلى %2$d–%3$d. المس ملصقًا لاختيار الرموز التعبيرية أو حذفه.</string>
+    <string name="pack_add_sticker">إضافة صورة / فيديو / GIF</string>
+    <string name="pack_working">جارٍ تجهيز الملصق… (متبقٍّ %1$d — قد تستغرق مقاطع الفيديو 5–30 ث)</string>
+    <string name="pack_add_failed">تعذّرت إضافة الملصق: %1$s</string>
+    <string name="pack_added_summary">تمت الإضافة: %1$s · %2$s · SSIM %3$s · %4$s ث</string>
+    <string name="pack_added_video">%1$d لقطة، %2$s لقطة/ث.</string>
+    <string name="pack_added_reduced">خُفّض معدل اللقطات ليتسع في 500 كيلوبايت.</string>
+    <string name="pack_added_trimmed">قُصّ إلى 10 ث.</string>
+    <string name="pack_added_degraded">⚠️ جودة منخفضة: لم يتسع هذا الجزء في 500 كيلوبايت بجودة جيدة. احذفه واختر جزءًا أقصر للحصول على ملصق أوضح.</string>
+    <string name="pack_results_dismiss">مسح النتائج</string>
+    <string name="progress_extracting">جارٍ قراءة اللقطات: %1$d / %2$d</string>
+    <string name="progress_encoding">جارٍ الضغط: المحاولة %1$d (%2$d لقطة)</string>
+    <string name="progress_measuring">جارٍ قياس الجودة…</string>
+    <string name="pack_rename">إعادة تسمية الحزمة</string>
+    <string name="pack_delete">حذف</string>
+    <string name="pack_delete_title">حذف هذه الحزمة؟</string>
+    <string name="pack_delete_text">ستُحذف الحزمة وملصقاتها من هذا التطبيق. وقد تختفي الملصقات المضافة إلى واتساب من هناك أيضًا.</string>
+    <string name="pack_no_whatsapp">واتساب غير مثبّت.</string>
+    <string name="pack_add_whatsapp">إضافة إلى واتساب</string>
+    <string name="pack_add_business">إضافة إلى واتساب للأعمال</string>
+    <string name="pack_update_whatsapp">تحديث في واتساب</string>
+    <string name="pack_update_business">تحديث في واتساب للأعمال</string>
+
+    <string name="mode_lossless">بلا فقد</string>
+    <string name="mode_near_lossless">شبه بلا فقد (%1$d)</string>
+    <string name="mode_lossy">مع فقد (الجودة %1$d)</string>
+
+    <string name="wa_added">✅ أُضيفت إلى واتساب.</string>
+    <string name="wa_updated">✅ حُدّثت في واتساب.</string>
+    <string name="wa_already_added">هذه الحزمة موجودة في واتساب بالفعل؛ أُلغي التحديث. اضغط «تحديث في واتساب» مرة أخرى لإرسال التغييرات.</string>
+    <string name="wa_cancelled">لم تُضف الحزمة (أُلغيت).</string>
+    <string name="wa_rejected">❌ رفض واتساب الحزمة: %1$s</string>
+    <string name="wa_invalid">أصلح ما يلي قبل الإضافة إلى واتساب:</string>
+
+    <string name="sticker_emojis_title">رموز الملصق التعبيرية</string>
+    <string name="sticker_emojis_hint">اختر من 1 إلى 3 رموز تعبيرية. يستخدمها واتساب لاقتراح هذا الملصق.</string>
+    <string name="sticker_delete">حذف الملصق</string>
+
+    <string name="quick_start">إنشاء ملصق واحد</string>
+    <string name="quick_title">ملصق منفرد</string>
+    <string name="quick_working">جارٍ تجهيز الملصق…</string>
+    <string name="quick_pack_name">ملصقات سريعة</string>
+    <string name="quick_explain">لا يسمح واتساب بإرسال ملصق منفرد إلى محادثة (يصل كصورة). لذلك يذهب الملصق إلى حزمة «ملصقات سريعة»: أضف الحزمة إلى واتساب مرة واحدة، ثم أكّد التحديث فقط مع كل ملصق جديد.</string>
+    <string name="quick_add_whatsapp">إلى الحزمة السريعة ← واتساب</string>
+    <string name="quick_add_business">إلى الحزمة السريعة ← واتساب للأعمال</string>
+    <string name="quick_need_more">أُضيف إلى «%1$s» (%2$d ملصق). يحتاج واتساب إلى 3 ملصقات على الأقل في كل حزمة: أنشئ %3$d أخرى وستُضاف إلى واتساب.</string>
+    <string name="quick_added">أُضيف إلى «%1$s» (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ في واتساب. يظهر داخل الحزمة في لوحة الملصقات.</string>
+    <string name="quick_wa_already">الحزمة موجودة في واتساب بالفعل؛ لم يُؤكَّد التحديث. المس «تحديث في واتساب» ليظهر الملصق الجديد.</string>
+    <string name="quick_wa_cancelled">لم يُضف إلى واتساب (أُلغي).</string>
+    <string name="quick_share_other">المشاركة مع تطبيق آخر (يصل كصورة في واتساب)</string>
+    <string name="quick_done">تم</string>
+
+    <string name="pack_import_whatsapp">استيراد من واتساب</string>
+    <string name="import_title">الملصقات المستلمة في واتساب</string>
+    <string name="import_explain">يحفظ واتساب الملصقات التي تستلمها في المحادثات داخل مجلد. اسمح بالوصول إلى هذا المجلد مرة واحدة: في الشاشة التالية المس «استخدام هذا المجلد».</string>
+    <string name="import_privacy">يقرأ التطبيق هذا المجلد فقط. تُنسخ الملصقات كما هي، دون إعادة ضغط ودون فقدان للجودة.</string>
+    <string name="import_grant">اختيار مجلد ملصقات واتساب</string>
+    <string name="import_wrong_folder">لا يبدو هذا مجلد ملصقات واتساب؛ قد تكون بعض الملصقات مفقودة.</string>
+    <string name="import_change_folder">اختيار مجلد آخر</string>
+    <string name="import_empty">لم يُعثر على ملصقات في هذا المجلد.</string>
+    <string name="import_selected">%1$d محدّد (الحد %2$d) · %3$d ملصق</string>
+    <string name="import_add">إضافة إلى الحزمة</string>
+    <string name="import_result">استُورد %1$d ملصق.</string>
+    <string name="import_rejected">تم تخطيها:</string>
+    <string name="import_view_all">الكل</string>
+    <string name="import_view_packs">حسب الحزمة</string>
+    <string name="import_scanning">جارٍ قراءة أسماء الحزم: %1$d / %2$d</string>
+    <string name="import_no_pack">حزمة غير معروفة</string>
+    <string name="import_select_all">تحديد الكل</string>
+    <string name="import_new_pack">إنشاء حزمة جديدة</string>
+    <string name="import_new_packs_split">إنشاء %1$d حزم جديدة (30 كحد أقصى لكل منها)</string>
+    <string name="import_progress">جارٍ الاستيراد: %1$d / %2$d</string>
+    <string name="import_reencoding_note">يُعاد ضغط الملصقات التي تتجاوز 500 كيلوبايت (بضع ثوانٍ لكل منها).</string>
+    <string name="import_reencoded">أُعيد ضغط %1$d ملصق لتتسع في حد 500 كيلوبايت.</string>
+    <string name="import_shared_title">حزم كاملة تمت مشاركتها</string>
+    <string name="import_shared_explain">عند مشاركة حزمة كاملة في محادثة، يحفظها واتساب في مجلد آخر. اسمح بهذا المجلد أيضًا لرؤية الحزم الكاملة.</string>
+    <string name="import_shared_grant">اختيار مجلد الحزم المشتركة</string>
+    <string name="import_shared_badge">حزمة كاملة</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">العودة إلى لوحة المفاتيح السابقة</string>
+    <string name="keyboard_recent">المرسلة مؤخرًا</string>
+    <string name="keyboard_empty">لا توجد ملصقات بعد. أنشئ بعضها في DVScreator وستظهر هنا.</string>
+    <string name="keyboard_recent_empty">تظهر هنا الملصقات التي ترسلها. اختر حزمة من الأعلى.</string>
+    <string name="keyboard_not_supported">حقل النص هذا لا يقبل الملصقات.</string>
+    <string name="keyboard_card_title">لوحة مفاتيح الملصقات</string>
+    <string name="keyboard_card_text">أرسل الملصقات دون إضافة حزمة: في المحادثة بدّل لوحة المفاتيح إلى «DVScreator Sticker» والمس ملصقًا؛ فيُرسل كملصق. لا تكتب لوحة المفاتيح هذه شيئًا ولا تقرأ ما تكتبه؛ يعرض Android تحذيرًا عامًا لكل لوحة مفاتيح.</string>
+    <string name="keyboard_enable">1. التفعيل من الإعدادات</string>
+    <string name="keyboard_pick">2. اختيار لوحة المفاتيح</string>
+    <string name="keyboard_ready">✅ فُعّلت لوحة المفاتيح. في المحادثة اختر «DVScreator Sticker» من مبدّل لوحات المفاتيح؛ والمس أيقونة لوحة المفاتيح في الأسفل للعودة.</string>
+    <string name="save_to_gallery">الحفظ في المعرض (للوحة مفاتيح Samsung)</string>
+    <string name="saved_to_gallery">حُفظ في Pictures/DVScreator. في لوحة مفاتيح Samsung: تبويب الملصقات ← + (إنشاء ملصق) ← اختر هذه الصورة.</string>
+    <string name="save_failed">تعذّر الحفظ في المعرض.</string>
+
+    <string name="home_title">ملصقاتي</string>
+    <string name="home_quick_subtitle">أنشئه وأرسله بلوحة المفاتيح</string>
+    <string name="home_new_pack_subtitle">حزمة لإضافتها إلى واتساب</string>
+    <string name="settings_title">الإعدادات</string>
+    <string name="operation_failed">تعذّر الإكمال: %1$s</string>
+    <string name="error_too_large">حتى بأقل جودة يبلغ الحجم %1$s؛ والحد %2$s. اختر جزءًا أقصر.</string>
+    <string name="error_out_of_memory">الذاكرة غير كافية — جرّب فيديو أقصر.</string>
+</resources>

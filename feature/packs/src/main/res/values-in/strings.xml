@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">OK</string>
+    <string name="cancel">Batal</string>
+    <string name="back">Kembali</string>
+
+    <string name="packs_title">Paket saya</string>
+    <string name="packs_new">Paket baru</string>
+    <string name="packs_name">Nama paket</string>
+    <string name="packs_empty">Belum ada paket. Buat satu lalu tambahkan foto, video, atau GIF.</string>
+    <string name="packs_count">%1$d / %2$d stiker</string>
+
+    <string name="pack_rules">%1$d stiker · WhatsApp memerlukan %2$d–%3$d. Ketuk stiker untuk memilih emoji atau menghapusnya.</string>
+    <string name="pack_add_sticker">Tambah foto / video / GIF</string>
+    <string name="pack_working">Menyiapkan stiker… (sisa %1$d — video bisa memakan waktu 5–30 dtk)</string>
+    <string name="pack_add_failed">Tidak dapat menambahkan stiker: %1$s</string>
+    <string name="pack_added_summary">Ditambahkan: %1$s · %2$s · SSIM %3$s · %4$s dtk</string>
+    <string name="pack_added_video">%1$d bingkai, %2$s fps.</string>
+    <string name="pack_added_reduced">Frame rate diturunkan agar muat dalam 500 KB.</string>
+    <string name="pack_added_trimmed">Dipotong menjadi 10 dtk.</string>
+    <string name="pack_added_degraded">⚠️ Kualitas rendah: bagian ini tidak muat dalam 500 KB dengan kualitas bagus. Hapus lalu pilih bagian yang lebih pendek agar stiker lebih tajam.</string>
+    <string name="pack_results_dismiss">Hapus hasil</string>
+    <string name="progress_extracting">Membaca bingkai: %1$d / %2$d</string>
+    <string name="progress_encoding">Mengompresi: percobaan %1$d (%2$d bingkai)</string>
+    <string name="progress_measuring">Mengukur kualitas…</string>
+    <string name="pack_rename">Ganti nama paket</string>
+    <string name="pack_delete">Hapus</string>
+    <string name="pack_delete_title">Hapus paket ini?</string>
+    <string name="pack_delete_text">Paket dan stikernya dihapus dari aplikasi ini. Stiker yang sudah ditambahkan ke WhatsApp mungkin juga hilang di sana.</string>
+    <string name="pack_no_whatsapp">WhatsApp tidak terpasang.</string>
+    <string name="pack_add_whatsapp">Tambahkan ke WhatsApp</string>
+    <string name="pack_add_business">Tambahkan ke WhatsApp Business</string>
+    <string name="pack_update_whatsapp">Perbarui di WhatsApp</string>
+    <string name="pack_update_business">Perbarui di WhatsApp Business</string>
+
+    <string name="mode_lossless">Tanpa kehilangan</string>
+    <string name="mode_near_lossless">Hampir tanpa kehilangan (%1$d)</string>
+    <string name="mode_lossy">Dengan kompresi (kualitas %1$d)</string>
+
+    <string name="wa_added">✅ Ditambahkan ke WhatsApp.</string>
+    <string name="wa_updated">✅ Diperbarui di WhatsApp.</string>
+    <string name="wa_already_added">Paket ini sudah ada di WhatsApp; pembaruan dibatalkan. Tekan “Perbarui di WhatsApp” lagi untuk mengirim perubahan.</string>
+    <string name="wa_cancelled">Paket tidak ditambahkan (dibatalkan).</string>
+    <string name="wa_rejected">❌ WhatsApp menolak paket: %1$s</string>
+    <string name="wa_invalid">Perbaiki hal berikut sebelum menambahkan ke WhatsApp:</string>
+
+    <string name="sticker_emojis_title">Emoji stiker</string>
+    <string name="sticker_emojis_hint">Pilih 1–3 emoji. WhatsApp memakainya untuk menyarankan stiker ini.</string>
+    <string name="sticker_delete">Hapus stiker</string>
+
+    <string name="quick_start">Buat satu stiker</string>
+    <string name="quick_title">Stiker tunggal</string>
+    <string name="quick_working">Menyiapkan stiker…</string>
+    <string name="quick_pack_name">Stiker cepat</string>
+    <string name="quick_explain">WhatsApp tidak mengizinkan pengiriman satu stiker ke chat (stiker tiba sebagai foto). Karena itu stiker masuk ke paket “Stiker cepat”: tambahkan paket ke WhatsApp sekali, lalu cukup konfirmasi pembaruan untuk setiap stiker baru.</string>
+    <string name="quick_add_whatsapp">Tambah ke paket cepat → WhatsApp</string>
+    <string name="quick_add_business">Tambah ke paket cepat → WhatsApp Business</string>
+    <string name="quick_need_more">Ditambahkan ke “%1$s” (%2$d stiker). WhatsApp memerlukan minimal 3 stiker per paket: buat %3$d lagi dan paket akan ditambahkan ke WhatsApp.</string>
+    <string name="quick_added">Ditambahkan ke “%1$s” (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ Ada di WhatsApp. Stiker muncul di dalam paket pada panel stiker Anda.</string>
+    <string name="quick_wa_already">Paket sudah ada di WhatsApp; pembaruan belum dikonfirmasi. Ketuk “Perbarui di WhatsApp” agar stiker baru muncul.</string>
+    <string name="quick_wa_cancelled">Tidak ditambahkan ke WhatsApp (dibatalkan).</string>
+    <string name="quick_share_other">Bagikan ke aplikasi lain (tiba sebagai foto di WhatsApp)</string>
+    <string name="quick_done">Selesai</string>
+
+    <string name="pack_import_whatsapp">Impor dari WhatsApp</string>
+    <string name="import_title">Stiker yang diterima di WhatsApp</string>
+    <string name="import_explain">WhatsApp menyimpan stiker yang Anda terima di chat dalam sebuah folder. Izinkan akses ke folder itu sekali: di layar berikutnya ketuk “Gunakan folder ini”.</string>
+    <string name="import_privacy">Aplikasi hanya membaca folder ini. Stiker disalin apa adanya — tanpa kompresi ulang, tanpa penurunan kualitas.</string>
+    <string name="import_grant">Pilih folder stiker WhatsApp</string>
+    <string name="import_wrong_folder">Ini tampaknya bukan folder stiker WhatsApp; beberapa stiker mungkin tidak ada.</string>
+    <string name="import_change_folder">Pilih folder lain</string>
+    <string name="import_empty">Tidak ada stiker di folder ini.</string>
+    <string name="import_selected">%1$d dipilih (maks. %2$d) · %3$d stiker</string>
+    <string name="import_add">Tambahkan ke paket</string>
+    <string name="import_result">%1$d stiker diimpor.</string>
+    <string name="import_rejected">Dilewati:</string>
+    <string name="import_view_all">Semua</string>
+    <string name="import_view_packs">Per paket</string>
+    <string name="import_scanning">Membaca nama paket: %1$d / %2$d</string>
+    <string name="import_no_pack">Paket tidak dikenal</string>
+    <string name="import_select_all">Pilih semua</string>
+    <string name="import_new_pack">Buat paket baru</string>
+    <string name="import_new_packs_split">Buat %1$d paket baru (maks. 30 per paket)</string>
+    <string name="import_progress">Mengimpor: %1$d / %2$d</string>
+    <string name="import_reencoding_note">Stiker di atas 500 KB sedang dikompresi ulang (beberapa detik per stiker).</string>
+    <string name="import_reencoded">%1$d stiker dikompresi ulang agar muat dalam batas 500 KB.</string>
+    <string name="import_shared_title">Paket lengkap yang dibagikan</string>
+    <string name="import_shared_explain">Saat seluruh paket dibagikan di chat, WhatsApp menyimpannya di folder lain. Izinkan juga folder itu untuk melihat paket lengkap.</string>
+    <string name="import_shared_grant">Pilih folder paket yang dibagikan</string>
+    <string name="import_shared_badge">paket lengkap</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">Kembali ke keyboard sebelumnya</string>
+    <string name="keyboard_recent">Baru dikirim</string>
+    <string name="keyboard_empty">Belum ada stiker. Buat di DVScreator dan stiker akan muncul di sini.</string>
+    <string name="keyboard_recent_empty">Stiker yang Anda kirim muncul di sini. Pilih paket di atas.</string>
+    <string name="keyboard_not_supported">Kolom teks ini tidak menerima stiker.</string>
+    <string name="keyboard_card_title">Keyboard stiker</string>
+    <string name="keyboard_card_text">Kirim stiker tanpa menambahkan paket: di chat ganti keyboard ke “DVScreator Sticker” lalu ketuk stiker; stiker dikirim sebagai stiker. Keyboard ini tidak mengetik dan tidak membaca apa yang Anda ketik; Android menampilkan peringatan umum untuk setiap keyboard.</string>
+    <string name="keyboard_enable">1. Aktifkan di Setelan</string>
+    <string name="keyboard_pick">2. Pilih keyboard</string>
+    <string name="keyboard_ready">✅ Keyboard aktif. Di chat pilih “DVScreator Sticker” dari pengalih keyboard; ketuk ikon keyboard di paling bawah untuk kembali.</string>
+    <string name="save_to_gallery">Simpan ke galeri (untuk Samsung Keyboard)</string>
+    <string name="saved_to_gallery">Disimpan di Pictures/DVScreator. Di Samsung Keyboard: tab stiker → + (Buat stiker) → pilih gambar ini.</string>
+    <string name="save_failed">Tidak dapat menyimpan ke galeri.</string>
+
+    <string name="home_title">Stiker saya</string>
+    <string name="home_quick_subtitle">Buat, kirim lewat keyboard</string>
+    <string name="home_new_pack_subtitle">Paket untuk ditambahkan ke WhatsApp</string>
+    <string name="settings_title">Setelan</string>
+    <string name="operation_failed">Tidak dapat diselesaikan: %1$s</string>
+    <string name="error_too_large">Bahkan dengan kualitas terendah ukurannya %1$s; batasnya %2$s. Pilih bagian yang lebih pendek.</string>
+    <string name="error_out_of_memory">Memori tidak cukup — coba video yang lebih pendek.</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validate_too_few">Das Paket hat %1$d Sticker; WhatsApp braucht mindestens %2$d.</string>
+    <string name="validate_too_many">Das Paket hat %1$d Sticker; WhatsApp akzeptiert höchstens %2$d.</string>
+    <string name="validate_name_blank">Der Paketname darf nicht leer sein.</string>
+    <string name="validate_name_long">Der Paketname darf höchstens %1$d Zeichen haben.</string>
+    <string name="validate_publisher_long">Der Name des Herausgebers darf höchstens %1$d Zeichen haben.</string>
+    <string name="validate_tray_missing">Das Paketsymbol fehlt.</string>
+    <string name="validate_tray_size">Das Paketsymbol ist %1$d KB groß; das Limit ist %2$d KB.</string>
+    <string name="validate_tray_dims">Das Paketsymbol ist %1$d×%2$d; es muss %3$d×%3$d sein.</string>
+    <string name="validate_sticker_label">Sticker %1$d</string>
+    <string name="validate_emoji_min">%1$s: Wähle mindestens ein Emoji.</string>
+    <string name="validate_emoji_max">%1$s: höchstens %2$d Emojis.</string>
+    <string name="validate_a11y_long">%1$s: Die Beschreibung darf höchstens %2$d Zeichen haben.</string>
+    <string name="validate_file_missing">%1$s: Datei nicht gefunden.</string>
+    <string name="validate_file_size">%1$s: %2$s; das Limit ist %3$s.</string>
+    <string name="validate_not_webp">%1$s: kein gültiges WebP.</string>
+    <string name="validate_dims">%1$s: %2$d×%3$d; muss %4$d×%4$d sein.</string>
+    <string name="validate_min_frames">%1$s: Ein animiertes Paket braucht mindestens %2$d Bilder.</string>
+    <string name="validate_frame_duration">%1$s: Jedes Bild muss mindestens %2$d ms dauern.</string>
+    <string name="validate_total_duration">%1$s: Die Animation dauert %2$s s; höchstens %3$d s.</string>
+    <string name="validate_static_animated">%1$s: Ein statisches Paket darf keine animierten Sticker enthalten.</string>
+    <string name="size_kb">%1$s KB</string>
+
+    <string name="pack_not_found">Paket nicht gefunden.</string>
+    <string name="pack_full">Das Paket ist voll (höchstens %1$d Sticker).</string>
+    <string name="file_open_failed">Die Datei konnte nicht geöffnet werden.</string>
+
+    <string name="import_reason_pack_full">%1$s: Das Paket ist voll (höchstens %2$d)</string>
+    <string name="import_reason_reencode_failed">%1$s: %2$s, konnte nicht angepasst werden (%3$s)</string>
+    <string name="import_reason_not_webp">kein gültiges WebP</string>
+    <string name="import_reason_wrong_size">%1$d×%2$d; muss 512×512 sein</string>
+    <string name="import_reason_bad_durations">Bilddauern entsprechen nicht den WhatsApp-Regeln</string>
+    <string name="import_reason_wrap_failed">konnte nicht umgewandelt werden</string>
+    <string name="import_reason_too_big">%1$d KB</string>
+    <string name="import_reason_item">%1$s: %2$s</string>
+</resources>

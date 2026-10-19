@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validate_too_few">В наборе стикеров: %1$d; WhatsApp требует не меньше %2$d.</string>
+    <string name="validate_too_many">В наборе стикеров: %1$d; WhatsApp принимает не больше %2$d.</string>
+    <string name="validate_name_blank">Название набора не может быть пустым.</string>
+    <string name="validate_name_long">Название набора может содержать не более %1$d символов.</string>
+    <string name="validate_publisher_long">Имя автора может содержать не более %1$d символов.</string>
+    <string name="validate_tray_missing">Нет значка набора.</string>
+    <string name="validate_tray_size">Значок набора весит %1$d КБ; предел — %2$d КБ.</string>
+    <string name="validate_tray_dims">Значок набора %1$d×%2$d; должен быть %3$d×%3$d.</string>
+    <string name="validate_sticker_label">Стикер %1$d</string>
+    <string name="validate_emoji_min">%1$s: выберите хотя бы один эмодзи.</string>
+    <string name="validate_emoji_max">%1$s: не больше %2$d эмодзи.</string>
+    <string name="validate_a11y_long">%1$s: описание может содержать не более %2$d символов.</string>
+    <string name="validate_file_missing">%1$s: файл не найден.</string>
+    <string name="validate_file_size">%1$s: %2$s; предел — %3$s.</string>
+    <string name="validate_not_webp">%1$s: это не корректный WebP.</string>
+    <string name="validate_dims">%1$s: %2$d×%3$d; должен быть %4$d×%4$d.</string>
+    <string name="validate_min_frames">%1$s: в анимированном наборе нужно не меньше %2$d кадров.</string>
+    <string name="validate_frame_duration">%1$s: каждый кадр должен длиться не меньше %2$d мс.</string>
+    <string name="validate_total_duration">%1$s: анимация длится %2$s с; максимум %3$d с.</string>
+    <string name="validate_static_animated">%1$s: статичный набор не может содержать анимированные стикеры.</string>
+    <string name="size_kb">%1$s КБ</string>
+
+    <string name="pack_not_found">Набор не найден.</string>
+    <string name="pack_full">Набор заполнен (не больше %1$d стикеров).</string>
+    <string name="file_open_failed">Не удалось открыть файл.</string>
+
+    <string name="import_reason_pack_full">%1$s: набор заполнен (не больше %2$d)</string>
+    <string name="import_reason_reencode_failed">%1$s: %2$s, не удалось уместить (%3$s)</string>
+    <string name="import_reason_not_webp">это не корректный WebP</string>
+    <string name="import_reason_wrong_size">%1$d×%2$d; должен быть 512×512</string>
+    <string name="import_reason_bad_durations">длительность кадров не соответствует правилам WhatsApp</string>
+    <string name="import_reason_wrap_failed">не удалось преобразовать</string>
+    <string name="import_reason_too_big">%1$d КБ</string>
+    <string name="import_reason_item">%1$s: %2$s</string>
+</resources>

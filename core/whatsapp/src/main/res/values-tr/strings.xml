@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validate_too_few">Pakette %1$d sticker var; WhatsApp en az %2$d istiyor.</string>
+    <string name="validate_too_many">Pakette %1$d sticker var; WhatsApp en fazla %2$d kabul ediyor.</string>
+    <string name="validate_name_blank">Paket adı boş olamaz.</string>
+    <string name="validate_name_long">Paket adı en fazla %1$d karakter olabilir.</string>
+    <string name="validate_publisher_long">Yayıncı adı en fazla %1$d karakter olabilir.</string>
+    <string name="validate_tray_missing">Paket simgesi eksik.</string>
+    <string name="validate_tray_size">Paket simgesi %1$d KB; sınır %2$d KB.</string>
+    <string name="validate_tray_dims">Paket simgesi %1$d×%2$d; %3$d×%3$d olmalı.</string>
+    <string name="validate_sticker_label">Sticker %1$d</string>
+    <string name="validate_emoji_min">%1$s: en az bir emoji seçilmeli.</string>
+    <string name="validate_emoji_max">%1$s: en fazla %2$d emoji olabilir.</string>
+    <string name="validate_a11y_long">%1$s: açıklama en fazla %2$d karakter olabilir.</string>
+    <string name="validate_file_missing">%1$s: dosya bulunamadı.</string>
+    <string name="validate_file_size">%1$s: %2$s; sınır %3$s.</string>
+    <string name="validate_not_webp">%1$s: geçerli bir WebP değil.</string>
+    <string name="validate_dims">%1$s: %2$d×%3$d; %4$d×%4$d olmalı.</string>
+    <string name="validate_min_frames">%1$s: hareketli pakette en az %2$d kare olmalı.</string>
+    <string name="validate_frame_duration">%1$s: kare süreleri en az %2$d ms olmalı.</string>
+    <string name="validate_total_duration">%1$s: animasyon %2$s sn; en fazla %3$d sn.</string>
+    <string name="validate_static_animated">%1$s: statik pakette hareketli sticker olamaz.</string>
+    <string name="size_kb">%1$s KB</string>
+
+    <string name="pack_not_found">Paket bulunamadı.</string>
+    <string name="pack_full">Paket dolu (en fazla %1$d sticker).</string>
+    <string name="file_open_failed">Dosya açılamadı.</string>
+
+    <string name="import_reason_pack_full">%1$s: paket dolu (en fazla %2$d)</string>
+    <string name="import_reason_reencode_failed">%1$s: %2$s, sığdırılamadı (%3$s)</string>
+    <string name="import_reason_not_webp">geçerli bir WebP değil</string>
+    <string name="import_reason_wrong_size">%1$d×%2$d; 512×512 olmalı</string>
+    <string name="import_reason_bad_durations">kare süreleri WhatsApp kurallarına uymuyor</string>
+    <string name="import_reason_wrap_failed">dönüştürülemedi</string>
+    <string name="import_reason_too_big">%1$d KB</string>
+    <string name="import_reason_item">%1$s: %2$s</string>
+</resources>

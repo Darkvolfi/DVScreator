@@ -34,6 +34,7 @@ import io.github.darkvolfi.dvscreator.core.whatsapp.PackManifest
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackStore
 import io.github.darkvolfi.dvscreator.core.whatsapp.StickerShare
 import io.github.darkvolfi.dvscreator.feature.packs.R
+import io.github.darkvolfi.dvscreator.feature.packs.language.AppLanguage
 
 /**
  * Sticker klavyesi: uygulamada yapılan stickerları paket eklemeden sohbete gönderir.
@@ -55,6 +56,9 @@ class StickerKeyboardService : InputMethodService() {
     private var bottomBar: View? = null
     private var abcButton: View? = null
     private var insetBottom = 0
+
+    /** Android 12 ve öncesi: uygulamada seçilen dil (13+ sistem kendisi uygular). */
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(AppLanguage.wrap(newBase))
 
     override fun onCreate() {
         super.onCreate()

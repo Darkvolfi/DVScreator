@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validate_too_few">Paket berisi %1$d stiker; WhatsApp memerlukan minimal %2$d.</string>
+    <string name="validate_too_many">Paket berisi %1$d stiker; WhatsApp menerima maksimal %2$d.</string>
+    <string name="validate_name_blank">Nama paket tidak boleh kosong.</string>
+    <string name="validate_name_long">Nama paket maksimal %1$d karakter.</string>
+    <string name="validate_publisher_long">Nama pembuat maksimal %1$d karakter.</string>
+    <string name="validate_tray_missing">Ikon paket tidak ada.</string>
+    <string name="validate_tray_size">Ikon paket berukuran %1$d KB; batasnya %2$d KB.</string>
+    <string name="validate_tray_dims">Ikon paket berukuran %1$d×%2$d; harus %3$d×%3$d.</string>
+    <string name="validate_sticker_label">Stiker %1$d</string>
+    <string name="validate_emoji_min">%1$s: pilih minimal satu emoji.</string>
+    <string name="validate_emoji_max">%1$s: maksimal %2$d emoji.</string>
+    <string name="validate_a11y_long">%1$s: deskripsi maksimal %2$d karakter.</string>
+    <string name="validate_file_missing">%1$s: file tidak ditemukan.</string>
+    <string name="validate_file_size">%1$s: %2$s; batasnya %3$s.</string>
+    <string name="validate_not_webp">%1$s: bukan WebP yang valid.</string>
+    <string name="validate_dims">%1$s: %2$d×%3$d; harus %4$d×%4$d.</string>
+    <string name="validate_min_frames">%1$s: paket animasi memerlukan minimal %2$d bingkai.</string>
+    <string name="validate_frame_duration">%1$s: setiap bingkai harus berdurasi minimal %2$d md.</string>
+    <string name="validate_total_duration">%1$s: animasi berdurasi %2$s dtk; maksimal %3$d dtk.</string>
+    <string name="validate_static_animated">%1$s: paket statis tidak boleh berisi stiker animasi.</string>
+    <string name="size_kb">%1$s KB</string>
+
+    <string name="pack_not_found">Paket tidak ditemukan.</string>
+    <string name="pack_full">Paket sudah penuh (maksimal %1$d stiker).</string>
+    <string name="file_open_failed">Tidak dapat membuka file.</string>
+
+    <string name="import_reason_pack_full">%1$s: paket sudah penuh (maksimal %2$d)</string>
+    <string name="import_reason_reencode_failed">%1$s: %2$s, tidak dapat dimuatkan (%3$s)</string>
+    <string name="import_reason_not_webp">bukan WebP yang valid</string>
+    <string name="import_reason_wrong_size">%1$d×%2$d; harus 512×512</string>
+    <string name="import_reason_bad_durations">durasi bingkai tidak sesuai aturan WhatsApp</string>
+    <string name="import_reason_wrap_failed">tidak dapat dikonversi</string>
+    <string name="import_reason_too_big">%1$d KB</string>
+    <string name="import_reason_item">%1$s: %2$s</string>
+</resources>

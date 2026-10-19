@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">स्टिकर एडिट करें</string>
+    <string name="editor_mode_square">चौकोर क्रॉप</string>
+    <string name="editor_mode_fit">पूरी इमेज</string>
+    <string name="editor_crop_hint">फ़्रेम को खिसकाने के लिए खींचें; साइज़ बदलने के लिए दो उँगलियों या स्लाइडर का इस्तेमाल करें।</string>
+    <string name="editor_fit_hint">पूरी इमेज रहती है; खाली किनारे पारदर्शी रहते हैं।</string>
+    <string name="editor_skip">छोड़ें</string>
+    <string name="editor_confirm">स्टिकर बनाएँ</string>
+    <string name="editor_remove_bg">बैकग्राउंड हटाएँ</string>
+    <string name="ok">ठीक है</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="editor_tool_text">टेक्स्ट</string>
+    <string name="editor_rotate">↻ घुमाएँ</string>
+    <string name="editor_margin">मार्जिन</string>
+    <string name="editor_outline">आउटलाइन</string>
+    <string name="editor_see_final">तैयार स्टिकर देखने के लिए “टेक्स्ट” खोलें।</string>
+    <string name="text_add">टेक्स्ट जोड़ें</string>
+    <string name="text_edit">एडिट करें</string>
+    <string name="text_delete">हटाएँ</string>
+    <string name="text_size">साइज़</string>
+    <string name="text_hint">यह तैयार स्टिकर है। टेक्स्ट चुनने के लिए उस पर टैप करें, खिसकाने के लिए खींचें, साइज़ बदलने के लिए दो उँगलियाँ इस्तेमाल करें।</string>
+    <string name="text_dialog_title">टेक्स्ट</string>
+    <string name="text_outline">आउटलाइन</string>
+    <string name="editor_tool_crop">क्रॉप</string>
+    <string name="editor_tool_erase">मिटाएँ</string>
+    <string name="editor_tool_restore">वापस लाएँ</string>
+    <string name="editor_brush">ब्रश</string>
+    <string name="editor_erase_hint">एक उँगली से बनाएँ, दो से ज़ूम करें और खिसकाएँ। मिटाए गए हिस्से पारदर्शी हो जाते हैं; “वापस लाएँ” मूल हिस्सा लौटा देता है।</string>
+    <string name="editor_undo">↶ पहले जैसा करें</string>
+    <string name="editor_redo">↷ फिर से करें</string>
+    <string name="editor_clear_strokes">सब मिटाएँ</string>
+    <string name="editor_remove_bg_hint">यह आपके फ़ोन पर एक AI मॉडल करता है; कुछ भी अपलोड नहीं होता।</string>
+    <string name="editor_remove_bg_hint_video">हर फ़्रेम अलग से प्रोसेस होता है: लगभग %1$d सेकंड ज़्यादा।</string>
+    <string name="editor_anim_preparing">एनिमेटेड प्रीव्यू तैयार हो रहा है: %1$d / %2$d फ़्रेम</string>
+    <string name="editor_add_rest">बाकी %1$d को जैसे हैं वैसे जोड़ें</string>
+
+    <string name="trim_selection">%1$s से – %2$s से (%3$s से)</string>
+    <string name="trim_estimate">≈ %1$s fps, %2$d फ़्रेम</string>
+    <string name="trim_hint_short">छोटा हिस्सा = 500 KB की सीमा में बेहतर क्वालिटी।</string>
+    <string name="trim_hint_long">लंबा हिस्सा: 500 KB में आने के लिए स्टिकर की क्वालिटी या फ़्रेम रेट कम करनी पड़ सकती है। छोटा = ज़्यादा साफ़।</string>
+</resources>

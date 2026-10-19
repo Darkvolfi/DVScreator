@@ -21,4 +21,7 @@
     <string name="settings_components">Open source components</string>
     <string name="settings_developer">Developer</string>
     <string name="settings_lab_text">Test screen for measuring sticker quality and size.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system_detail">Phone language (%1$s)</string>
+    <string name="component_isnet">IS-Net (DIS) background model</string>
 </resources>

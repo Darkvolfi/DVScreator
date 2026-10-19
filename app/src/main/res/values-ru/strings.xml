@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Лаборатория качества</string>
+    <string name="lab_subtitle">Выберите фото, видео или GIF, чтобы сделать из него стикер 512×512 и посмотреть измерения.</string>
+    <string name="lab_pick">Выбрать фото / видео / GIF</string>
+    <string name="lab_working">Обработка… видео может занять 5–30 секунд.</string>
+    <string name="lab_error">Ошибка: %1$s</string>
+
+    <string name="settings_keyboard">Клавиатура стикеров</string>
+    <string name="settings_privacy">Конфиденциальность</string>
+    <string name="settings_privacy_text">У приложения нет доступа к интернету. Ваши фото, видео и стикеры никогда не покидают телефон; удаление фона тоже выполняется на телефоне с помощью локальной модели ИИ.</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="settings_license_title">Лицензия GNU GPL v3.0</string>
+    <string name="settings_license_text">DVScreator — свободное программное обеспечение с открытым исходным кодом. Вы можете использовать его, изучать исходный код, изменять и распространять. Если вы распространяете изменённые версии, вы должны делать это под той же лицензией вместе с исходным кодом. Программа предоставляется без каких-либо гарантий.</string>
+    <string name="settings_license_read">Текст лицензии</string>
+    <string name="settings_source">Исходный код</string>
+    <string name="settings_components">Компоненты с открытым кодом</string>
+    <string name="settings_developer">Разработчик</string>
+    <string name="settings_lab_text">Тестовый экран для измерения качества и размера стикеров.</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_system_detail">Язык телефона (%1$s)</string>
+    <string name="component_isnet">Модель фона IS-Net (DIS)</string>
+</resources>

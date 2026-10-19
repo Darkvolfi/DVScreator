@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Lab kualitas</string>
+    <string name="lab_subtitle">Pilih foto, video, atau GIF untuk dijadikan stiker 512×512 dan lihat hasil pengukurannya.</string>
+    <string name="lab_pick">Pilih foto / video / GIF</string>
+    <string name="lab_working">Memproses… video bisa memakan waktu 5–30 detik.</string>
+    <string name="lab_error">Galat: %1$s</string>
+
+    <string name="settings_keyboard">Keyboard stiker</string>
+    <string name="settings_privacy">Privasi</string>
+    <string name="settings_privacy_text">Aplikasi ini tidak punya izin internet. Foto, video, dan stiker Anda tidak pernah keluar dari ponsel; penghapusan latar belakang juga dilakukan di ponsel dengan model AI lokal.</string>
+    <string name="settings_about">Tentang</string>
+    <string name="settings_version">Versi %1$s</string>
+    <string name="settings_license_title">Lisensi GNU GPL v3.0</string>
+    <string name="settings_license_text">DVScreator adalah perangkat lunak bebas dan sumber terbuka. Anda boleh menggunakannya, mempelajari kode sumbernya, mengubahnya, dan membagikannya. Jika Anda mendistribusikan versi yang diubah, Anda harus membagikannya dengan lisensi yang sama beserta kode sumbernya. Perangkat lunak ini diberikan tanpa jaminan apa pun.</string>
+    <string name="settings_license_read">Teks lisensi</string>
+    <string name="settings_source">Kode sumber</string>
+    <string name="settings_components">Komponen sumber terbuka</string>
+    <string name="settings_developer">Pengembang</string>
+    <string name="settings_lab_text">Layar uji untuk mengukur kualitas dan ukuran stiker.</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_language_system_detail">Bahasa ponsel (%1$s)</string>
+    <string name="component_isnet">Model latar belakang IS-Net (DIS)</string>
+</resources>

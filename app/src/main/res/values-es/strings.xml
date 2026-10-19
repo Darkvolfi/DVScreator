@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Laboratorio de calidad</string>
+    <string name="lab_subtitle">Elige una foto, vídeo o GIF para convertirlo en un sticker de 512×512 y ver las mediciones.</string>
+    <string name="lab_pick">Elegir foto / vídeo / GIF</string>
+    <string name="lab_working">Procesando… los vídeos pueden tardar 5–30 segundos.</string>
+    <string name="lab_error">Error: %1$s</string>
+
+    <string name="settings_keyboard">Teclado de stickers</string>
+    <string name="settings_privacy">Privacidad</string>
+    <string name="settings_privacy_text">La app no tiene permiso de internet. Tus fotos, vídeos y stickers nunca salen del teléfono; quitar el fondo también se hace en el teléfono con un modelo de IA local.</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="settings_version">Versión %1$s</string>
+    <string name="settings_license_title">Licencia GNU GPL v3.0</string>
+    <string name="settings_license_text">DVScreator es software libre y de código abierto. Puedes usarlo, estudiar su código, modificarlo y compartirlo. Si distribuyes versiones modificadas, debes compartirlas con la misma licencia junto con su código fuente. El software no tiene ninguna garantía.</string>
+    <string name="settings_license_read">Texto de la licencia</string>
+    <string name="settings_source">Código fuente</string>
+    <string name="settings_components">Componentes de código abierto</string>
+    <string name="settings_developer">Desarrollador</string>
+    <string name="settings_lab_text">Pantalla de prueba para medir la calidad y el tamaño de los stickers.</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_system_detail">Idioma del teléfono (%1$s)</string>
+    <string name="component_isnet">Modelo de fondo IS-Net (DIS)</string>
+</resources>

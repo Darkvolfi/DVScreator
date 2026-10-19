@@ -280,14 +280,22 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    companion object {
-        private const val TAG = "WSC_PACKS"
-
-        private fun errorText(e: Throwable): String = when (e) {
-            is StickerTooLargeException, is AnimationTooLargeException, is IllegalStateException -> e.message.orEmpty()
-            is OutOfMemoryError -> "Bellek yetmedi — daha kısa bir video deneyin."
+    /** Hata → kullanıcıya gösterilecek metin, uygulamanın dilinde. */
+    private fun errorText(e: Throwable): String {
+        val app = getApplication<Application>()
+        fun kb(bytes: Int) = String.format(app.resources.configuration.locales[0], "%.0f KB", bytes / 1024.0)
+        return when (e) {
+            is StickerTooLargeException -> app.getString(R.string.error_too_large, kb(e.smallestBytes), kb(e.limitBytes))
+            is AnimationTooLargeException -> app.getString(R.string.error_too_large, kb(e.smallestBytes), kb(e.limitBytes))
+            is OutOfMemoryError -> app.getString(R.string.error_out_of_memory)
+            // PackRepository'nin mesajları zaten uygulamanın dilinde
+            is IllegalStateException -> e.message.orEmpty()
             else -> e.toString()
         }
+    }
+
+    companion object {
+        private const val TAG = "WSC_PACKS"
 
         /** En az 3, en fazla 30'luk, olabildiğince eşit parçalar. */
         fun <T> splitForPacks(items: List<T>, max: Int = 30): List<List<T>> {

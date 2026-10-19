@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lab_title">Laboratório de qualidade</string>
+    <string name="lab_subtitle">Escolha uma foto, vídeo ou GIF para transformá-lo em uma figurinha de 512×512 e ver as medições.</string>
+    <string name="lab_pick">Escolher foto / vídeo / GIF</string>
+    <string name="lab_working">Processando… vídeos podem levar de 5 a 30 segundos.</string>
+    <string name="lab_error">Erro: %1$s</string>
+
+    <string name="settings_keyboard">Teclado de figurinhas</string>
+    <string name="settings_privacy">Privacidade</string>
+    <string name="settings_privacy_text">O app não tem permissão de internet. Suas fotos, vídeos e figurinhas nunca saem do celular; a remoção de fundo também é feita no celular com um modelo de IA local.</string>
+    <string name="settings_about">Sobre</string>
+    <string name="settings_version">Versão %1$s</string>
+    <string name="settings_license_title">Licença GNU GPL v3.0</string>
+    <string name="settings_license_text">O DVScreator é um software livre e de código aberto. Você pode usá-lo, estudar o código-fonte, modificá-lo e compartilhá-lo. Se distribuir versões modificadas, deve compartilhá-las sob a mesma licença junto com o código-fonte. O software não tem nenhuma garantia.</string>
+    <string name="settings_license_read">Texto da licença</string>
+    <string name="settings_source">Código-fonte</string>
+    <string name="settings_components">Componentes de código aberto</string>
+    <string name="settings_developer">Desenvolvedor</string>
+    <string name="settings_lab_text">Tela de teste para medir a qualidade e o tamanho das figurinhas.</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_system_detail">Idioma do celular (%1$s)</string>
+    <string name="component_isnet">Modelo de fundo IS-Net (DIS)</string>
+</resources>

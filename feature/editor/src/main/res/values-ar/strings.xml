@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor_title">تعديل الملصق</string>
+    <string name="editor_mode_square">قص مربّع</string>
+    <string name="editor_mode_fit">الصورة كاملة</string>
+    <string name="editor_crop_hint">اسحب الإطار لتحريكه؛ استخدم إصبعين أو شريط التمرير لتغيير حجمه.</string>
+    <string name="editor_fit_hint">تبقى الصورة كاملة؛ والجوانب الفارغة تبقى شفافة.</string>
+    <string name="editor_skip">تخطٍّ</string>
+    <string name="editor_confirm">إنشاء الملصق</string>
+    <string name="editor_remove_bg">إزالة الخلفية</string>
+    <string name="ok">حسنًا</string>
+    <string name="cancel">إلغاء</string>
+    <string name="editor_tool_text">نص</string>
+    <string name="editor_rotate">↻ تدوير</string>
+    <string name="editor_margin">الهامش</string>
+    <string name="editor_outline">الحدّ</string>
+    <string name="editor_see_final">افتح «نص» لرؤية الملصق النهائي.</string>
+    <string name="text_add">إضافة نص</string>
+    <string name="text_edit">تعديل</string>
+    <string name="text_delete">حذف</string>
+    <string name="text_size">الحجم</string>
+    <string name="text_hint">هذا هو الملصق النهائي. المس نصًا لتحديده، واسحبه لتحريكه، واستخدم إصبعين لتغيير حجمه.</string>
+    <string name="text_dialog_title">نص</string>
+    <string name="text_outline">الحدّ</string>
+    <string name="editor_tool_crop">قص</string>
+    <string name="editor_tool_erase">مسح</string>
+    <string name="editor_tool_restore">استعادة</string>
+    <string name="editor_brush">الفرشاة</string>
+    <string name="editor_erase_hint">ارسم بإصبع واحد، وكبّر وحرّك بإصبعين. الأجزاء الممسوحة تصبح شفافة؛ و«استعادة» تُرجع الأصل.</string>
+    <string name="editor_undo">↶ تراجع</string>
+    <string name="editor_redo">↷ إعادة</string>
+    <string name="editor_clear_strokes">مسح الكل</string>
+    <string name="editor_remove_bg_hint">يتم ذلك على هاتفك بواسطة نموذج ذكاء اصطناعي؛ لا يُرفع أي شيء.</string>
+    <string name="editor_remove_bg_hint_video">تُعالَج كل لقطة على حدة: نحو %1$d ث إضافية.</string>
+    <string name="editor_anim_preparing">جارٍ تجهيز المعاينة المتحركة: %1$d / %2$d لقطة</string>
+    <string name="editor_add_rest">إضافة الـ %1$d المتبقية كما هي</string>
+
+    <string name="trim_selection">%1$s ث – %2$s ث (%3$s ث)</string>
+    <string name="trim_estimate">≈ %1$s لقطة/ث، %2$d لقطة</string>
+    <string name="trim_hint_short">تحديد أقصر = جودة أعلى ضمن حدّ 500 كيلوبايت.</string>
+    <string name="trim_hint_long">تحديد طويل: قد يحتاج الملصق إلى جودة أو معدل لقطات أقل ليتسع في 500 كيلوبايت. الأقصر أوضح.</string>
+</resources>

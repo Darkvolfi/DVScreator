@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">ठीक है</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="back">वापस</string>
+
+    <string name="packs_title">मेरे पैक</string>
+    <string name="packs_new">नया पैक</string>
+    <string name="packs_name">पैक का नाम</string>
+    <string name="packs_empty">अभी कोई पैक नहीं है। एक पैक बनाएँ और उसमें फ़ोटो, वीडियो या GIF जोड़ें।</string>
+    <string name="packs_count">%1$d / %2$d स्टिकर</string>
+
+    <string name="pack_rules">%1$d स्टिकर · WhatsApp को %2$d–%3$d चाहिए। इमोजी चुनने या हटाने के लिए किसी स्टिकर पर टैप करें।</string>
+    <string name="pack_add_sticker">फ़ोटो / वीडियो / GIF जोड़ें</string>
+    <string name="pack_working">स्टिकर तैयार हो रहा है… (%1$d बाकी — वीडियो में 5–30 सेकंड लग सकते हैं)</string>
+    <string name="pack_add_failed">स्टिकर नहीं जोड़ा जा सका: %1$s</string>
+    <string name="pack_added_summary">जोड़ा गया: %1$s · %2$s · SSIM %3$s · %4$s सेकंड</string>
+    <string name="pack_added_video">%1$d फ़्रेम, %2$s fps।</string>
+    <string name="pack_added_reduced">500 KB में आने के लिए फ़्रेम रेट कम किया गया।</string>
+    <string name="pack_added_trimmed">10 सेकंड तक काटा गया।</string>
+    <string name="pack_added_degraded">⚠️ कम क्वालिटी: यह हिस्सा अच्छी क्वालिटी में 500 KB में नहीं आया। साफ़ स्टिकर के लिए इसे हटाएँ और छोटा हिस्सा चुनें।</string>
+    <string name="pack_results_dismiss">नतीजे हटाएँ</string>
+    <string name="progress_extracting">फ़्रेम पढ़े जा रहे हैं: %1$d / %2$d</string>
+    <string name="progress_encoding">कंप्रेस हो रहा है: कोशिश %1$d (%2$d फ़्रेम)</string>
+    <string name="progress_measuring">क्वालिटी मापी जा रही है…</string>
+    <string name="pack_rename">पैक का नाम बदलें</string>
+    <string name="pack_delete">हटाएँ</string>
+    <string name="pack_delete_title">यह पैक हटाएँ?</string>
+    <string name="pack_delete_text">पैक और उसके स्टिकर इस ऐप से हट जाएँगे। WhatsApp में पहले से जोड़े गए स्टिकर वहाँ से भी गायब हो सकते हैं।</string>
+    <string name="pack_no_whatsapp">WhatsApp इंस्टॉल नहीं है।</string>
+    <string name="pack_add_whatsapp">WhatsApp में जोड़ें</string>
+    <string name="pack_add_business">WhatsApp Business में जोड़ें</string>
+    <string name="pack_update_whatsapp">WhatsApp में अपडेट करें</string>
+    <string name="pack_update_business">WhatsApp Business में अपडेट करें</string>
+
+    <string name="mode_lossless">लॉसलेस</string>
+    <string name="mode_near_lossless">लगभग लॉसलेस (%1$d)</string>
+    <string name="mode_lossy">लॉसी (क्वालिटी %1$d)</string>
+
+    <string name="wa_added">✅ WhatsApp में जोड़ा गया।</string>
+    <string name="wa_updated">✅ WhatsApp में अपडेट हुआ।</string>
+    <string name="wa_already_added">यह पैक पहले से WhatsApp में है; अपडेट रद्द हो गया। बदलाव भेजने के लिए “WhatsApp में अपडेट करें” फिर से दबाएँ।</string>
+    <string name="wa_cancelled">पैक नहीं जोड़ा गया (रद्द किया गया)।</string>
+    <string name="wa_rejected">❌ WhatsApp ने पैक अस्वीकार कर दिया: %1$s</string>
+    <string name="wa_invalid">WhatsApp में जोड़ने से पहले इन्हें ठीक करें:</string>
+
+    <string name="sticker_emojis_title">स्टिकर के इमोजी</string>
+    <string name="sticker_emojis_hint">1–3 इमोजी चुनें। WhatsApp इनसे यह स्टिकर सुझाता है।</string>
+    <string name="sticker_delete">स्टिकर हटाएँ</string>
+
+    <string name="quick_start">एक स्टिकर बनाएँ</string>
+    <string name="quick_title">अकेला स्टिकर</string>
+    <string name="quick_working">स्टिकर तैयार हो रहा है…</string>
+    <string name="quick_pack_name">क्विक स्टिकर</string>
+    <string name="quick_explain">WhatsApp किसी चैट में अकेला स्टिकर भेजने नहीं देता (वह फ़ोटो की तरह पहुँचता है)। इसलिए स्टिकर “क्विक स्टिकर” पैक में जाता है: पैक को एक बार WhatsApp में जोड़ें, फिर हर नए स्टिकर पर बस अपडेट की पुष्टि करें।</string>
+    <string name="quick_add_whatsapp">क्विक पैक में जोड़ें → WhatsApp</string>
+    <string name="quick_add_business">क्विक पैक में जोड़ें → WhatsApp Business</string>
+    <string name="quick_need_more">“%1$s” में जोड़ा गया (%2$d स्टिकर)। WhatsApp को हर पैक में कम से कम 3 स्टिकर चाहिए: %3$d और बनाएँ, फिर यह WhatsApp में जुड़ जाएगा।</string>
+    <string name="quick_added">“%1$s” में जोड़ा गया (%2$d / %3$d)।</string>
+    <string name="quick_wa_ok">✅ WhatsApp में है। यह आपके स्टिकर पैनल में पैक के अंदर दिखेगा।</string>
+    <string name="quick_wa_already">पैक पहले से WhatsApp में है; अपडेट की पुष्टि नहीं हुई। नया स्टिकर दिखाने के लिए “WhatsApp में अपडेट करें” पर टैप करें।</string>
+    <string name="quick_wa_cancelled">WhatsApp में नहीं जोड़ा गया (रद्द किया गया)।</string>
+    <string name="quick_share_other">किसी दूसरे ऐप से शेयर करें (WhatsApp में फ़ोटो की तरह पहुँचेगा)</string>
+    <string name="quick_done">हो गया</string>
+
+    <string name="pack_import_whatsapp">WhatsApp से इंपोर्ट करें</string>
+    <string name="import_title">WhatsApp में मिले स्टिकर</string>
+    <string name="import_explain">WhatsApp चैट में मिले स्टिकर एक फ़ोल्डर में रखता है। उस फ़ोल्डर की अनुमति एक बार दें: अगली स्क्रीन पर “इस फ़ोल्डर का इस्तेमाल करें” पर टैप करें।</string>
+    <string name="import_privacy">ऐप सिर्फ़ इस फ़ोल्डर को पढ़ता है। स्टिकर जैसे हैं वैसे ही कॉपी होते हैं — न दोबारा कंप्रेस, न क्वालिटी में कमी।</string>
+    <string name="import_grant">WhatsApp स्टिकर फ़ोल्डर चुनें</string>
+    <string name="import_wrong_folder">यह WhatsApp स्टिकर फ़ोल्डर नहीं लगता; कुछ स्टिकर छूट सकते हैं।</string>
+    <string name="import_change_folder">दूसरा फ़ोल्डर चुनें</string>
+    <string name="import_empty">इस फ़ोल्डर में कोई स्टिकर नहीं मिला।</string>
+    <string name="import_selected">%1$d चुने गए (ज़्यादा से ज़्यादा %2$d) · %3$d स्टिकर</string>
+    <string name="import_add">पैक में जोड़ें</string>
+    <string name="import_result">%1$d स्टिकर इंपोर्ट हुए।</string>
+    <string name="import_rejected">छोड़े गए:</string>
+    <string name="import_view_all">सभी</string>
+    <string name="import_view_packs">पैक के हिसाब से</string>
+    <string name="import_scanning">पैक के नाम पढ़े जा रहे हैं: %1$d / %2$d</string>
+    <string name="import_no_pack">अनजान पैक</string>
+    <string name="import_select_all">सभी चुनें</string>
+    <string name="import_new_pack">नया पैक बनाएँ</string>
+    <string name="import_new_packs_split">%1$d नए पैक बनाएँ (हर पैक में ज़्यादा से ज़्यादा 30)</string>
+    <string name="import_progress">इंपोर्ट हो रहा है: %1$d / %2$d</string>
+    <string name="import_reencoding_note">500 KB से बड़े स्टिकर दोबारा कंप्रेस हो रहे हैं (हर एक में कुछ सेकंड)।</string>
+    <string name="import_reencoded">500 KB की सीमा में लाने के लिए %1$d स्टिकर दोबारा कंप्रेस किए गए।</string>
+    <string name="import_shared_title">शेयर किए गए पूरे पैक</string>
+    <string name="import_shared_explain">जब किसी चैट में पूरा पैक शेयर होता है, तो WhatsApp उसे दूसरे फ़ोल्डर में रखता है। पूरे पैक देखने के लिए उस फ़ोल्डर की भी अनुमति दें।</string>
+    <string name="import_shared_grant">शेयर किए गए पैक का फ़ोल्डर चुनें</string>
+    <string name="import_shared_badge">पूरा पैक</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">पिछले कीबोर्ड पर वापस जाएँ</string>
+    <string name="keyboard_recent">हाल ही में भेजे गए</string>
+    <string name="keyboard_empty">अभी कोई स्टिकर नहीं है। DVScreator में बनाएँ, वे यहाँ दिखेंगे।</string>
+    <string name="keyboard_recent_empty">आपके भेजे गए स्टिकर यहाँ दिखते हैं। ऊपर कोई पैक चुनें।</string>
+    <string name="keyboard_not_supported">यह टेक्स्ट फ़ील्ड स्टिकर नहीं लेता।</string>
+    <string name="keyboard_card_title">स्टिकर कीबोर्ड</string>
+    <string name="keyboard_card_text">पैक जोड़े बिना स्टिकर भेजें: चैट में कीबोर्ड को “DVScreator Sticker” पर बदलें और किसी स्टिकर पर टैप करें; वह स्टिकर की तरह जाता है। यह कीबोर्ड न कुछ टाइप करता है, न आपका लिखा पढ़ता है; Android हर कीबोर्ड के लिए एक सामान्य चेतावनी दिखाता है।</string>
+    <string name="keyboard_enable">1. सेटिंग में चालू करें</string>
+    <string name="keyboard_pick">2. कीबोर्ड चुनें</string>
+    <string name="keyboard_ready">✅ कीबोर्ड चालू है। चैट में कीबोर्ड बदलने वाले मेनू से “DVScreator Sticker” चुनें; वापस जाने के लिए सबसे नीचे कीबोर्ड आइकॉन पर टैप करें।</string>
+    <string name="save_to_gallery">गैलरी में सेव करें (Samsung Keyboard के लिए)</string>
+    <string name="saved_to_gallery">Pictures/DVScreator में सेव हुआ। Samsung Keyboard में: स्टिकर टैब → + (स्टिकर बनाएँ) → यह इमेज चुनें।</string>
+    <string name="save_failed">गैलरी में सेव नहीं हो सका।</string>
+
+    <string name="home_title">मेरे स्टिकर</string>
+    <string name="home_quick_subtitle">बनाएँ और कीबोर्ड से भेजें</string>
+    <string name="home_new_pack_subtitle">WhatsApp में जोड़ने के लिए पैक</string>
+    <string name="settings_title">सेटिंग</string>
+    <string name="operation_failed">पूरा नहीं हो सका: %1$s</string>
+    <string name="error_too_large">सबसे कम क्वालिटी में भी यह %1$s है; सीमा %2$s है। छोटा हिस्सा चुनें।</string>
+    <string name="error_out_of_memory">मेमोरी कम है — छोटा वीडियो आज़माएँ।</string>
+</resources>

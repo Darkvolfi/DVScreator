@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="back">Назад</string>
+
+    <string name="packs_title">Мои наборы</string>
+    <string name="packs_new">Новый набор</string>
+    <string name="packs_name">Название набора</string>
+    <string name="packs_empty">Наборов пока нет. Создайте набор и добавьте в него фото, видео или GIF.</string>
+    <string name="packs_count">Стикеров: %1$d / %2$d</string>
+
+    <string name="pack_rules">Стикеров: %1$d · WhatsApp требует %2$d–%3$d. Нажмите на стикер, чтобы выбрать эмодзи или удалить его.</string>
+    <string name="pack_add_sticker">Добавить фото / видео / GIF</string>
+    <string name="pack_working">Готовим стикер… (осталось: %1$d; видео может занять 5–30 с)</string>
+    <string name="pack_add_failed">Не удалось добавить стикер: %1$s</string>
+    <string name="pack_added_summary">Добавлено: %1$s · %2$s · SSIM %3$s · %4$s с</string>
+    <string name="pack_added_video">Кадров: %1$d, %2$s кадр/с.</string>
+    <string name="pack_added_reduced">Частота кадров снижена, чтобы уложиться в 500 КБ.</string>
+    <string name="pack_added_trimmed">Обрезано до 10 с.</string>
+    <string name="pack_added_degraded">⚠️ Низкое качество: этот фрагмент не уместился в 500 КБ с хорошим качеством. Удалите его и выберите фрагмент покороче, чтобы стикер был чётче.</string>
+    <string name="pack_results_dismiss">Очистить результаты</string>
+    <string name="progress_extracting">Чтение кадров: %1$d / %2$d</string>
+    <string name="progress_encoding">Сжатие: попытка %1$d (кадров: %2$d)</string>
+    <string name="progress_measuring">Измеряем качество…</string>
+    <string name="pack_rename">Переименовать набор</string>
+    <string name="pack_delete">Удалить</string>
+    <string name="pack_delete_title">Удалить этот набор?</string>
+    <string name="pack_delete_text">Набор и его стикеры будут удалены из приложения. Стикеры, уже добавленные в WhatsApp, могут исчезнуть и там.</string>
+    <string name="pack_no_whatsapp">WhatsApp не установлен.</string>
+    <string name="pack_add_whatsapp">Добавить в WhatsApp</string>
+    <string name="pack_add_business">Добавить в WhatsApp Business</string>
+    <string name="pack_update_whatsapp">Обновить в WhatsApp</string>
+    <string name="pack_update_business">Обновить в WhatsApp Business</string>
+
+    <string name="mode_lossless">Без потерь</string>
+    <string name="mode_near_lossless">Почти без потерь (%1$d)</string>
+    <string name="mode_lossy">С потерями (качество %1$d)</string>
+
+    <string name="wa_added">✅ Добавлено в WhatsApp.</string>
+    <string name="wa_updated">✅ Обновлено в WhatsApp.</string>
+    <string name="wa_already_added">Этот набор уже есть в WhatsApp; обновление отменено. Нажмите «Обновить в WhatsApp» ещё раз, чтобы отправить изменения.</string>
+    <string name="wa_cancelled">Набор не добавлен (отменено).</string>
+    <string name="wa_rejected">❌ WhatsApp отклонил набор: %1$s</string>
+    <string name="wa_invalid">Исправьте это перед добавлением в WhatsApp:</string>
+
+    <string name="sticker_emojis_title">Эмодзи стикера</string>
+    <string name="sticker_emojis_hint">Выберите 1–3 эмодзи. WhatsApp по ним предлагает этот стикер.</string>
+    <string name="sticker_delete">Удалить стикер</string>
+
+    <string name="quick_start">Сделать один стикер</string>
+    <string name="quick_title">Отдельный стикер</string>
+    <string name="quick_working">Готовим стикер…</string>
+    <string name="quick_pack_name">Быстрые стикеры</string>
+    <string name="quick_explain">WhatsApp не позволяет отправить в чат отдельный стикер (он приходит как фото). Поэтому стикер попадает в набор «Быстрые стикеры»: добавьте набор в WhatsApp один раз, а потом для каждого нового стикера просто подтверждайте обновление.</string>
+    <string name="quick_add_whatsapp">В быстрый набор → WhatsApp</string>
+    <string name="quick_add_business">В быстрый набор → WhatsApp Business</string>
+    <string name="quick_need_more">Добавлено в «%1$s» (стикеров: %2$d). WhatsApp требует не меньше 3 стикеров в наборе: сделайте ещё %3$d, и набор будет добавлен в WhatsApp.</string>
+    <string name="quick_added">Добавлено в «%1$s» (%2$d / %3$d).</string>
+    <string name="quick_wa_ok">✅ В WhatsApp. Стикер появится в наборе на панели стикеров.</string>
+    <string name="quick_wa_already">Набор уже есть в WhatsApp; обновление не подтверждено. Нажмите «Обновить в WhatsApp», чтобы новый стикер появился.</string>
+    <string name="quick_wa_cancelled">Не добавлено в WhatsApp (отменено).</string>
+    <string name="quick_share_other">Поделиться через другое приложение (в WhatsApp придёт как фото)</string>
+    <string name="quick_done">Готово</string>
+
+    <string name="pack_import_whatsapp">Импорт из WhatsApp</string>
+    <string name="import_title">Стикеры, полученные в WhatsApp</string>
+    <string name="import_explain">WhatsApp хранит стикеры, полученные в чатах, в отдельной папке. Разрешите доступ к ней один раз: на следующем экране нажмите «Использовать эту папку».</string>
+    <string name="import_privacy">Приложение только читает эту папку. Стикеры копируются как есть — без повторного сжатия и потери качества.</string>
+    <string name="import_grant">Выбрать папку стикеров WhatsApp</string>
+    <string name="import_wrong_folder">Похоже, это не папка стикеров WhatsApp; часть стикеров может не найтись.</string>
+    <string name="import_change_folder">Выбрать другую папку</string>
+    <string name="import_empty">В этой папке нет стикеров.</string>
+    <string name="import_selected">Выбрано %1$d (макс. %2$d) · стикеров: %3$d</string>
+    <string name="import_add">Добавить в набор</string>
+    <string name="import_result">Импортировано стикеров: %1$d.</string>
+    <string name="import_rejected">Пропущено:</string>
+    <string name="import_view_all">Все</string>
+    <string name="import_view_packs">По наборам</string>
+    <string name="import_scanning">Читаем названия наборов: %1$d / %2$d</string>
+    <string name="import_no_pack">Неизвестный набор</string>
+    <string name="import_select_all">Выбрать все</string>
+    <string name="import_new_pack">Создать новый набор</string>
+    <string name="import_new_packs_split">Создать новые наборы: %1$d (до 30 в каждом)</string>
+    <string name="import_progress">Импорт: %1$d / %2$d</string>
+    <string name="import_reencoding_note">Стикеры больше 500 КБ сжимаются заново (по несколько секунд каждый).</string>
+    <string name="import_reencoded">Стикеров сжато заново, чтобы уложиться в 500 КБ: %1$d.</string>
+    <string name="import_shared_title">Присланные наборы целиком</string>
+    <string name="import_shared_explain">Когда в чате пересылают весь набор, WhatsApp сохраняет его в другой папке. Разрешите доступ и к ней, чтобы видеть наборы целиком.</string>
+    <string name="import_shared_grant">Выбрать папку присланных наборов</string>
+    <string name="import_shared_badge">весь набор</string>
+    <string name="keyboard_name">DVScreator Sticker</string>
+    <string name="keyboard_switch_back">Вернуться к прежней клавиатуре</string>
+    <string name="keyboard_recent">Недавно отправленные</string>
+    <string name="keyboard_empty">Стикеров пока нет. Сделайте их в DVScreator, и они появятся здесь.</string>
+    <string name="keyboard_recent_empty">Здесь появятся отправленные вами стикеры. Выберите набор вверху.</string>
+    <string name="keyboard_not_supported">Это поле ввода не принимает стикеры.</string>
+    <string name="keyboard_card_title">Клавиатура стикеров</string>
+    <string name="keyboard_card_text">Отправляйте стикеры без добавления набора: в чате переключитесь на клавиатуру «DVScreator Sticker» и нажмите на стикер — он отправится как стикер. Эта клавиатура не печатает и не читает то, что вы вводите; Android показывает общее предупреждение для любой клавиатуры.</string>
+    <string name="keyboard_enable">1. Включить в настройках</string>
+    <string name="keyboard_pick">2. Выбрать клавиатуру</string>
+    <string name="keyboard_ready">✅ Клавиатура включена. В чате выберите «DVScreator Sticker» в переключателе клавиатур; чтобы вернуться, нажмите значок клавиатуры в самом низу.</string>
+    <string name="save_to_gallery">Сохранить в галерею (для Samsung Keyboard)</string>
+    <string name="saved_to_gallery">Сохранено в Pictures/DVScreator. В Samsung Keyboard: вкладка стикеров → + (Создать стикер) → выберите это изображение.</string>
+    <string name="save_failed">Не удалось сохранить в галерею.</string>
+
+    <string name="home_title">Мои стикеры</string>
+    <string name="home_quick_subtitle">Сделайте и отправьте с клавиатуры</string>
+    <string name="home_new_pack_subtitle">Набор для WhatsApp</string>
+    <string name="settings_title">Настройки</string>
+    <string name="operation_failed">Не удалось выполнить: %1$s</string>
+    <string name="error_too_large">Даже при самом низком качестве получается %1$s; предел — %2$s. Выберите фрагмент покороче.</string>
+    <string name="error_out_of_memory">Не хватает памяти — попробуйте видео покороче.</string>
+</resources>

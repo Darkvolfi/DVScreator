@@ -57,7 +57,11 @@ android {
         }
     }
     // Model belleğe eşlenebilsin diye APK içinde sıkıştırılmadan durmalı
-    androidResources { noCompress += "onnx" }
+    androidResources {
+        noCompress += "onnx"
+        // Android 13+: telefonun Ayarlar → Uygulamalar → DVScreator → Dil ekranı (res/values-xx klasörlerinden)
+        generateLocaleConfig = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

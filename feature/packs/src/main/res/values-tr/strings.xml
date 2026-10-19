@@ -109,4 +109,6 @@
     <string name="home_new_pack_subtitle">WhatsApp\'a eklenecek paket</string>
     <string name="settings_title">Ayarlar</string>
     <string name="operation_failed">İşlem yapılamadı: %1$s</string>
+    <string name="error_too_large">En düşük kalitede bile %1$s; sınır %2$s. Daha kısa bir bölüm seçin.</string>
+    <string name="error_out_of_memory">Bellek yetmedi — daha kısa bir video deneyin.</string>
 </resources>
