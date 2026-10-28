@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Remove background</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="editor_tool_text">Text</string>
     <string name="editor_rotate">↻ Rotate</string>
     <string name="editor_margin">Margin</string>
     <string name="editor_outline">Outline</string>
-    <string name="editor_see_final">Open “Text” to see the finished sticker.</string>
     <string name="text_add">Add text</string>
     <string name="text_edit">Edit</string>
     <string name="text_delete">Delete</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d frames</string>
     <string name="trim_hint_short">Shorter selection = higher quality in the 500 KB limit.</string>
     <string name="trim_hint_long">Long selection: the sticker may need lower quality or frame rate to fit 500 KB. Shorter = sharper.</string>
+    <string name="editor_tool_lasso">Lasso</string>
+    <string name="editor_tool_wand">Magic wand</string>
+    <string name="editor_lasso_hint">Draw around the subject; everything outside is removed. With “Remove background” on, the AI only looks inside your selection, so it finds the subject even in busy pictures.</string>
+    <string name="editor_wand_hint">Tap an area: similar colours connected to it are removed (or restored). Raise the tolerance to take in more shades.</string>
+    <string name="editor_wand_tolerance">Tolerance</string>
+    <string name="editor_clear_selection">Clear selection</string>
+    <string name="editor_group_cut">Cut out</string>
+    <string name="editor_group_style">Decorate</string>
 </resources>

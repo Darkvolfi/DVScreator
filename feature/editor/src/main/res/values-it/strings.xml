@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Rimuovi sfondo</string>
     <string name="ok">OK</string>
     <string name="cancel">Annulla</string>
-    <string name="editor_tool_text">Testo</string>
     <string name="editor_rotate">↻ Ruota</string>
     <string name="editor_margin">Margine</string>
     <string name="editor_outline">Contorno</string>
-    <string name="editor_see_final">Apri “Testo” per vedere lo sticker finito.</string>
     <string name="text_add">Aggiungi testo</string>
     <string name="text_edit">Modifica</string>
     <string name="text_delete">Elimina</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d fotogrammi</string>
     <string name="trim_hint_short">Selezione più breve = qualità più alta nel limite di 500 KB.</string>
     <string name="trim_hint_long">Selezione lunga: per stare in 500 KB lo sticker potrebbe richiedere meno qualità o fotogrammi. Più breve = più nitido.</string>
+    <string name="editor_tool_lasso">Lazo</string>
+    <string name="editor_tool_wand">Bacchetta magica</string>
+    <string name="editor_lasso_hint">Disegna intorno al soggetto; tutto ciò che è fuori viene rimosso. Con “Rimuovi sfondo” attivo, l’IA guarda solo dentro la selezione e trova il soggetto anche nelle immagini complesse.</string>
+    <string name="editor_wand_hint">Tocca un’area: i colori simili collegati vengono rimossi (o ripristinati). Aumenta la tolleranza per includere più sfumature.</string>
+    <string name="editor_wand_tolerance">Tolleranza</string>
+    <string name="editor_clear_selection">Annulla selezione</string>
+    <string name="editor_group_cut">Scontorna</string>
+    <string name="editor_group_style">Decora</string>
 </resources>

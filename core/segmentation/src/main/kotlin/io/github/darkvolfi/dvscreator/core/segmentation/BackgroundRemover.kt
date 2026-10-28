@@ -31,9 +31,14 @@ class BackgroundRemover private constructor(
     private val inputName = session.inputNames.first()
 
     /** Kaynak boyutunda ön plan maskesi: 0 = arka plan, 255 = ön plan. */
-    fun maskOf(image: ArgbImage): ByteArray {
+    fun maskOf(image: ArgbImage): ByteArray = finishMask(infer(preprocess(image)), image.width, image.height)
+
+    /**
+     * Yalnızca model çıkarımı (oturumu meşgul eden kısım); ön işlem [preprocess], son işlem [finishMask] oturumsuz
+     * çalışır — videoda başka kareler bu sırada modele girebilsin (bkz. VideoBackgroundRemover).
+     */
+    internal fun infer(input: java.nio.FloatBuffer): FloatArray {
         val n = inputSize
-        val input = preprocess(image)
         val t0 = System.nanoTime()
         val raw = OnnxTensor.createTensor(env, input, longArrayOf(1, 3, n.toLong(), n.toLong())).use { tensor ->
             session.run(mapOf(inputName to tensor)).use { out ->
@@ -42,13 +47,19 @@ class BackgroundRemover private constructor(
             }
         }
         lastInferenceMs = (System.nanoTime() - t0) / 1_000_000
+        return raw
+    }
+
+    /** Model çıktısı → [width]×[height] maske (0..255). */
+    internal fun finishMask(raw: FloatArray, width: Int, height: Int): ByteArray {
+        val n = inputSize
         // rembg ile aynı: çıktı min-max ile 0..1'e yayılır
         var lo = Float.MAX_VALUE
         var hi = -Float.MAX_VALUE
         for (v in raw) { if (v < lo) lo = v; if (v > hi) hi = v }
         val range = (hi - lo).takeIf { it > 1e-6f } ?: 1f
         if (fillHoles) MaskHoles.fill(raw, n, n, lo + range * 0.5f, hi)
-        return resizeMask(raw, n, n, image.width, image.height, lo, range)
+        return resizeMask(raw, n, n, width, height, lo, range)
     }
 
     /** Ön planla çevrili "arka plan" bölgelerini ön plana kat (bkz. [MaskHoles]). */
@@ -58,8 +69,10 @@ class BackgroundRemover private constructor(
      * Görüntünün alfa kanalını ön plan maskesiyle çarpar. Çağrılar sıraya alınır: model zaten 4 çekirdek
      * kullanıyor, aynı anda birden çok çıkarım hızlandırmıyor, yalnızca belleği katlıyor.
      */
-    fun matte(): Matte = Matte { image, _ ->
-        val mask = synchronized(this) { maskOf(image) }
+    fun matte(): Matte = Matte { image, _ -> applyMask(image, synchronized(this) { maskOf(image) }) }
+
+    /** Görüntünün alfasını [mask] ile çarpar ve (açıksa) kenar rengini temizler. */
+    internal fun applyMask(image: ArgbImage, mask: ByteArray): ArgbImage {
         val out = ArgbImage(image.width, image.height)
         for (i in image.pixels.indices) {
             val p = image.pixels[i]
@@ -67,7 +80,7 @@ class BackgroundRemover private constructor(
             out.pixels[i] = (a shl 24) or (p and 0xFFFFFF)
         }
         if (cleanEdges) EdgeCleanup.decontaminate(out)
-        out
+        return out
     }
 
     /** Kenardaki eski arka plan rengini temizle (bkz. [EdgeCleanup]). */
@@ -80,7 +93,7 @@ class BackgroundRemover private constructor(
     override fun close() = session.close()
 
     /** NCHW, rembg'deki gibi: görüntü en parlak değerine bölünür, 0.5 çıkarılır (std = 1). Bilineer küçültme. */
-    private fun preprocess(image: ArgbImage): java.nio.FloatBuffer {
+    internal fun preprocess(image: ArgbImage): java.nio.FloatBuffer {
         val n = inputSize
         val plane = n * n
         val out = ByteBuffer.allocateDirect(plane * 3 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer()
@@ -144,6 +157,8 @@ class BackgroundRemover private constructor(
          */
         fun open(
             context: Context, useXnnpack: Boolean = false, threads: Int = 4, useNnapi: Boolean = false,
+            /** NNAPI'de yarı hassasiyet (hızlı); false: tam hassasiyet. */
+            nnapiFp16: Boolean = true,
             /** Test için: APK dışındaki bir model dosyası. */
             modelFile: java.io.File? = null,
         ): BackgroundRemover {
@@ -159,7 +174,10 @@ class BackgroundRemover private constructor(
                 setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT)
                 setIntraOpNumThreads(threads)
                 if (useXnnpack) addXnnpack(mapOf("intra_op_num_threads" to threads.toString()))
-                if (useNnapi) addNnapi(java.util.EnumSet.of(ai.onnxruntime.providers.NNAPIFlags.USE_FP16))
+                if (useNnapi) addNnapi(
+                    if (nnapiFp16) java.util.EnumSet.of(ai.onnxruntime.providers.NNAPIFlags.USE_FP16)
+                    else java.util.EnumSet.noneOf(ai.onnxruntime.providers.NNAPIFlags::class.java),
+                )
             }
             val session = env.createSession(model, options)
             // Girdi boyutu derlemede modele yazılır (core/segmentation/build.gradle.kts — inputSize)

@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">बैकग्राउंड हटाएँ</string>
     <string name="ok">ठीक है</string>
     <string name="cancel">रद्द करें</string>
-    <string name="editor_tool_text">टेक्स्ट</string>
     <string name="editor_rotate">↻ घुमाएँ</string>
     <string name="editor_margin">मार्जिन</string>
     <string name="editor_outline">आउटलाइन</string>
-    <string name="editor_see_final">तैयार स्टिकर देखने के लिए “टेक्स्ट” खोलें।</string>
     <string name="text_add">टेक्स्ट जोड़ें</string>
     <string name="text_edit">एडिट करें</string>
     <string name="text_delete">हटाएँ</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d फ़्रेम</string>
     <string name="trim_hint_short">छोटा हिस्सा = 500 KB की सीमा में बेहतर क्वालिटी।</string>
     <string name="trim_hint_long">लंबा हिस्सा: 500 KB में आने के लिए स्टिकर की क्वालिटी या फ़्रेम रेट कम करनी पड़ सकती है। छोटा = ज़्यादा साफ़।</string>
+    <string name="editor_tool_lasso">लैसो</string>
+    <string name="editor_tool_wand">जादू की छड़ी</string>
+    <string name="editor_lasso_hint">विषय के चारों ओर रेखा खींचें; बाहर का सब हट जाएगा। “बैकग्राउंड हटाएँ” चालू हो तो AI सिर्फ़ आपके चुने हिस्से के अंदर देखता है और भरी हुई तस्वीरों में भी विषय ढूँढ लेता है।</string>
+    <string name="editor_wand_hint">किसी हिस्से पर टैप करें: उससे जुड़े मिलते-जुलते रंग हट जाते हैं (या वापस आते हैं)। ज़्यादा रंग लेने के लिए टॉलरेंस बढ़ाएँ।</string>
+    <string name="editor_wand_tolerance">टॉलरेंस</string>
+    <string name="editor_clear_selection">चुनाव हटाएँ</string>
+    <string name="editor_group_cut">काटें</string>
+    <string name="editor_group_style">सजाएँ</string>
 </resources>

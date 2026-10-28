@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Hapus latar belakang</string>
     <string name="ok">OK</string>
     <string name="cancel">Batal</string>
-    <string name="editor_tool_text">Teks</string>
     <string name="editor_rotate">↻ Putar</string>
     <string name="editor_margin">Margin</string>
     <string name="editor_outline">Garis tepi</string>
-    <string name="editor_see_final">Buka “Teks” untuk melihat stiker jadi.</string>
     <string name="text_add">Tambah teks</string>
     <string name="text_edit">Edit</string>
     <string name="text_delete">Hapus</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d bingkai</string>
     <string name="trim_hint_short">Pilihan lebih pendek = kualitas lebih tinggi dalam batas 500 KB.</string>
     <string name="trim_hint_long">Pilihan panjang: stiker mungkin perlu kualitas atau frame rate lebih rendah agar muat dalam 500 KB. Lebih pendek = lebih tajam.</string>
+    <string name="editor_tool_lasso">Laso</string>
+    <string name="editor_tool_wand">Tongkat ajaib</string>
+    <string name="editor_lasso_hint">Gambar di sekeliling objek; semua di luarnya dihapus. Jika “Hapus latar belakang” aktif, AI hanya melihat di dalam pilihan Anda sehingga tetap menemukan objek di gambar yang ramai.</string>
+    <string name="editor_wand_hint">Ketuk sebuah area: warna serupa yang tersambung dengannya dihapus (atau dipulihkan). Naikkan toleransi untuk mencakup lebih banyak warna.</string>
+    <string name="editor_wand_tolerance">Toleransi</string>
+    <string name="editor_clear_selection">Hapus pilihan</string>
+    <string name="editor_group_cut">Gunting</string>
+    <string name="editor_group_style">Hias</string>
 </resources>

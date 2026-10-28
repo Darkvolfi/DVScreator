@@ -23,7 +23,7 @@ class MattedAnimationDeviceTest {
         val dir = File(ctx.filesDir, "seg")
         val sources = dir.listFiles { f -> f.name.endsWith(".gif") || f.name.endsWith(".mp4") }.orEmpty()
         assumeTrue(sources.isNotEmpty())
-        BackgroundRemover.open(target).use { remover ->
+        VideoBackgroundRemover.open(target).use { remover ->
             for (f in sources) {
                 val mime = if (f.name.endsWith(".gif")) "image/gif" else "video/mp4"
                 val t0 = System.currentTimeMillis()

@@ -34,6 +34,9 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -137,9 +140,17 @@ fun StickerEditor(
     var player by remember(uri) { mutableStateOf<VideoView?>(null) }
     var removeBackground by remember(uri) { mutableStateOf(false) }
     var tool by remember(uri) { mutableStateOf(EditorTool.CROP) }
+    // "Kes" sekmesine dönünce son kullanılan kesme aracı seçili gelir
+    var cutTool by remember(uri) { mutableStateOf(EditorTool.LASSO) }
     var strokes by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
     var redo by remember(uri) { mutableStateOf<List<MaskStroke>>(emptyList()) }
     var brush by remember(uri) { mutableStateOf(DEFAULT_BRUSH) }
+    // Kement seçimi (kaynağa göre 0..1 çokgen) ve sihirli değnek ayarları
+    var selection by remember(uri) { mutableStateOf<List<Float>?>(null) }
+    var wandTolerance by remember(uri) { mutableStateOf(DEFAULT_WAND_TOLERANCE) }
+    var wandRestore by remember(uri) { mutableStateOf(false) }
+    // Kesim var mı: otomatik arka plan ya da kement → önizleme kesilmiş kareyi gösterir
+    val cutting = removeBackground || selection != null
     var rotation by remember(uri) { mutableStateOf(0) }
     var margin by remember(uri) { mutableStateOf(EditRecipe().marginPx) }
     var outline by remember(uri) { mutableStateOf(0) }
@@ -156,7 +167,7 @@ fun StickerEditor(
 
     // Videoda silgi / arka plan önizlemesi oynayan video üzerinde değil, seçilen aralığın ilk karesinde yapılır;
     // izler sticker üretilirken her kareye uygulanır
-    val needFrame = video != null && (tool != EditorTool.CROP || removeBackground)
+    val needFrame = video != null && (tool != EditorTool.CROP || cutting)
     val frameMs = ((currentRange?.start ?: 0f) / 100f).roundToInt() * 100
     val videoFrame by produceState<StillFrame?>(null, uri, needFrame, frameMs) {
         if (!needFrame) return@produceState
@@ -165,22 +176,41 @@ fun StickerEditor(
     }
     // remember: her çizimde yeni nesne olursa aşağıdaki işler (arka plan kaldırma) durmadan yeniden başlar
     val frame: StillFrame? = remember(m, videoFrame) { (m as? SourceMeta.Still)?.let { StillFrame(it.previewImage, it.preview) } ?: videoFrame }
-    // Arka plan kaldırmanın sonucu hemen gösterilir (önizleme çözünürlüğünde ~1 sn)
-    val mattedFrame by produceState<StillFrame?>(null, removeBackground, frame) {
-        value = null
+    // Kesimin (arka plan kaldırma ve/veya kement) sonucu hemen gösterilir (önizleme çözünürlüğünde ~1 sn).
+    // Seçim değişirken eski sonuç yenisi hazır olana dek kalır (titremesin)
+    val mattedFrame by produceState<StillFrame?>(null, removeBackground, selection, frame) {
         val f = frame
-        if (!removeBackground || f == null) return@produceState
+        if (!cutting || f == null) { value = null; return@produceState }
         value = withContext(Dispatchers.Default) {
-            runCatching { BackgroundRemover.open(context).use { it.matte().apply(f.image, Matte.Region.FULL) }.let { StillFrame(it, it.toBitmap().asImageBitmap()) } }.getOrNull()
+            runCatching {
+                val cut = if (removeBackground) BackgroundRemover.open(context).use { cutOf(f.image, it.matte(), selection) }
+                else cutOf(f.image, null, selection)
+                StillFrame(cut, cut.toBitmap().asImageBitmap())
+            }.getOrNull()
         }
     }
     val mattedPreview = mattedFrame?.bitmap
+    // Fırça izleri ve sihirli değnek uygulanmış önizleme (sticker üretimiyle aynı kod). Değnek bölge doldurduğu için
+    // GPU'da çizilemez; [EditedFrame.strokeCount]'tan sonraki izleri MaskCanvas hesap bitene dek GPU'da çizer
+    val editedFrame by produceState<EditedFrame?>(null, frame, mattedFrame, strokes) {
+        val f = frame
+        // Kesim hesaplanırken kesilmemiş kareyle hesaplama: bir an kesilmemiş görüntü yanıp sönmesin
+        if (f == null || strokes.isEmpty() || (cutting && mattedFrame == null)) { value = null; return@produceState }
+        val auto = mattedFrame?.image
+        val drawn = strokes
+        value = withContext(Dispatchers.Default) {
+            runCatching {
+                val out = Matte.of(auto?.let { a -> Matte { _, _ -> a } }, drawn)!!.apply(f.image, Matte.Region.FULL)
+                EditedFrame(out.toBitmap().asImageBitmap(), drawn.size)
+            }.getOrNull()
+        } ?: value
+    }
 
     // Hareketli önizleme: GIF her zaman, video yalnızca arka plan kaldırılınca (aksi hâlde video oynatıcı oynar).
     // Arka plan kaldırılınca kareler tek tek işlenir; hazır olanlar döngüde oynar.
     val animStart = ((currentRange?.start ?: 0f) / 100f).roundToInt() * 100
     val animEnd = ((currentRange?.endInclusive ?: 0f) / 100f).roundToInt() * 100
-    val wantAnim = timeline != null && (video == null || removeBackground)
+    val wantAnim = timeline != null && (video == null || cutting)
     val rawAnim by produceState<List<AnimFrame>?>(null, uri, wantAnim, removeBackground, animStart, animEnd) {
         if (!wantAnim) { value = null; return@produceState }
         delay(300)   // aralık sürüklenirken her adımda okuma
@@ -194,31 +224,32 @@ fun StickerEditor(
         }
     }
     var mattedAnim by remember(uri) { mutableStateOf<List<AnimFrame>>(emptyList()) }
-    LaunchedEffect(rawAnim, removeBackground, mattedFrame != null) {
+    LaunchedEffect(rawAnim, removeBackground, selection, mattedFrame != null) {
         mattedAnim = emptyList()
         val raw = rawAnim
         // İlk kare bitmeden başlama: aynı anda iki model işlemciyi paylaşmasın
-        if (!removeBackground || raw == null || mattedFrame == null) return@LaunchedEffect
-        val remover = withContext(Dispatchers.Default) { runCatching { BackgroundRemover.open(context) }.getOrNull() } ?: return@LaunchedEffect
+        if (!cutting || raw == null || mattedFrame == null) return@LaunchedEffect
+        val remover = if (!removeBackground) null
+        else withContext(Dispatchers.Default) { runCatching { BackgroundRemover.open(context) }.getOrNull() } ?: return@LaunchedEffect
         try {
-            val matte = remover.matte()
+            val auto = remover?.matte()
             for (f in raw) {
                 val done = withContext(Dispatchers.Default) {
                     runCatching {
                         val image = f.original.asAndroidBitmap().copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
-                        AnimFrame(matte.apply(image, Matte.Region.FULL).toBitmap().asImageBitmap(), f.original, f.durationMs)
+                        AnimFrame(cutOf(image, auto, selection).toBitmap().asImageBitmap(), f.original, f.durationMs)
                     }.getOrNull()
                 } ?: break
                 mattedAnim = mattedAnim + done
             }
         } finally {
-            remover.close()
+            remover?.close()
         }
     }
     // Silgi araçlarında görüntü durur (hareketli kareye çizilmez); izler yine her kareye uygulanır
     val playing: List<AnimFrame>? = when {
         tool != EditorTool.CROP -> null
-        removeBackground -> mattedAnim.takeIf { it.size >= 2 }
+        cutting -> mattedAnim.takeIf { it.size >= 2 }
         else -> rawAnim?.takeIf { it.size >= 2 }
     }
     var animIndex by remember(uri) { mutableStateOf(0) }
@@ -238,7 +269,7 @@ fun StickerEditor(
     )
     val finalCanvas by produceState<ImageBitmap?>(null, tool == EditorTool.TEXT, frame, mattedFrame, previewRecipe) {
         val f = frame
-        if (tool != EditorTool.TEXT || f == null || (removeBackground && mattedFrame == null)) return@produceState
+        if (tool != EditorTool.TEXT || f == null || (cutting && mattedFrame == null)) return@produceState
         delay(80)   // kaydırıcı sürüklenirken her adımda yeniden çizme
         value = withContext(Dispatchers.Default) { runCatching { renderFinal(f.image, mattedFrame?.image, previewRecipe, m.width) }.getOrNull() }
     }
@@ -282,13 +313,21 @@ fun StickerEditor(
             Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f).graphicsLayer { rotationZ = rotation.toFloat() }) {
                 when {
                     m is SourceMeta.Still || needFrame -> {
-                        val shown = animFrame?.bitmap ?: if (removeBackground) mattedPreview else frame?.bitmap
+                        // Oynayan karede izler GPU'da çizilir; duran karede izler (değnek dahil) işlenmiş önizlemededir
+                        val edited = editedFrame.takeIf { animFrame == null }
+                        val shown = animFrame?.bitmap ?: edited?.bitmap ?: if (cutting) mattedPreview else frame?.bitmap
                         val original = animFrame?.original ?: frame?.bitmap
                         if (shown != null && original != null) {
-                            val transparent = removeBackground || strokes.isNotEmpty()
+                            val transparent = cutting || strokes.isNotEmpty()
                             MaskCanvas(
-                                base = shown, original = original, strokes = strokes, tool = tool, brush = brush,
+                                base = shown, original = original, strokes = strokes, appliedStrokes = edited?.strokeCount ?: 0,
+                                selection = selection, tool = tool, brush = brush,
                                 onStroke = { strokes = strokes + it; redo = emptyList() },
+                                onWand = { x, y ->
+                                    strokes = strokes + MaskStroke(wandRestore, 0f, listOf(x, y), wandTolerance = wandTolerance)
+                                    redo = emptyList()
+                                },
+                                onSelection = { selection = it },
                                 modifier = Modifier.fillMaxSize().then(if (transparent) Modifier.checkerboard() else Modifier),
                             )
                         } else {
@@ -317,24 +356,141 @@ fun StickerEditor(
             }
         }
 
-        rawAnim?.let { raw ->
-            if (removeBackground && tool == EditorTool.CROP && mattedAnim.size < raw.size) {
-                Text(
-                    stringResource(R.string.editor_anim_preparing, mattedAnim.size, raw.size),
-                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+        // Araçlar üç sekmede: Kırp (çerçeve, döndür, süre) · Kes (arka plan, kement, değnek, fırça) · Süsle (yazı, kenar, boşluk)
+        val group = when (tool) {
+            EditorTool.CROP -> ToolGroup.CROP
+            EditorTool.TEXT -> ToolGroup.STYLE
+            else -> ToolGroup.CUT
+        }
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+            ToolGroup.entries.forEachIndexed { i, g ->
+                SegmentedButton(
+                    selected = group == g,
+                    onClick = { tool = when (g) { ToolGroup.CROP -> EditorTool.CROP; ToolGroup.CUT -> cutTool; ToolGroup.STYLE -> EditorTool.TEXT } },
+                    shape = SegmentedButtonDefaults.itemShape(i, ToolGroup.entries.size),
+                    label = { Text(stringResource(g.label)) },
                 )
             }
         }
 
-        run {
-            // Araçlar: kırp / sil / geri getir. GIF ve videoda izler her kareye uygulanır
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                FilterChip(selected = tool == EditorTool.CROP, onClick = { tool = EditorTool.CROP }, label = { Text(stringResource(R.string.editor_tool_crop)) })
-                FilterChip(selected = tool == EditorTool.ERASE, onClick = { tool = EditorTool.ERASE }, label = { Text(stringResource(R.string.editor_tool_erase)) })
-                FilterChip(selected = tool == EditorTool.RESTORE, onClick = { tool = EditorTool.RESTORE }, label = { Text(stringResource(R.string.editor_tool_restore)) })
-                FilterChip(selected = tool == EditorTool.TEXT, onClick = { tool = EditorTool.TEXT }, label = { Text(stringResource(R.string.editor_tool_text)) })
+        when (group) {
+            ToolGroup.CROP -> {
+                rawAnim?.let { raw ->
+                    if (cutting && mattedAnim.size < raw.size) {
+                        Text(
+                            stringResource(R.string.editor_anim_preparing, mattedAnim.size, raw.size),
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    FilterChip(selected = squareMode, onClick = { squareMode = true }, label = { Text(stringResource(R.string.editor_mode_square)) })
+                    FilterChip(selected = !squareMode, onClick = { squareMode = false }, label = { Text(stringResource(R.string.editor_mode_fit)) })
+                    Spacer(Modifier.weight(1f))
+                    OutlinedButton(onClick = { rotation = (rotation + 90) % 360 }) { Text(stringResource(R.string.editor_rotate)) }
+                }
+                if (squareMode) {
+                    val maxSide = min(m.width, m.height).toFloat()
+                    Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Slider(
+                        value = crop.side / maxSide,
+                        valueRange = SquareCrop.MIN_FRACTION..1f,
+                        onValueChange = { crop = crop.copy(side = it * maxSide).clamped(m.width, m.height) },
+                    )
+                } else {
+                    Text(stringResource(R.string.editor_fit_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                if (timeline != null && currentRange != null) {
+                    // Küçük resim şeridi: hangi anı seçtiğini görmek için
+                    Row(Modifier.fillMaxWidth().height(48.dp).clipToBounds()) {
+                        for (thumb in timeline.thumbnails) {
+                            Image(thumb, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.weight(1f).height(48.dp))
+                        }
+                    }
+                    RangeSlider(
+                        value = currentRange,
+                        valueRange = 0f..timeline.durationMs.toFloat(),
+                        onValueChange = { new ->
+                            val next = constrain(currentRange, new, maxMs, MIN_MS.toFloat())
+                            range = next
+                            // Hangi tutamaç hareket ettiyse o ana atla (bitişte, bitişten hemen önceki an)
+                            val seekTo = if (new.start != currentRange.start) next.start else next.endInclusive - 300f
+                            player?.seekTo(seekTo.coerceAtLeast(next.start).roundToInt())
+                        },
+                    )
+                    val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
+                    val fps = plannedFps(selMs, timeline, video != null, removeBackground)
+                    val frames = (selMs * fps / 1000).roundToInt()
+                    Text(
+                        stringResource(R.string.trim_selection, sec(currentRange.start), sec(currentRange.endInclusive), sec(selMs.toFloat())),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(stringResource(R.string.trim_estimate, String.format(Locale.ROOT, "%.0f", fps), frames), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        stringResource(if (selMs > 6000) R.string.trim_hint_long else R.string.trim_hint_short),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
-            if (tool == EditorTool.TEXT) {
+
+            ToolGroup.CUT -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(stringResource(R.string.editor_remove_bg), style = MaterialTheme.typography.titleSmall)
+                        val hint = if (timeline != null && currentRange != null) {
+                            val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
+                            val frames = (selMs * plannedFps(selMs, timeline, video != null, removeBackground) / 1000).roundToInt()
+                            stringResource(R.string.editor_remove_bg_hint_video, (frames * SECONDS_PER_MATTE_FRAME).roundToInt().coerceAtLeast(1))
+                        } else stringResource(R.string.editor_remove_bg_hint)
+                        Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Switch(checked = removeBackground, onCheckedChange = { removeBackground = it })
+                }
+                // GIF ve videoda kesimler her kareye uygulanır
+                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    for ((t, label) in CUT_TOOLS) {
+                        FilterChip(selected = tool == t, onClick = { tool = t; cutTool = t }, label = { Text(stringResource(label)) })
+                    }
+                }
+                when (tool) {
+                    EditorTool.LASSO -> {
+                        Text(stringResource(R.string.editor_lasso_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (selection != null) {
+                            TextButton(onClick = { selection = null }) { Text(stringResource(R.string.editor_clear_selection)) }
+                        }
+                    }
+                    EditorTool.WAND -> {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            FilterChip(selected = !wandRestore, onClick = { wandRestore = false }, label = { Text(stringResource(R.string.editor_tool_erase)) })
+                            FilterChip(selected = wandRestore, onClick = { wandRestore = true }, label = { Text(stringResource(R.string.editor_tool_restore)) })
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(stringResource(R.string.editor_wand_tolerance), style = MaterialTheme.typography.bodySmall)
+                            Slider(value = wandTolerance, valueRange = MIN_WAND_TOLERANCE..MAX_WAND_TOLERANCE, onValueChange = { wandTolerance = it }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+                        }
+                        Text(stringResource(R.string.editor_wand_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    else -> {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(stringResource(R.string.editor_brush), style = MaterialTheme.typography.bodySmall)
+                            Slider(value = brush, valueRange = MIN_BRUSH..MAX_BRUSH, onValueChange = { brush = it }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+                        }
+                        Text(stringResource(R.string.editor_erase_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+                if (strokes.isNotEmpty() || redo.isNotEmpty()) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }) { Text(stringResource(R.string.editor_undo)) }
+                        TextButton(enabled = redo.isNotEmpty(), onClick = { strokes = strokes + redo.last(); redo = redo.dropLast(1) }) { Text(stringResource(R.string.editor_redo)) }
+                        TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = emptyList(); strokes = emptyList() }) { Text(stringResource(R.string.editor_clear_strokes)) }
+                    }
+                }
+            }
+
+            ToolGroup.STYLE -> {
                 Text(stringResource(R.string.text_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = { textDialog = -1 }) { Text(stringResource(R.string.text_add)) }
@@ -353,116 +509,33 @@ fun StickerEditor(
                         )
                     }
                 }
-            }
-            textDialog?.let { index ->
-                TextDialog(
-                    initial = texts.getOrNull(index) ?: newTextLayer(),
-                    onDone = { t ->
-                        if (index >= 0) texts = texts.toMutableList().also { it[index] = t }
-                        else { texts = texts + t; selectedText = texts.lastIndex }
-                        textDialog = null
-                    },
-                    onDismiss = { textDialog = null },
-                )
-            }
-            if (tool == EditorTool.ERASE || tool == EditorTool.RESTORE) {
+                // Dış çizgi (klasik beyaz sticker kenarı)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(R.string.editor_brush), style = MaterialTheme.typography.bodySmall)
-                    Slider(value = brush, valueRange = MIN_BRUSH..MAX_BRUSH, onValueChange = { brush = it }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+                    Text(stringResource(R.string.editor_outline), style = MaterialTheme.typography.bodySmall)
+                    Slider(value = outline.toFloat(), valueRange = 0f..MAX_OUTLINE.toFloat(), steps = MAX_OUTLINE - 1, onValueChange = { outline = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
+                    for (c in listOf(0xFFFFFFFF.toInt(), 0xFF000000.toInt())) {
+                        Box(
+                            Modifier.padding(start = 6.dp).size(28.dp).clip(CircleShape).background(Color(c))
+                                .border(if (c == outlineColor) 3.dp else 1.dp, if (c == outlineColor) MaterialTheme.colorScheme.primary else Color.Gray, CircleShape)
+                                .clickable { outlineColor = c },
+                        )
+                    }
                 }
-                Text(stringResource(R.string.editor_erase_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            if (strokes.isNotEmpty() || redo.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }) { Text(stringResource(R.string.editor_undo)) }
-                    TextButton(enabled = redo.isNotEmpty(), onClick = { strokes = strokes + redo.last(); redo = redo.dropLast(1) }) { Text(stringResource(R.string.editor_redo)) }
-                    TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = emptyList(); strokes = emptyList() }) { Text(stringResource(R.string.editor_clear_strokes)) }
-                }
-            }
-        }
-
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = squareMode, onClick = { squareMode = true }, label = { Text(stringResource(R.string.editor_mode_square)) })
-            FilterChip(selected = !squareMode, onClick = { squareMode = false }, label = { Text(stringResource(R.string.editor_mode_fit)) })
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedButton(onClick = { rotation = (rotation + 90) % 360 }) { Text(stringResource(R.string.editor_rotate)) }
-            Spacer(Modifier.width(12.dp))
-            Text(stringResource(R.string.editor_margin), style = MaterialTheme.typography.bodySmall)
-            Slider(value = margin.toFloat(), valueRange = 0f..MAX_MARGIN.toFloat(), steps = MAX_MARGIN / 4 - 1, onValueChange = { margin = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
-        }
-        // Dış çizgi (klasik beyaz sticker kenarı)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.editor_outline), style = MaterialTheme.typography.bodySmall)
-            Slider(value = outline.toFloat(), valueRange = 0f..MAX_OUTLINE.toFloat(), steps = MAX_OUTLINE - 1, onValueChange = { outline = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
-            for (c in listOf(0xFFFFFFFF.toInt(), 0xFF000000.toInt())) {
-                Box(
-                    Modifier.padding(start = 6.dp).size(28.dp).clip(CircleShape).background(Color(c))
-                        .border(if (c == outlineColor) 3.dp else 1.dp, if (c == outlineColor) MaterialTheme.colorScheme.primary else Color.Gray, CircleShape)
-                        .clickable { outlineColor = c },
-                )
-            }
-        }
-        if ((outline > 0 || margin != EditRecipe().marginPx || rotation != 0) && tool != EditorTool.TEXT) {
-            Text(stringResource(R.string.editor_see_final), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-
-        if (squareMode) {
-            val maxSide = min(m.width, m.height).toFloat()
-            Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Slider(
-                value = crop.side / maxSide,
-                valueRange = SquareCrop.MIN_FRACTION..1f,
-                onValueChange = { crop = crop.copy(side = it * maxSide).clamped(m.width, m.height) },
-            )
-        } else {
-            Text(stringResource(R.string.editor_fit_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(stringResource(R.string.editor_remove_bg), style = MaterialTheme.typography.titleSmall)
-                val hint = if (timeline != null && currentRange != null) {
-                    val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-                    val frames = (selMs * plannedFps(selMs, timeline, video != null) / 1000).roundToInt()
-                    stringResource(R.string.editor_remove_bg_hint_video, (frames * SECONDS_PER_MATTE_FRAME).roundToInt().coerceAtLeast(1))
-                } else stringResource(R.string.editor_remove_bg_hint)
-                Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Spacer(Modifier.width(8.dp))
-            Switch(checked = removeBackground, onCheckedChange = { removeBackground = it })
-        }
-
-        if (timeline != null && currentRange != null) {
-            // Küçük resim şeridi: hangi anı seçtiğini görmek için
-            Row(Modifier.fillMaxWidth().height(48.dp).clipToBounds()) {
-                for (thumb in timeline.thumbnails) {
-                    Image(thumb, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.weight(1f).height(48.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.editor_margin), style = MaterialTheme.typography.bodySmall)
+                    Slider(value = margin.toFloat(), valueRange = 0f..MAX_MARGIN.toFloat(), steps = MAX_MARGIN / 4 - 1, onValueChange = { margin = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
                 }
             }
-            RangeSlider(
-                value = currentRange,
-                valueRange = 0f..timeline.durationMs.toFloat(),
-                onValueChange = { new ->
-                    val next = constrain(currentRange, new, maxMs, MIN_MS.toFloat())
-                    range = next
-                    // Hangi tutamaç hareket ettiyse o ana atla (bitişte, bitişten hemen önceki an)
-                    val seekTo = if (new.start != currentRange.start) next.start else next.endInclusive - 300f
-                    player?.seekTo(seekTo.coerceAtLeast(next.start).roundToInt())
+        }
+        textDialog?.let { index ->
+            TextDialog(
+                initial = texts.getOrNull(index) ?: newTextLayer(),
+                onDone = { t ->
+                    if (index >= 0) texts = texts.toMutableList().also { it[index] = t }
+                    else { texts = texts + t; selectedText = texts.lastIndex }
+                    textDialog = null
                 },
-            )
-            val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-            val fps = plannedFps(selMs, timeline, video != null)
-            val frames = (selMs * fps / 1000).roundToInt()
-            Text(
-                stringResource(R.string.trim_selection, sec(currentRange.start), sec(currentRange.endInclusive), sec(selMs.toFloat())),
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(stringResource(R.string.trim_estimate, String.format(Locale.ROOT, "%.0f", fps), frames), style = MaterialTheme.typography.bodyMedium)
-            Text(
-                stringResource(if (selMs > 6000) R.string.trim_hint_long else R.string.trim_hint_short),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                onDismiss = { textDialog = null },
             )
         }
 
@@ -474,6 +547,7 @@ fun StickerEditor(
                         crop = if (squareMode) crop.toCropRect() else null,
                         trim = currentRange?.let { TrimRange(it.start.roundToInt(), it.endInclusive.roundToInt()) },
                         removeBackground = removeBackground,
+                        selection = selection,
                         strokes = strokes,
                         texts = texts,
                         rotationDegrees = rotation,
@@ -512,6 +586,21 @@ internal fun constrain(
     return start..end
 }
 
+/** Düzenleyicinin üç sekmesi. */
+private enum class ToolGroup(val label: Int) {
+    CROP(R.string.editor_tool_crop),
+    CUT(R.string.editor_group_cut),
+    STYLE(R.string.editor_group_style),
+}
+
+/** "Kes" sekmesindeki araçlar ve adları. */
+private val CUT_TOOLS = listOf(
+    EditorTool.LASSO to R.string.editor_tool_lasso,
+    EditorTool.WAND to R.string.editor_tool_wand,
+    EditorTool.ERASE to R.string.editor_tool_erase,
+    EditorTool.RESTORE to R.string.editor_tool_restore,
+)
+
 private const val MIN_MS = 500
 private const val THUMBNAILS = 8
 private const val PREVIEW_LONG_SIDE = 1080
@@ -525,6 +614,11 @@ private const val MAX_OUTLINE = 14
 private const val DEFAULT_BRUSH = 0.04f
 private const val MIN_BRUSH = 0.008f
 private const val MAX_BRUSH = 0.15f
+
+/** Sihirli değnek renk toleransı (kanal başına, 0..1). */
+private const val DEFAULT_WAND_TOLERANCE = 0.12f
+private const val MIN_WAND_TOLERANCE = 0.02f
+private const val MAX_WAND_TOLERANCE = 0.4f
 
 /** Telefonda ölçülen: kare başına model ~0.7 sn + ön/son işlem (agents/raporlar). */
 private const val SECONDS_PER_MATTE_FRAME = 0.8
@@ -566,10 +660,13 @@ private fun readStillMeta(context: Context, uri: Uri, mimeType: String): SourceM
     return SourceMeta.Still(w, h, loaded.image.toBitmap().asImageBitmap(), loaded.image, timeline)
 }
 
-/** Seçilen aralıkta çıkarılacak kare hızı: video planlanan hıza indirilir, GIF kendi kareleriyle kalır (en fazla MAX_FRAMES kare). */
-private fun plannedFps(selMs: Int, timeline: Timeline, isVideo: Boolean): Double =
-    if (isVideo) AnimationLoader.plannedFps(selMs, timeline.fps)
+/** Seçilen aralıkta çıkarılacak kare hızı: video planlanan hıza indirilir, GIF kendi kareleriyle kalır (en fazla MAX_FRAMES kare).
+ *  Arka plan silinirken en fazla [AnimationLoader.MATTED_MAX_FPS] (AnimationLoader.load ile aynı kural). */
+private fun plannedFps(selMs: Int, timeline: Timeline, isVideo: Boolean, removeBackground: Boolean): Double {
+    val fps = if (isVideo) AnimationLoader.plannedFps(selMs, timeline.fps)
     else minOf(timeline.fps, AnimationLoader.MAX_FRAMES * 1000.0 / selMs.coerceAtLeast(1))
+    return if (removeBackground) minOf(fps, AnimationLoader.MATTED_MAX_FPS) else fps
+}
 
 private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {
     val retriever = MediaMetadataRetriever()
@@ -593,6 +690,13 @@ private fun readVideoMeta(context: Context, uri: Uri): SourceMeta.Video {
 
 /** Silgi / arka plan önizlemesi için hareketsiz kare: işlenecek pikseller ve gösterilecek bitmap. */
 private class StillFrame(val image: ArgbImage, val bitmap: ImageBitmap)
+
+/** Fırça izleri ve değnek uygulanmış önizleme; [strokeCount]: hesaba katılan iz sayısı (sonrakiler GPU'da çizilir). */
+private class EditedFrame(val bitmap: ImageBitmap, val strokeCount: Int)
+
+/** Otomatik maske ([auto]) ve/veya kement ([selection]) ile kesilmiş kare; ikisi de yoksa kare olduğu gibi. */
+private fun cutOf(image: ArgbImage, auto: Matte?, selection: List<Float>?): ArgbImage =
+    Matte.of(auto, emptyList(), selection)?.apply(image, Matte.Region.FULL) ?: image
 
 /** Hareketli önizleme karesi: gösterilen ([bitmap], arka planı kaldırılmış olabilir), [original] ve süresi. */
 private class AnimFrame(val bitmap: ImageBitmap, val original: ImageBitmap, val durationMs: Int)

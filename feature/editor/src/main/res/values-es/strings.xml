@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Quitar fondo</string>
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
-    <string name="editor_tool_text">Texto</string>
     <string name="editor_rotate">↻ Girar</string>
     <string name="editor_margin">Margen</string>
     <string name="editor_outline">Contorno</string>
-    <string name="editor_see_final">Abre “Texto” para ver el sticker terminado.</string>
     <string name="text_add">Añadir texto</string>
     <string name="text_edit">Editar</string>
     <string name="text_delete">Eliminar</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d fotogramas</string>
     <string name="trim_hint_short">Selección más corta = más calidad dentro del límite de 500 KB.</string>
     <string name="trim_hint_long">Selección larga: puede que el sticker necesite menos calidad o fotogramas para caber en 500 KB. Más corto = más nítido.</string>
+    <string name="editor_tool_lasso">Lazo</string>
+    <string name="editor_tool_wand">Varita mágica</string>
+    <string name="editor_lasso_hint">Dibuja alrededor del sujeto; todo lo de fuera se elimina. Con “Quitar fondo” activado, la IA solo mira dentro de tu selección y encuentra el sujeto incluso en imágenes complejas.</string>
+    <string name="editor_wand_hint">Toca una zona: se eliminan (o restauran) los colores parecidos conectados a ella. Sube la tolerancia para incluir más tonos.</string>
+    <string name="editor_wand_tolerance">Tolerancia</string>
+    <string name="editor_clear_selection">Quitar selección</string>
+    <string name="editor_group_cut">Cortar</string>
+    <string name="editor_group_style">Decorar</string>
 </resources>

@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Supprimer l’arrière-plan</string>
     <string name="ok">OK</string>
     <string name="cancel">Annuler</string>
-    <string name="editor_tool_text">Texte</string>
     <string name="editor_rotate">↻ Pivoter</string>
     <string name="editor_margin">Marge</string>
     <string name="editor_outline">Contour</string>
-    <string name="editor_see_final">Ouvrez « Texte » pour voir le sticker terminé.</string>
     <string name="text_add">Ajouter du texte</string>
     <string name="text_edit">Modifier</string>
     <string name="text_delete">Supprimer</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s i/s, %2$d images</string>
     <string name="trim_hint_short">Sélection plus courte = meilleure qualité dans la limite de 500 Ko.</string>
     <string name="trim_hint_long">Sélection longue : le sticker devra peut-être réduire la qualité ou la fréquence d’images pour tenir dans 500 Ko. Plus court = plus net.</string>
+    <string name="editor_tool_lasso">Lasso</string>
+    <string name="editor_tool_wand">Baguette magique</string>
+    <string name="editor_lasso_hint">Dessinez autour du sujet ; tout ce qui est à l’extérieur est supprimé. Avec « Supprimer l’arrière-plan », l’IA ne regarde que dans votre sélection et trouve le sujet même dans les images chargées.</string>
+    <string name="editor_wand_hint">Touchez une zone : les couleurs proches qui y sont reliées sont supprimées (ou restaurées). Augmentez la tolérance pour inclure plus de nuances.</string>
+    <string name="editor_wand_tolerance">Tolérance</string>
+    <string name="editor_clear_selection">Effacer la sélection</string>
+    <string name="editor_group_cut">Détourer</string>
+    <string name="editor_group_style">Décorer</string>
 </resources>

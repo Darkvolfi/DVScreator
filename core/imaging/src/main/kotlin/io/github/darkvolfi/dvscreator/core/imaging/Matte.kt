@@ -28,13 +28,18 @@ fun interface Matte {
 
     companion object {
         /**
-         * Tarifteki maske adımları: önce [auto] (otomatik arka plan kaldırma, varsa), sonra fırça izleri sırayla.
+         * Tarifteki maske adımları: önce kement [selection] (varsa; [auto] o zaman yalnızca seçimin çevresinde çalışır)
+         * ya da [auto] (otomatik arka plan kaldırma), sonra fırça izleri ve sihirli değnek sırayla.
          * Hiçbiri yoksa null (kare olduğu gibi kalır).
          */
-        fun of(auto: Matte?, strokes: List<MaskStroke>): Matte? {
-            if (auto == null && strokes.isEmpty()) return null
+        fun of(auto: Matte?, strokes: List<MaskStroke>, selection: List<Float>? = null): Matte? {
+            if (auto == null && strokes.isEmpty() && selection == null) return null
             return Matte { image, region ->
-                val masked = auto?.apply(image, region) ?: image
+                val masked = when {
+                    selection != null -> Selection.cut(image, region, selection, auto)
+                    auto != null -> auto.apply(image, region)
+                    else -> image
+                }
                 if (strokes.isEmpty()) masked else StrokePainter.paint(image, masked, strokes, region)
             }
         }
@@ -60,6 +65,10 @@ internal object StrokePainter {
             if (pts.size < 2) continue
             fun px(i: Int) = (pts[i] - region.left) * sx
             fun py(i: Int) = (pts[i + 1] - region.top) * sy
+            stroke.wandTolerance?.let { tolerance ->
+                wand(out, original, stroke.restore, px(0).toInt(), py(0).toInt(), tolerance)
+                continue
+            }
             if (pts.size == 2) dab(out, original, stroke.restore, px(0), py(0), px(0), py(0), r)
             var i = 0
             while (i + 3 < pts.size) {
@@ -68,6 +77,37 @@ internal object StrokePainter {
             }
         }
         return out
+    }
+
+    /**
+     * Sihirli değnek: ([x], [y]) noktasından başlayıp [original]'de rengi o noktanınkine [tolerance] (0..1, kanal başına)
+     * kadar yakın, 4-komşulukla bitişik bölgeyi siler ya da geri getirir. Nokta bu görüntünün dışındaysa (kırpılmış) bir şey yapmaz.
+     */
+    private fun wand(out: ArgbImage, original: ArgbImage, restore: Boolean, x: Int, y: Int, tolerance: Float) {
+        val w = out.width; val h = out.height
+        if (x !in 0 until w || y !in 0 until h) return
+        val seed = original.pixels[y * w + x]
+        val limit = (tolerance * 255).toInt()
+        fun near(p: Int) = maxOf(
+            kotlin.math.abs(redOf(p) - redOf(seed)),
+            kotlin.math.abs(greenOf(p) - greenOf(seed)),
+            kotlin.math.abs(blueOf(p) - blueOf(seed)),
+        ) <= limit
+        val seen = BooleanArray(w * h)
+        val stack = IntArray(w * h)
+        var top = 0
+        val start = y * w + x
+        seen[start] = true; stack[top++] = start
+        while (top > 0) {
+            val i = stack[--top]
+            out.pixels[i] = if (restore) original.pixels[i] else 0
+            val px = i % w
+            fun visit(j: Int) { if (!seen[j]) { seen[j] = true; if (near(original.pixels[j])) stack[top++] = j } }
+            if (px > 0) visit(i - 1)
+            if (px < w - 1) visit(i + 1)
+            if (i >= w) visit(i - w)
+            if (i + w < w * h) visit(i + w)
+        }
     }
 
     /** [x0,y0]–[x1,y1] doğru parçası boyunca yuvarlak uçlu fırça; kenarda 1 px yumuşak geçiş. */

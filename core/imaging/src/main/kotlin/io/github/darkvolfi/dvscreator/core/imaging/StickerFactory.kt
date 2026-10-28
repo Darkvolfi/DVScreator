@@ -64,7 +64,7 @@ object StickerFactory {
         matte: Matte? = null,
         onProgress: (Progress) -> Unit = {},
     ): CreatedSticker =
-        Matte.of(matte, recipe.strokes).let { full ->
+        Matte.of(matte, recipe.strokes, recipe.selection).let { full ->
             if (isAnimatedSource(mimeType)) animated(context, uri, mimeType, recipe, full, onProgress) else still(context, uri, recipe, full)
         }
 

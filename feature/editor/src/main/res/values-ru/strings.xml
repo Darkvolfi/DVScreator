@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Удалить фон</string>
     <string name="ok">ОК</string>
     <string name="cancel">Отмена</string>
-    <string name="editor_tool_text">Текст</string>
     <string name="editor_rotate">↻ Повернуть</string>
     <string name="editor_margin">Отступ</string>
     <string name="editor_outline">Обводка</string>
-    <string name="editor_see_final">Откройте «Текст», чтобы увидеть готовый стикер.</string>
     <string name="text_add">Добавить текст</string>
     <string name="text_edit">Изменить</string>
     <string name="text_delete">Удалить</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s кадр/с, кадров: %2$d</string>
     <string name="trim_hint_short">Чем короче фрагмент, тем выше качество в пределах 500 КБ.</string>
     <string name="trim_hint_long">Длинный фрагмент: чтобы уложиться в 500 КБ, может понадобиться снизить качество или частоту кадров. Короче — значит чётче.</string>
+    <string name="editor_tool_lasso">Лассо</string>
+    <string name="editor_tool_wand">Волшебная палочка</string>
+    <string name="editor_lasso_hint">Обведите объект; всё снаружи удаляется. Если включено «Удалить фон», ИИ ищет только внутри выделения и находит объект даже на сложных снимках.</string>
+    <string name="editor_wand_hint">Нажмите на область: связанные с ней похожие цвета удаляются (или возвращаются). Увеличьте допуск, чтобы захватить больше оттенков.</string>
+    <string name="editor_wand_tolerance">Допуск</string>
+    <string name="editor_clear_selection">Снять выделение</string>
+    <string name="editor_group_cut">Вырезать</string>
+    <string name="editor_group_style">Оформить</string>
 </resources>

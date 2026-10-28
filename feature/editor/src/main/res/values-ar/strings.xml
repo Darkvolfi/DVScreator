@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">إزالة الخلفية</string>
     <string name="ok">حسنًا</string>
     <string name="cancel">إلغاء</string>
-    <string name="editor_tool_text">نص</string>
     <string name="editor_rotate">↻ تدوير</string>
     <string name="editor_margin">الهامش</string>
     <string name="editor_outline">الحدّ</string>
-    <string name="editor_see_final">افتح «نص» لرؤية الملصق النهائي.</string>
     <string name="text_add">إضافة نص</string>
     <string name="text_edit">تعديل</string>
     <string name="text_delete">حذف</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s لقطة/ث، %2$d لقطة</string>
     <string name="trim_hint_short">تحديد أقصر = جودة أعلى ضمن حدّ 500 كيلوبايت.</string>
     <string name="trim_hint_long">تحديد طويل: قد يحتاج الملصق إلى جودة أو معدل لقطات أقل ليتسع في 500 كيلوبايت. الأقصر أوضح.</string>
+    <string name="editor_tool_lasso">اللاسو</string>
+    <string name="editor_tool_wand">العصا السحرية</string>
+    <string name="editor_lasso_hint">ارسم حول العنصر؛ يُحذف كل ما خارجه. عند تفعيل «إزالة الخلفية» ينظر الذكاء الاصطناعي داخل تحديدك فقط، فيجد العنصر حتى في الصور المزدحمة.</string>
+    <string name="editor_wand_hint">المس منطقة: تُحذف الألوان المتشابهة المتصلة بها (أو تُستعاد). ارفع التفاوت لتشمل درجات أكثر.</string>
+    <string name="editor_wand_tolerance">التفاوت</string>
+    <string name="editor_clear_selection">إلغاء التحديد</string>
+    <string name="editor_group_cut">عزل</string>
+    <string name="editor_group_style">زخرفة</string>
 </resources>

@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Arka planı kaldır</string>
     <string name="ok">Tamam</string>
     <string name="cancel">İptal</string>
-    <string name="editor_tool_text">Yazı</string>
     <string name="editor_rotate">↻ Döndür</string>
     <string name="editor_margin">Kenar boşluğu</string>
     <string name="editor_outline">Dış çizgi</string>
-    <string name="editor_see_final">Stickerın son hâlini “Yazı” aracında görebilirsin.</string>
     <string name="text_add">Yazı ekle</string>
     <string name="text_edit">Düzenle</string>
     <string name="text_delete">Sil</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d kare</string>
     <string name="trim_hint_short">Kısa seçim = 500 KB sınırında daha yüksek kalite.</string>
     <string name="trim_hint_long">Uzun seçim: 500 KB\'a sığması için kalite ya da kare hızı düşebilir. Daha kısa = daha net.</string>
+    <string name="editor_tool_lasso">Kement</string>
+    <string name="editor_tool_wand">Sihirli değnek</string>
+    <string name="editor_lasso_hint">Konunun etrafını çizin; dışı silinir. “Arka planı kaldır” açıksa yapay zekâ yalnızca seçiminizin içine bakar, karmaşık resimlerde de konuyu bulur.</string>
+    <string name="editor_wand_hint">Bir yere dokunun: ona bitişik benzer renkler silinir (ya da geri gelir). Daha çok tonu almak için toleransı artırın.</string>
+    <string name="editor_wand_tolerance">Tolerans</string>
+    <string name="editor_clear_selection">Seçimi kaldır</string>
+    <string name="editor_group_cut">Kes</string>
+    <string name="editor_group_style">Süsle</string>
 </resources>

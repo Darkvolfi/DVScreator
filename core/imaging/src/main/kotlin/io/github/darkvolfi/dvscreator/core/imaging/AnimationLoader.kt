@@ -17,6 +17,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.ensureActive
+import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -58,8 +59,11 @@ class AnimationLoader(private val context: Context) {
         onFrame: (Int, Int) -> Unit = { _, _ -> },
     ): LoadedAnimation {
         val type = mimeType ?: context.contentResolver.getType(uri).orEmpty()
-        return if (type == "image/gif") loadGif(uri, trim, crop, maxDurationMs, margin, matte, onFrame)
-        else loadVideo(uri, trim, crop, maxDurationMs, maxFps, margin, matte, onFrame)
+        // Maske (arka plan silme) kare başına ~0.3–1.3 sn: fazladan kare beklemeyi uzatır ama sonuca girmez —
+        // saydam kenarlı klipler 500 KB'a zaten ~8 fps'e inerek sığıyor (2026-10-24: 150 kareden 50'si kaldı)
+        val fps = if (matte != null) min(maxFps, MATTED_MAX_FPS) else maxFps
+        return if (type == "image/gif") loadGif(uri, trim, crop, maxDurationMs, fps, margin, matte, onFrame)
+        else loadVideo(uri, trim, crop, maxDurationMs, fps, margin, matte, onFrame)
     }
 
     private suspend fun loadVideo(
@@ -148,7 +152,7 @@ class AnimationLoader(private val context: Context) {
     }
 
     private suspend fun loadGif(
-        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, margin: Int, matte: Matte?, onFrame: (Int, Int) -> Unit,
+        uri: Uri, trim: TrimRange?, crop: CropRect?, maxDurationMs: Int, maxFps: Double, margin: Int, matte: Matte?, onFrame: (Int, Int) -> Unit,
     ): LoadedAnimation {
         val data = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: error("GIF okunamadı")
         val decoder = StandardGifDecoder(SimpleBitmapProvider)
@@ -165,7 +169,9 @@ class AnimationLoader(private val context: Context) {
         // Seçimde MAX_FRAMES'ten çok kare varsa kare atlanır (süresi öncekine eklenir): klip kısalmaz, yalnızca akıcılık azalır
         var visibleCount = 0
         run { var t = 0; for (d in delays) { if (min(t + d, endMs) > maxOf(t, startMs)) visibleCount++; t += d } }
-        val step = maxOf(1, (visibleCount + MAX_FRAMES - 1) / MAX_FRAMES)
+        // GIF kendi kare hızıyla kalır; yalnızca arka plan silinirken [maxFps] sınırı uygulanır
+        val frameBudget = if (matte == null) MAX_FRAMES else min(MAX_FRAMES, ceil((endMs - startMs) * maxFps / 1000).toInt().coerceAtLeast(2))
+        val step = maxOf(1, (visibleCount + frameBudget - 1) / frameBudget)
 
         val frames = ArrayList<ArgbImage>()
         val durations = ArrayList<Int>()
@@ -329,6 +335,8 @@ class AnimationLoader(private val context: Context) {
         const val STICKER_SIZE = 512
         const val MAX_DURATION_MS = 10_000
         const val DEFAULT_MAX_FPS = 30.0
+        /** Arka planı silinen videolarda kare hızı üst sınırı (bkz. [load]). */
+        const val MATTED_MAX_FPS = 15.0
         /** 512×512 kare ~1 MB; 150 kare ~150 MB. 500 KB bütçeye zaten daha fazlası anlamlı sığmaz. */
         const val MAX_FRAMES = 150
         const val DEFAULT_MARGIN = 16

@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Remover fundo</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
-    <string name="editor_tool_text">Texto</string>
     <string name="editor_rotate">↻ Girar</string>
     <string name="editor_margin">Margem</string>
     <string name="editor_outline">Contorno</string>
-    <string name="editor_see_final">Abra “Texto” para ver a figurinha pronta.</string>
     <string name="text_add">Adicionar texto</string>
     <string name="text_edit">Editar</string>
     <string name="text_delete">Excluir</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d quadros</string>
     <string name="trim_hint_short">Seleção mais curta = mais qualidade dentro do limite de 500 KB.</string>
     <string name="trim_hint_long">Seleção longa: a figurinha pode precisar de menos qualidade ou quadros para caber em 500 KB. Mais curta = mais nítida.</string>
+    <string name="editor_tool_lasso">Laço</string>
+    <string name="editor_tool_wand">Varinha mágica</string>
+    <string name="editor_lasso_hint">Desenhe em volta do objeto; tudo o que fica fora é removido. Com “Remover fundo” ativado, a IA olha só dentro da sua seleção e encontra o objeto mesmo em imagens complexas.</string>
+    <string name="editor_wand_hint">Toque numa área: as cores parecidas ligadas a ela são removidas (ou restauradas). Aumente a tolerância para incluir mais tons.</string>
+    <string name="editor_wand_tolerance">Tolerância</string>
+    <string name="editor_clear_selection">Limpar seleção</string>
+    <string name="editor_group_cut">Cortar</string>
+    <string name="editor_group_style">Decorar</string>
 </resources>

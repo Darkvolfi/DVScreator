@@ -178,6 +178,10 @@ Java_io_github_darkvolfi_dvscreator_core_webp_NativeWebp_nativeEncodeAnimation(
     }
     animOptions.anim_params.loop_count = loopCount;
     animOptions.anim_params.bgcolor = 0x00000000;  // şeffaf
+    // Her kare anahtar kare: tam tuval, karıştırmasız, öncekine bağımlı değil. Fark kareleri (alt
+    // dikdörtgen + blend) WhatsApp'ta takılı kalan "ölü piksel" bırakıyordu; çalışan stickerlar da böyle.
+    animOptions.kmin = 0;
+    animOptions.kmax = 1;
     WebPAnimEncoder *encoder = WebPAnimEncoderNew(width, height, &animOptions);
     if (encoder == nullptr) {
         throwIllegalState(env, "WebPAnimEncoderNew basarisiz");

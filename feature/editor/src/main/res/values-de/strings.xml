@@ -10,11 +10,9 @@
     <string name="editor_remove_bg">Hintergrund entfernen</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
-    <string name="editor_tool_text">Text</string>
     <string name="editor_rotate">↻ Drehen</string>
     <string name="editor_margin">Rand</string>
     <string name="editor_outline">Kontur</string>
-    <string name="editor_see_final">Öffne „Text“, um den fertigen Sticker zu sehen.</string>
     <string name="text_add">Text hinzufügen</string>
     <string name="text_edit">Bearbeiten</string>
     <string name="text_delete">Löschen</string>
@@ -39,4 +37,12 @@
     <string name="trim_estimate">≈ %1$s fps, %2$d Bilder</string>
     <string name="trim_hint_short">Kürzere Auswahl = höhere Qualität im 500-KB-Limit.</string>
     <string name="trim_hint_long">Lange Auswahl: Der Sticker braucht für 500 KB eventuell weniger Qualität oder Bildrate. Kürzer = schärfer.</string>
+    <string name="editor_tool_lasso">Lasso</string>
+    <string name="editor_tool_wand">Zauberstab</string>
+    <string name="editor_lasso_hint">Zeichne um das Motiv; alles außerhalb wird entfernt. Mit „Hintergrund entfernen“ sucht die KI nur innerhalb deiner Auswahl und findet das Motiv auch in unruhigen Bildern.</string>
+    <string name="editor_wand_hint">Tippe auf eine Fläche: ähnliche, zusammenhängende Farben werden entfernt (oder wiederhergestellt). Höhere Toleranz erfasst mehr Farbtöne.</string>
+    <string name="editor_wand_tolerance">Toleranz</string>
+    <string name="editor_clear_selection">Auswahl aufheben</string>
+    <string name="editor_group_cut">Freistellen</string>
+    <string name="editor_group_style">Gestalten</string>
 </resources>

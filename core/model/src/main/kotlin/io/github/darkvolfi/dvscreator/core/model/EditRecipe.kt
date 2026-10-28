@@ -14,8 +14,13 @@ data class EditRecipe(
     val rotationDegrees: Int = 0,
     /** 512 px tuvalde kenar boşluğu (0..32). */
     val marginPx: Int = 16,
-    /** Silgi / geri getir fırça izleri, sırayla uygulanır (otomatik arka plan kaldırmadan SONRA). */
+    /** Silgi / geri getir fırça izleri ve sihirli değnek dokunuşları, sırayla uygulanır (otomatik arka plan kaldırmadan SONRA). */
     val strokes: List<MaskStroke> = emptyList(),
+    /**
+     * Kement seçimi: kaynağın tamamına göre 0..1 çokgen (x0, y0, x1, y1, …). Dışı silinir; arka plan kaldırma açıksa
+     * model yalnızca seçimin çevresinde çalışır (karmaşık resimlerde konuyu büyük görüp daha iyi bulur). null: seçim yok.
+     */
+    val selection: List<Float>? = null,
     val texts: List<TextLayer> = emptyList(),
     /** Küçültme sonrası keskinleştirme (0 = kapalı). */
     val sharpen: Float = 0f,
@@ -53,14 +58,19 @@ data class TextLayer(
 )
 
 /**
- * Bir silgi ya da "geri getir" fırça izi. Koordinatlar KAYNAĞIN TAMAMINA göre 0..1 (kırpma sonradan
- * değişse de iz yerinde kalır); [radius] kaynak genişliğine oranla.
+ * Bir silgi ya da "geri getir" fırça izi, ya da sihirli değnek dokunuşu. Koordinatlar KAYNAĞIN TAMAMINA göre 0..1
+ * (kırpma sonradan değişse de iz yerinde kalır); [radius] kaynak genişliğine oranla.
  */
 @Serializable
 data class MaskStroke(
     /** true: orijinal pikselleri geri getirir; false: siler. */
     val restore: Boolean,
     val radius: Float,
-    /** x0, y0, x1, y1, … */
+    /** x0, y0, x1, y1, … (sihirli değnekte yalnızca dokunulan nokta) */
     val points: List<Float>,
+    /**
+     * Sihirli değnek: dokunulan noktadan başlayıp rengi ona [wandTolerance] (0..1) kadar yakın bitişik bölgeyi
+     * siler / geri getirir. null: normal fırça izi.
+     */
+    val wandTolerance: Float? = null,
 )
