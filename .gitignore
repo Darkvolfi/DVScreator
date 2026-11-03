@@ -26,3 +26,6 @@ desktop.ini
 # Geliştirme notları ve yapay zekâ asistanı talimatları — yalnızca yerelde, uygulamanın parçası değil
 agents/
 CLAUDE.md
+
+# Play asset pack: model derlemede buraya kopyalanır (modelpack/build.gradle.kts)
+modelpack/src/main/assets/

@@ -231,9 +231,11 @@ val downloadModel = tasks.register<DownloadModel>("downloadSegmentationModel") {
     outputDir = layout.buildDirectory.dir("generated/models")
 }
 
+// Model kütüphanenin kendi varlıklarında değil: uygulama onu APK'ya (app) ya da Play asset pack'ine
+// (:modelpack) kendisi koyar. Burada yalnızca cihaz testlerinin APK'sına eklenir.
 androidComponents {
     onVariants { variant ->
-        variant.sources.assets?.addGeneratedSourceDirectory(downloadModel, DownloadModel::outputDir)
+        variant.androidTest?.sources?.assets?.addGeneratedSourceDirectory(downloadModel, DownloadModel::outputDir)
     }
 }
 

@@ -16,6 +16,7 @@ dependencyResolutionManagement {
 rootProject.name = "DVScreator"
 
 include(":app")
+include(":modelpack")
 include(":core:model")
 include(":core:imaging")
 include(":core:webp")

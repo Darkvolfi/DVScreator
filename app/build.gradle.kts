@@ -38,7 +38,8 @@ android {
     // Tek "evrensel" APK ~330 MB olurdu; telefonların çoğu için arm64-v8a yeterli.
     splits {
         abi {
-            isEnable = true
+            // AAB'de kapalı: Play ABI bölmeyi kendisi yapar, AGP ikisi birden açıkken paketlemiyor
+            isEnable = gradle.startParameter.taskNames.none { it.contains("bundle", ignoreCase = true) }
             reset()
             include("arm64-v8a", "armeabi-v7a", "x86_64")
             isUniversalApk = false
@@ -55,7 +56,13 @@ android {
         debug {
             applicationIdSuffix = ".debug"
         }
+        // Google Play: `./gradlew :app:bundlePlay` → AAB. Model APK'da değil, :modelpack asset pack'inde
+        // (Play temel indirme sınırı 200 MB). GitHub APK'ları release'ten, model içinde.
+        create("play") {
+            initWith(getByName("release"))
+            matchingFallbacks += "release"        }
     }
+    assetPacks += ":modelpack"
     // Model belleğe eşlenebilsin diye APK içinde sıkıştırılmadan durmalı
     androidResources {
         noCompress += "onnx"
@@ -121,6 +128,27 @@ abstract class LicenseAssetTask : DefaultTask() {
 val licenseAsset = tasks.register<LicenseAssetTask>("licenseAsset") {
     license.set(rootProject.layout.projectDirectory.file("LICENSE"))
 }
-androidComponents {
-    onVariants { variant -> variant.sources.assets?.addGeneratedSourceDirectory(licenseAsset, LicenseAssetTask::outputDir) }
+/** Arka plan modelini (core:segmentation indirir) APK'nın varlıklarına koyar. */
+abstract class ModelAssetTask : DefaultTask() {
+    @get:InputFiles abstract val model: ConfigurableFileCollection
+    @get:OutputDirectory abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        val dir = outputDir.get().asFile.apply { deleteRecursively(); mkdirs() }
+        model.asFileTree.matching { exclude("**/*.src") }.visit { if (!isDirectory) copyTo(relativePath.getFile(dir)) }
+    }
 }
+
+val modelAsset = tasks.register<ModelAssetTask>("modelAsset") {
+    model.from(project(":core:segmentation").tasks.named("downloadSegmentationModel"))
+}
+androidComponents {
+    onVariants { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(licenseAsset, LicenseAssetTask::outputDir)
+        // Play'de model asset pack'ten gelir; diğer derlemelerde APK'nın içinde
+        if (variant.buildType != "play") variant.sources.assets?.addGeneratedSourceDirectory(modelAsset, ModelAssetTask::outputDir)
+    }
+}
+// Asset pack içeriği :modelpack/src/main/assets'e kopyalanmadan paketlenmesin
+tasks.configureEach { if (name.contains("AssetPack", ignoreCase = true)) dependsOn(":modelpack:syncModel") }
