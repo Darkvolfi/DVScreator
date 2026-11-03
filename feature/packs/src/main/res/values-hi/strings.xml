@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">फ़ोटो / वीडियो / GIF जोड़ें</string>
     <string name="pack_working">स्टिकर तैयार हो रहा है… (%1$d बाकी — वीडियो में 5–30 सेकंड लग सकते हैं)</string>
     <string name="pack_add_failed">स्टिकर नहीं जोड़ा जा सका: %1$s</string>
-    <string name="pack_added_summary">जोड़ा गया: %1$s · %2$s · SSIM %3$s · %4$s सेकंड</string>
-    <string name="pack_added_video">%1$d फ़्रेम, %2$s fps।</string>
     <string name="pack_added_reduced">500 KB में आने के लिए फ़्रेम रेट कम किया गया।</string>
     <string name="pack_added_trimmed">10 सेकंड तक काटा गया।</string>
     <string name="pack_added_degraded">⚠️ कम क्वालिटी: यह हिस्सा अच्छी क्वालिटी में 500 KB में नहीं आया। साफ़ स्टिकर के लिए इसे हटाएँ और छोटा हिस्सा चुनें।</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">WhatsApp में अपडेट करें</string>
     <string name="pack_update_business">WhatsApp Business में अपडेट करें</string>
 
-    <string name="mode_lossless">लॉसलेस</string>
-    <string name="mode_near_lossless">लगभग लॉसलेस (%1$d)</string>
-    <string name="mode_lossy">लॉसी (क्वालिटी %1$d)</string>
 
     <string name="wa_added">✅ WhatsApp में जोड़ा गया।</string>
     <string name="wa_updated">✅ WhatsApp में अपडेट हुआ।</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">पूरा नहीं हो सका: %1$s</string>
     <string name="error_too_large">सबसे कम क्वालिटी में भी यह %1$s है; सीमा %2$s है। छोटा हिस्सा चुनें।</string>
     <string name="error_out_of_memory">मेमोरी कम है — छोटा वीडियो आज़माएँ।</string>
+    <string name="pack_added_simple">जोड़ दिया गया।</string>
 </resources>

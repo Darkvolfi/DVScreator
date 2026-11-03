@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">Добавить фото / видео / GIF</string>
     <string name="pack_working">Готовим стикер… (осталось: %1$d; видео может занять 5–30 с)</string>
     <string name="pack_add_failed">Не удалось добавить стикер: %1$s</string>
-    <string name="pack_added_summary">Добавлено: %1$s · %2$s · SSIM %3$s · %4$s с</string>
-    <string name="pack_added_video">Кадров: %1$d, %2$s кадр/с.</string>
     <string name="pack_added_reduced">Частота кадров снижена, чтобы уложиться в 500 КБ.</string>
     <string name="pack_added_trimmed">Обрезано до 10 с.</string>
     <string name="pack_added_degraded">⚠️ Низкое качество: этот фрагмент не уместился в 500 КБ с хорошим качеством. Удалите его и выберите фрагмент покороче, чтобы стикер был чётче.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">Обновить в WhatsApp</string>
     <string name="pack_update_business">Обновить в WhatsApp Business</string>
 
-    <string name="mode_lossless">Без потерь</string>
-    <string name="mode_near_lossless">Почти без потерь (%1$d)</string>
-    <string name="mode_lossy">С потерями (качество %1$d)</string>
 
     <string name="wa_added">✅ Добавлено в WhatsApp.</string>
     <string name="wa_updated">✅ Обновлено в WhatsApp.</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">Не удалось выполнить: %1$s</string>
     <string name="error_too_large">Даже при самом низком качестве получается %1$s; предел — %2$s. Выберите фрагмент покороче.</string>
     <string name="error_out_of_memory">Не хватает памяти — попробуйте видео покороче.</string>
+    <string name="pack_added_simple">Добавлено.</string>
 </resources>

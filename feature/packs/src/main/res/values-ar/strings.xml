@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">إضافة صورة / فيديو / GIF</string>
     <string name="pack_working">جارٍ تجهيز الملصق… (متبقٍّ %1$d — قد تستغرق مقاطع الفيديو 5–30 ث)</string>
     <string name="pack_add_failed">تعذّرت إضافة الملصق: %1$s</string>
-    <string name="pack_added_summary">تمت الإضافة: %1$s · %2$s · SSIM %3$s · %4$s ث</string>
-    <string name="pack_added_video">%1$d لقطة، %2$s لقطة/ث.</string>
     <string name="pack_added_reduced">خُفّض معدل اللقطات ليتسع في 500 كيلوبايت.</string>
     <string name="pack_added_trimmed">قُصّ إلى 10 ث.</string>
     <string name="pack_added_degraded">⚠️ جودة منخفضة: لم يتسع هذا الجزء في 500 كيلوبايت بجودة جيدة. احذفه واختر جزءًا أقصر للحصول على ملصق أوضح.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">تحديث في واتساب</string>
     <string name="pack_update_business">تحديث في واتساب للأعمال</string>
 
-    <string name="mode_lossless">بلا فقد</string>
-    <string name="mode_near_lossless">شبه بلا فقد (%1$d)</string>
-    <string name="mode_lossy">مع فقد (الجودة %1$d)</string>
 
     <string name="wa_added">✅ أُضيفت إلى واتساب.</string>
     <string name="wa_updated">✅ حُدّثت في واتساب.</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">تعذّر الإكمال: %1$s</string>
     <string name="error_too_large">حتى بأقل جودة يبلغ الحجم %1$s؛ والحد %2$s. اختر جزءًا أقصر.</string>
     <string name="error_out_of_memory">الذاكرة غير كافية — جرّب فيديو أقصر.</string>
+    <string name="pack_added_simple">تمت الإضافة.</string>
 </resources>

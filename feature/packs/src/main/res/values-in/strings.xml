@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">Tambah foto / video / GIF</string>
     <string name="pack_working">Menyiapkan stiker… (sisa %1$d — video bisa memakan waktu 5–30 dtk)</string>
     <string name="pack_add_failed">Tidak dapat menambahkan stiker: %1$s</string>
-    <string name="pack_added_summary">Ditambahkan: %1$s · %2$s · SSIM %3$s · %4$s dtk</string>
-    <string name="pack_added_video">%1$d bingkai, %2$s fps.</string>
     <string name="pack_added_reduced">Frame rate diturunkan agar muat dalam 500 KB.</string>
     <string name="pack_added_trimmed">Dipotong menjadi 10 dtk.</string>
     <string name="pack_added_degraded">⚠️ Kualitas rendah: bagian ini tidak muat dalam 500 KB dengan kualitas bagus. Hapus lalu pilih bagian yang lebih pendek agar stiker lebih tajam.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">Perbarui di WhatsApp</string>
     <string name="pack_update_business">Perbarui di WhatsApp Business</string>
 
-    <string name="mode_lossless">Tanpa kehilangan</string>
-    <string name="mode_near_lossless">Hampir tanpa kehilangan (%1$d)</string>
-    <string name="mode_lossy">Dengan kompresi (kualitas %1$d)</string>
 
     <string name="wa_added">✅ Ditambahkan ke WhatsApp.</string>
     <string name="wa_updated">✅ Diperbarui di WhatsApp.</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">Tidak dapat diselesaikan: %1$s</string>
     <string name="error_too_large">Bahkan dengan kualitas terendah ukurannya %1$s; batasnya %2$s. Pilih bagian yang lebih pendek.</string>
     <string name="error_out_of_memory">Memori tidak cukup — coba video yang lebih pendek.</string>
+    <string name="pack_added_simple">Ditambahkan.</string>
 </resources>

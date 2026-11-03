@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">Add photo / video / GIF</string>
     <string name="pack_working">Preparing sticker… (%1$d left — videos can take 5–30 s)</string>
     <string name="pack_add_failed">Could not add sticker: %1$s</string>
-    <string name="pack_added_summary">Added: %1$s · %2$s · SSIM %3$s · %4$s s</string>
-    <string name="pack_added_video">%1$d frames, %2$s fps.</string>
     <string name="pack_added_reduced">Frame rate reduced to fit 500 KB.</string>
     <string name="pack_added_trimmed">Trimmed to 10 s.</string>
     <string name="pack_added_degraded">⚠️ Low quality: this part did not fit 500 KB at good quality. Delete it and pick a shorter part for a sharper sticker.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">Update in WhatsApp</string>
     <string name="pack_update_business">Update in WhatsApp Business</string>
 
-    <string name="mode_lossless">Lossless</string>
-    <string name="mode_near_lossless">Near-lossless (%1$d)</string>
-    <string name="mode_lossy">Lossy (quality %1$d)</string>
 
     <string name="wa_added">✅ Added to WhatsApp.</string>
     <string name="wa_updated">✅ Updated in WhatsApp.</string>
@@ -112,4 +107,5 @@
     <string name="operation_failed">Couldn\'t complete: %1$s</string>
     <string name="error_too_large">Even at the lowest quality it is %1$s; the limit is %2$s. Pick a shorter part.</string>
     <string name="error_out_of_memory">Not enough memory — try a shorter video.</string>
+    <string name="pack_added_simple">Added.</string>
 </resources>

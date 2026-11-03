@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">Adicionar foto / vídeo / GIF</string>
     <string name="pack_working">Preparando figurinha… (faltam %1$d; vídeos podem levar 5–30 s)</string>
     <string name="pack_add_failed">Não foi possível adicionar a figurinha: %1$s</string>
-    <string name="pack_added_summary">Adicionada: %1$s · %2$s · SSIM %3$s · %4$s s</string>
-    <string name="pack_added_video">%1$d quadros, %2$s fps.</string>
     <string name="pack_added_reduced">A taxa de quadros foi reduzida para caber em 500 KB.</string>
     <string name="pack_added_trimmed">Cortada para 10 s.</string>
     <string name="pack_added_degraded">⚠️ Qualidade baixa: este trecho não coube em 500 KB com boa qualidade. Exclua e escolha um trecho mais curto para uma figurinha mais nítida.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">Atualizar no WhatsApp</string>
     <string name="pack_update_business">Atualizar no WhatsApp Business</string>
 
-    <string name="mode_lossless">Sem perdas</string>
-    <string name="mode_near_lossless">Quase sem perdas (%1$d)</string>
-    <string name="mode_lossy">Com perdas (qualidade %1$d)</string>
 
     <string name="wa_added">✅ Adicionado ao WhatsApp.</string>
     <string name="wa_updated">✅ Atualizado no WhatsApp.</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">Não foi possível concluir: %1$s</string>
     <string name="error_too_large">Mesmo na menor qualidade fica com %1$s; o limite é %2$s. Escolha um trecho mais curto.</string>
     <string name="error_out_of_memory">Memória insuficiente; tente um vídeo mais curto.</string>
+    <string name="pack_added_simple">Adicionada.</string>
 </resources>

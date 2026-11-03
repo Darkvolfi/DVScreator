@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="editor_title">تعديل الملصق</string>
-    <string name="editor_mode_square">قص مربّع</string>
-    <string name="editor_mode_fit">الصورة كاملة</string>
+    <string name="editor_mode_square">مربّع</string>
+    <string name="editor_mode_fit">كاملة</string>
     <string name="editor_crop_hint">اسحب الزوايا أو الحواف لتغيير الحجم، واسحب من الداخل للتحريك، وقرّب بإصبعين للتكبير.</string>
     <string name="editor_fit_hint">تبقى الصورة كاملة؛ والجوانب الفارغة تبقى شفافة.</string>
-    <string name="editor_skip">تخطٍّ</string>
+    <string name="editor_skip">تخطي هذا</string>
     <string name="editor_confirm">إنشاء الملصق</string>
     <string name="editor_remove_bg">إزالة الخلفية</string>
     <string name="ok">حسنًا</string>
     <string name="cancel">إلغاء</string>
-    <string name="editor_rotate">↻ تدوير</string>
+    <string name="editor_rotate">تدوير</string>
     <string name="editor_margin">الهامش</string>
     <string name="editor_outline">الحدّ</string>
     <string name="text_add">إضافة نص</string>
@@ -34,12 +34,10 @@
     <string name="editor_add_rest">إضافة الـ %1$d المتبقية كما هي</string>
 
     <string name="trim_selection">%1$s ث – %2$s ث (%3$s ث)</string>
-    <string name="trim_estimate">≈ %1$s لقطة/ث، %2$d لقطة</string>
-    <string name="trim_hint_short">تحديد أقصر = جودة أعلى ضمن حدّ 500 كيلوبايت.</string>
-    <string name="trim_hint_long">تحديد طويل: قد يحتاج الملصق إلى جودة أو معدل لقطات أقل ليتسع في 500 كيلوبايت. الأقصر أوضح.</string>
+    <string name="trim_hint_long">قد تبدو المقاطع الطويلة أقل وضوحًا. الأقصر = أوضح.</string>
     <string name="editor_tool_lasso">اللاسو</string>
     <string name="editor_tool_wand">العصا السحرية</string>
-    <string name="editor_lasso_hint">ارسم بشكل تقريبي حول العنصر؛ يُحذف كل ما خارجه. عند تفعيل «محاذاة للعنصر»، يعثر الذكاء الاصطناعي على العنصر داخل تحديدك ويضبط القص على حوافه. أوقفه للقص على خطك تمامًا.</string>
+    <string name="editor_lasso_hint">ارسم بشكل تقريبي حول العنصر؛ يُحذف كل ما خارجه.</string>
     <string name="editor_wand_hint">المس منطقة: تُحذف الألوان المتشابهة المتصلة بها (أو تُستعاد). ارفع التفاوت لتشمل درجات أكثر.</string>
     <string name="editor_wand_tolerance">التفاوت</string>
     <string name="editor_clear_selection">إلغاء التحديد</string>
@@ -47,4 +45,6 @@
     <string name="editor_group_style">زخرفة</string>
     <string name="editor_mode_free">حر</string>
     <string name="editor_lasso_snap">محاذاة للعنصر</string>
+    <string name="editor_trim_title">المدة</string>
+    <string name="editor_lasso_snap_hint">يضبط الذكاء الاصطناعي القص على حواف العنصر. عند الإيقاف: يقص على خطك تمامًا.</string>
 </resources>

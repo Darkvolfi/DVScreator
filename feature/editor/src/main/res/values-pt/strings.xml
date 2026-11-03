@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="editor_title">Editar figurinha</string>
-    <string name="editor_mode_square">Recorte quadrado</string>
-    <string name="editor_mode_fit">Imagem inteira</string>
+    <string name="editor_mode_square">Quadrado</string>
+    <string name="editor_mode_fit">Inteira</string>
     <string name="editor_crop_hint">Arraste os cantos ou bordas para mudar o tamanho, arraste por dentro para mover, faça pinça para zoom.</string>
     <string name="editor_fit_hint">A imagem inteira é mantida; as laterais vazias ficam transparentes.</string>
-    <string name="editor_skip">Pular</string>
+    <string name="editor_skip">Pular este</string>
     <string name="editor_confirm">Criar figurinha</string>
     <string name="editor_remove_bg">Remover fundo</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
-    <string name="editor_rotate">↻ Girar</string>
+    <string name="editor_rotate">Girar</string>
     <string name="editor_margin">Margem</string>
     <string name="editor_outline">Contorno</string>
     <string name="text_add">Adicionar texto</string>
@@ -34,12 +34,10 @@
     <string name="editor_add_rest">Adicionar os %1$d restantes como estão</string>
 
     <string name="trim_selection">%1$s s – %2$s s (%3$s s)</string>
-    <string name="trim_estimate">≈ %1$s fps, %2$d quadros</string>
-    <string name="trim_hint_short">Seleção mais curta = mais qualidade dentro do limite de 500 KB.</string>
-    <string name="trim_hint_long">Seleção longa: a figurinha pode precisar de menos qualidade ou quadros para caber em 500 KB. Mais curta = mais nítida.</string>
+    <string name="trim_hint_long">Vídeos longos podem ficar menos nítidos. Mais curto = mais nítido.</string>
     <string name="editor_tool_lasso">Laço</string>
     <string name="editor_tool_wand">Varinha mágica</string>
-    <string name="editor_lasso_hint">Desenhe por alto em volta do objeto; tudo o que fica fora é removido. Com “Ajustar ao objeto” ativado, a IA encontra o objeto dentro da sua seleção e ajusta o corte às bordas dele. Desative para cortar exatamente pela sua linha.</string>
+    <string name="editor_lasso_hint">Desenhe por alto em volta do objeto; tudo o que fica fora é removido.</string>
     <string name="editor_wand_hint">Toque numa área: as cores parecidas ligadas a ela são removidas (ou restauradas). Aumente a tolerância para incluir mais tons.</string>
     <string name="editor_wand_tolerance">Tolerância</string>
     <string name="editor_clear_selection">Limpar seleção</string>
@@ -47,4 +45,6 @@
     <string name="editor_group_style">Decorar</string>
     <string name="editor_mode_free">Livre</string>
     <string name="editor_lasso_snap">Ajustar ao objeto</string>
+    <string name="editor_trim_title">Duração</string>
+    <string name="editor_lasso_snap_hint">A IA ajusta o corte às bordas do objeto. Desativado: corta exatamente pela sua linha.</string>
 </resources>

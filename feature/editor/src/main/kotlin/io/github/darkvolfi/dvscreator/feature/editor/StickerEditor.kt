@@ -33,6 +33,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -64,6 +65,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import io.github.darkvolfi.dvscreator.core.imaging.ArgbImage
@@ -314,8 +317,9 @@ fun StickerEditor(
         }
     }
 
+    Column(modifier.fillMaxSize()) {
     Column(
-        modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
+        Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(stringResource(R.string.editor_title), style = MaterialTheme.typography.titleLarge)
@@ -420,23 +424,19 @@ fun StickerEditor(
                         FilterChip(selected = cropMode == CropMode.FIT, onClick = { cropMode = CropMode.FIT; cropTouched = true }, label = { Text(stringResource(R.string.editor_mode_fit)) })
                     }
                     Spacer(Modifier.width(8.dp))
-                    OutlinedButton(onClick = { rotation = (rotation + 90) % 360 }) { Text(stringResource(R.string.editor_rotate)) }
+                    val rotateLabel = stringResource(R.string.editor_rotate)
+                    OutlinedIconButton(onClick = { rotation = (rotation + 90) % 360 }, modifier = Modifier.semantics { contentDescription = rotateLabel }) {
+                        Text("↻", style = MaterialTheme.typography.titleLarge)
+                    }
                 }
                 if (cropMode == CropMode.FIT) {
                     Text(stringResource(R.string.editor_fit_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else {
                     Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                if (cropMode == CropMode.SQUARE) {
-                    val maxSide = min(m.width, m.height).toFloat()
-                    Slider(
-                        value = crop.width / maxSide,
-                        valueRange = CropFrame.MIN_FRACTION..1f,
-                        onValueChange = { crop = crop.withSide(it * maxSide, m.width, m.height); cropTouched = true },
-                    )
-                }
 
                 if (timeline != null && currentRange != null) {
+                    Text(stringResource(R.string.editor_trim_title), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 8.dp))
                     // Küçük resim şeridi: hangi anı seçtiğini görmek için
                     Row(Modifier.fillMaxWidth().height(48.dp).clipToBounds()) {
                         for (thumb in timeline.thumbnails) {
@@ -455,18 +455,13 @@ fun StickerEditor(
                         },
                     )
                     val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-                    val fps = plannedFps(selMs, timeline, video != null, useModel)
-                    val frames = (selMs * fps / 1000).roundToInt()
                     Text(
                         stringResource(R.string.trim_selection, sec(currentRange.start), sec(currentRange.endInclusive), sec(selMs.toFloat())),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
-                    Text(stringResource(R.string.trim_estimate, String.format(Locale.ROOT, "%.0f", fps), frames), style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        stringResource(if (selMs > 6000) R.string.trim_hint_long else R.string.trim_hint_short),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    if (selMs > LONG_CLIP_MS) {
+                        Text(stringResource(R.string.trim_hint_long), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
             }
 
@@ -492,13 +487,19 @@ fun StickerEditor(
                 }
                 when (tool) {
                     EditorTool.LASSO -> {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                            FilterChip(selected = snapSelection, onClick = { snapSelection = !snapSelection }, label = { Text(stringResource(R.string.editor_lasso_snap)) })
-                            if (selection != null) {
-                                TextButton(onClick = { selection = null }) { Text(stringResource(R.string.editor_clear_selection)) }
-                            }
-                        }
                         Text(stringResource(R.string.editor_lasso_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        // Araç değil, kementin ayarı: araç çipleriyle karışmasın diye açma-kapama anahtarı
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(stringResource(R.string.editor_lasso_snap), style = MaterialTheme.typography.bodyMedium)
+                                Text(stringResource(R.string.editor_lasso_snap_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            Spacer(Modifier.width(8.dp))
+                            Switch(checked = snapSelection, onCheckedChange = { snapSelection = it })
+                        }
+                        if (selection != null) {
+                            TextButton(onClick = { selection = null }) { Text(stringResource(R.string.editor_clear_selection)) }
+                        }
                     }
                     EditorTool.WAND -> {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -576,10 +577,17 @@ fun StickerEditor(
                 onDismiss = { textDialog = null },
             )
         }
+    }
 
+    // Ana işlem her sekmede görünür: kaydırılan alanın dışında, ekranın altında sabit
+    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        if (remaining > 1) {
+            TextButton(onClick = onAddRestAsIs) { Text(stringResource(R.string.editor_add_rest, remaining)) }
+        }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = onSkip) { Text(stringResource(R.string.editor_skip)) }
-            Button(onClick = {
+            // Sırada başka dosya varsa yalnızca bunu geçer; yoksa düzenlemeden çıkar
+            OutlinedButton(onClick = onSkip) { Text(stringResource(if (remaining > 1) R.string.editor_skip else R.string.cancel)) }
+            Button(modifier = Modifier.weight(1f), onClick = {
                 onConfirm(
                     EditRecipe(
                         crop = if (cropMode != CropMode.FIT) crop.toCropRect() else null,
@@ -597,9 +605,7 @@ fun StickerEditor(
                 )
             }) { Text(stringResource(R.string.editor_confirm)) }
         }
-        if (remaining > 1) {
-            TextButton(onClick = onAddRestAsIs) { Text(stringResource(R.string.editor_add_rest, remaining)) }
-        }
+    }
     }
 }
 
@@ -641,6 +647,8 @@ private val CUT_TOOLS = listOf(
 )
 
 private const val MIN_MS = 500
+/** Bu süreden uzun seçimde "daha az net olabilir" uyarısı (500 KB sınırına sığmak için kalite düşer). */
+private const val LONG_CLIP_MS = 6000
 private const val THUMBNAILS = 8
 private const val PREVIEW_LONG_SIDE = 1080
 

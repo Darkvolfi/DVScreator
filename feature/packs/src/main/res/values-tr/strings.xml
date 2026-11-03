@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">Fotoğraf / video / GIF ekle</string>
     <string name="pack_working">Sticker hazırlanıyor… (%1$d kaldı — videolar 5–30 sn sürebilir)</string>
     <string name="pack_add_failed">Sticker eklenemedi: %1$s</string>
-    <string name="pack_added_summary">Eklendi: %1$s · %2$s · SSIM %3$s · %4$s sn</string>
-    <string name="pack_added_video">%1$d kare, %2$s fps.</string>
     <string name="pack_added_reduced">500 KB\'a sığması için kare hızı düşürüldü.</string>
     <string name="pack_added_trimmed">10 sn\'ye kırpıldı.</string>
     <string name="pack_added_degraded">⚠️ Düşük kalite: bu bölüm iyi kalitede 500 KB\'a sığmadı. Daha net bir sticker için silip daha kısa bir bölüm seç.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">WhatsApp\'ta güncelle</string>
     <string name="pack_update_business">WhatsApp Business\'ta güncelle</string>
 
-    <string name="mode_lossless">Kayıpsız</string>
-    <string name="mode_near_lossless">Neredeyse kayıpsız (%1$d)</string>
-    <string name="mode_lossy">Kayıplı (kalite %1$d)</string>
 
     <string name="wa_added">✅ WhatsApp\'a eklendi.</string>
     <string name="wa_updated">✅ WhatsApp\'ta güncellendi.</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">İşlem yapılamadı: %1$s</string>
     <string name="error_too_large">En düşük kalitede bile %1$s; sınır %2$s. Daha kısa bir bölüm seçin.</string>
     <string name="error_out_of_memory">Bellek yetmedi — daha kısa bir video deneyin.</string>
+    <string name="pack_added_simple">Eklendi.</string>
 </resources>

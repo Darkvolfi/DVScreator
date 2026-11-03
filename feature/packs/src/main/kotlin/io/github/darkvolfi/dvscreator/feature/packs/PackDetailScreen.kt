@@ -33,6 +33,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -52,14 +55,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.darkvolfi.dvscreator.core.imaging.CreatedSticker
 import io.github.darkvolfi.dvscreator.core.imaging.StickerFactory
-import io.github.darkvolfi.dvscreator.core.model.EncodeMode
 import io.github.darkvolfi.dvscreator.core.whatsapp.PackManifest
 import io.github.darkvolfi.dvscreator.core.whatsapp.StickerEntry
 import io.github.darkvolfi.dvscreator.core.whatsapp.StickerShare
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppIntents
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppLimits
 import io.github.darkvolfi.dvscreator.feature.editor.StickerEditor
-import java.util.Locale
 
 private const val TAG = "WSC_PACKS"
 
@@ -163,12 +164,17 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
         item(span = { GridItemSpan(maxLineSpan) }) {
             Column(Modifier.padding(top = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = onBack) { Text("‹ " + stringResource(R.string.back)) }
+                    IconButton(onClick = onBack) {
+                        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.back))
+                    }
                     Text(
                         pack.name, style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.weight(1f).clickable { renaming = true },
                     )
-                    TextButton(onClick = { confirmDelete = true }) { Text(stringResource(R.string.pack_delete)) }
+                    // Paketi siler (onay sorulur): masum bir yazı gibi durmasın diye kırmızı çöp kutusu
+                    IconButton(onClick = { confirmDelete = true }) {
+                        Icon(painterResource(R.drawable.ic_delete), contentDescription = stringResource(R.string.pack_delete), tint = MaterialTheme.colorScheme.error)
+                    }
                 }
                 Text(
                     stringResource(R.string.pack_rules, pack.stickers.size, WhatsAppLimits.PACK_MIN_STICKERS, WhatsAppLimits.PACK_MAX_STICKERS),
@@ -321,18 +327,10 @@ private fun AddStatusCard(state: AddState, onDismiss: () -> Unit) {
 
 @Composable
 internal fun describe(s: CreatedSticker): String {
-    val mode = when (s.mode) {
-        EncodeMode.LOSSLESS -> stringResource(R.string.mode_lossless)
-        EncodeMode.NEAR_LOSSLESS -> stringResource(R.string.mode_near_lossless, s.quality)
-        EncodeMode.LOSSY -> stringResource(R.string.mode_lossy, s.quality)
-    }
-    val size = String.format(Locale.ROOT, "%.0f KB", s.webp.size / 1024.0)
-    val ssim = String.format(Locale.ROOT, "%.3f", s.ssimMean)
-    val seconds = String.format(Locale.ROOT, "%.1f", s.totalMs / 1000.0)
+    // Sade sonuç; teknik ayrıntılar (kodlama, boyut, SSIM) Ayarlar → Geliştirici → kalite laboratuvarında
     return buildString {
-        append(stringResource(R.string.pack_added_summary, mode, size, ssim, seconds))
+        append(stringResource(R.string.pack_added_simple))
         if (s.fromVideo) {
-            append('\n').append(stringResource(R.string.pack_added_video, s.frameCount, String.format(Locale.ROOT, "%.1f", s.fps)))
             if (s.framesReduced) append(' ').append(stringResource(R.string.pack_added_reduced))
             if (s.trimmed) append(' ').append(stringResource(R.string.pack_added_trimmed))
             if (s.degraded) append('\n').append(stringResource(R.string.pack_added_degraded))

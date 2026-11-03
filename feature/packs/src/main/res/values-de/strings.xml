@@ -14,8 +14,6 @@
     <string name="pack_add_sticker">Foto / Video / GIF hinzufügen</string>
     <string name="pack_working">Sticker wird vorbereitet … (noch %1$d – Videos können 5–30 s dauern)</string>
     <string name="pack_add_failed">Sticker konnte nicht hinzugefügt werden: %1$s</string>
-    <string name="pack_added_summary">Hinzugefügt: %1$s · %2$s · SSIM %3$s · %4$s s</string>
-    <string name="pack_added_video">%1$d Bilder, %2$s fps.</string>
     <string name="pack_added_reduced">Bildrate reduziert, damit es in 500 KB passt.</string>
     <string name="pack_added_trimmed">Auf 10 s gekürzt.</string>
     <string name="pack_added_degraded">⚠️ Niedrige Qualität: Dieser Abschnitt passte nicht in guter Qualität in 500 KB. Lösche ihn und wähle einen kürzeren Abschnitt für einen schärferen Sticker.</string>
@@ -33,9 +31,6 @@
     <string name="pack_update_whatsapp">In WhatsApp aktualisieren</string>
     <string name="pack_update_business">In WhatsApp Business aktualisieren</string>
 
-    <string name="mode_lossless">Verlustfrei</string>
-    <string name="mode_near_lossless">Fast verlustfrei (%1$d)</string>
-    <string name="mode_lossy">Verlustbehaftet (Qualität %1$d)</string>
 
     <string name="wa_added">✅ Zu WhatsApp hinzugefügt.</string>
     <string name="wa_updated">✅ In WhatsApp aktualisiert.</string>
@@ -111,4 +106,5 @@
     <string name="operation_failed">Fehlgeschlagen: %1$s</string>
     <string name="error_too_large">Selbst bei niedrigster Qualität sind es %1$s; das Limit ist %2$s. Wähle einen kürzeren Abschnitt.</string>
     <string name="error_out_of_memory">Nicht genug Speicher – versuche ein kürzeres Video.</string>
+    <string name="pack_added_simple">Hinzugefügt.</string>
 </resources>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="editor_title">स्टिकर एडिट करें</string>
-    <string name="editor_mode_square">चौकोर क्रॉप</string>
-    <string name="editor_mode_fit">पूरी इमेज</string>
+    <string name="editor_mode_square">चौकोर</string>
+    <string name="editor_mode_fit">पूरी</string>
     <string name="editor_crop_hint">साइज़ बदलने के लिए कोनों या किनारों को खींचें, खिसकाने के लिए अंदर से खींचें, ज़ूम करने के लिए पिंच करें।</string>
     <string name="editor_fit_hint">पूरी इमेज रहती है; खाली किनारे पारदर्शी रहते हैं।</string>
-    <string name="editor_skip">छोड़ें</string>
+    <string name="editor_skip">इसे छोड़ें</string>
     <string name="editor_confirm">स्टिकर बनाएँ</string>
     <string name="editor_remove_bg">बैकग्राउंड हटाएँ</string>
     <string name="ok">ठीक है</string>
     <string name="cancel">रद्द करें</string>
-    <string name="editor_rotate">↻ घुमाएँ</string>
+    <string name="editor_rotate">घुमाएँ</string>
     <string name="editor_margin">मार्जिन</string>
     <string name="editor_outline">आउटलाइन</string>
     <string name="text_add">टेक्स्ट जोड़ें</string>
@@ -34,12 +34,10 @@
     <string name="editor_add_rest">बाकी %1$d को जैसे हैं वैसे जोड़ें</string>
 
     <string name="trim_selection">%1$s से – %2$s से (%3$s से)</string>
-    <string name="trim_estimate">≈ %1$s fps, %2$d फ़्रेम</string>
-    <string name="trim_hint_short">छोटा हिस्सा = 500 KB की सीमा में बेहतर क्वालिटी।</string>
-    <string name="trim_hint_long">लंबा हिस्सा: 500 KB में आने के लिए स्टिकर की क्वालिटी या फ़्रेम रेट कम करनी पड़ सकती है। छोटा = ज़्यादा साफ़।</string>
+    <string name="trim_hint_long">लंबे क्लिप कम साफ़ दिख सकते हैं। छोटा = ज़्यादा साफ़।</string>
     <string name="editor_tool_lasso">लैसो</string>
     <string name="editor_tool_wand">जादू की छड़ी</string>
-    <string name="editor_lasso_hint">विषय के चारों ओर एक अनुमानित रेखा खींचें; बाहर का सब हट जाएगा। “विषय पर फ़िट करें” चालू होने पर, AI आपके चुने हिस्से के अंदर विषय ढूँढकर कट को उसके किनारों पर फ़िट कर देता है। अपनी रेखा के अनुसार ही काटने के लिए इसे बंद करें।</string>
+    <string name="editor_lasso_hint">विषय के चारों ओर एक अनुमानित रेखा खींचें; बाहर का सब हट जाएगा।</string>
     <string name="editor_wand_hint">किसी हिस्से पर टैप करें: उससे जुड़े मिलते-जुलते रंग हट जाते हैं (या वापस आते हैं)। ज़्यादा रंग लेने के लिए टॉलरेंस बढ़ाएँ।</string>
     <string name="editor_wand_tolerance">टॉलरेंस</string>
     <string name="editor_clear_selection">चुनाव हटाएँ</string>
@@ -47,4 +45,6 @@
     <string name="editor_group_style">सजाएँ</string>
     <string name="editor_mode_free">फ़्री</string>
     <string name="editor_lasso_snap">विषय पर फ़िट करें</string>
+    <string name="editor_trim_title">लंबाई</string>
+    <string name="editor_lasso_snap_hint">AI कट को विषय के किनारों पर फ़िट कर देता है। बंद होने पर: ठीक आपकी रेखा के अनुसार काटता है।</string>
 </resources>
