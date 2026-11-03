@@ -24,9 +24,17 @@ class ThinPartsDeviceTest {
 
     @Test
     fun thinParts() {
-        val file = File("/data/local/tmp/thin.jpg")
-        assumeTrue("resim yok", file.exists())
-        val image = BitmapFactory.decodeFile(file.path).copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
+        // Resim ya da video (videoda "at" ms anındaki kare)
+        val file = listOf("thin.jpg", "thin.mp4").map { File("/data/local/tmp", it) }.firstOrNull { it.exists() }
+        assumeTrue("resim yok", file != null)
+        val bitmap = if (file!!.extension == "mp4") android.media.MediaMetadataRetriever().run {
+            setDataSource(file.path)
+            val at = InstrumentationRegistry.getArguments().getString("at")?.toLong() ?: 0L
+            getFrameAtTime(at * 1000, android.media.MediaMetadataRetriever.OPTION_CLOSEST)!!.also { release() }
+        } else BitmapFactory.decodeFile(file.path)
+        val image = bitmap.copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
+        Log.i(TAG, "${file.name} ${image.width}x${image.height}")
+        File(context.getExternalFilesDir(null)!!, "kaynak.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         // Örnek noktalar: "x:y/x:y" (resim pikseli; Gradle virgülü, kabuk noktalı virgülü böler)
         val points = (InstrumentationRegistry.getArguments().getString("points") ?: "").split('/').filter { it.isNotBlank() }
             .map { p -> p.split(':').let { it[0].toInt() to it[1].toInt() } }

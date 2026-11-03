@@ -137,6 +137,8 @@ fun StickerEditor(
 
     var cropMode by remember(uri) { mutableStateOf(CropMode.SQUARE) }
     var crop by remember(uri) { mutableStateOf(CropFrame.largestSquare(m.width, m.height)) }
+    // Kırpmaya elle dokunulmadıysa kesimde çerçeve konunun etrafına oturur (bkz. subjectFrame)
+    var cropTouched by remember(uri) { mutableStateOf(false) }
     var range by remember(uri) { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
     var player by remember(uri) { mutableStateOf<VideoView?>(null) }
     var removeBackground by remember(uri) { mutableStateOf(false) }
@@ -196,6 +198,21 @@ fun StickerEditor(
         }
     }
     val mattedPreview = mattedFrame?.bitmap
+    // Konunun kutusu (kaynağa göre 0..1): kesilmiş kareden ve hareketlide önizleme karelerinin birleşiminden
+    val stillBounds = remember(mattedFrame) { mattedFrame?.image?.let(::alphaBounds) }
+    var animBounds by remember(uri) { mutableStateOf<FloatArray?>(null) }
+    val subject = if (cutting) unionBounds(stillBounds, animBounds) else null
+    // Kesim varken ve kırpmaya elle dokunulmadıysa çerçeve konunun etrafına oturur: sticker kenardan kesilmez, konu büyük görünür
+    LaunchedEffect(cutting, subject?.toList()) {
+        if (cropTouched) return@LaunchedEffect
+        if (subject != null) {
+            cropMode = CropMode.FREE
+            crop = subjectFrame(subject, m.width, m.height)
+        } else if (!cutting) {
+            cropMode = CropMode.SQUARE
+            crop = CropFrame.largestSquare(m.width, m.height)
+        }
+    }
     // Fırça izleri ve sihirli değnek uygulanmış önizleme (sticker üretimiyle aynı kod). Değnek bölge doldurduğu için
     // GPU'da çizilemez; [EditedFrame.strokeCount]'tan sonraki izleri MaskCanvas hesap bitene dek GPU'da çizer
     val editedFrame by produceState<EditedFrame?>(null, frame, mattedFrame, strokes) {
@@ -232,6 +249,7 @@ fun StickerEditor(
     var mattedAnim by remember(uri) { mutableStateOf<List<AnimFrame>>(emptyList()) }
     LaunchedEffect(rawAnim, useModel, selection, snapSelection, mattedFrame != null) {
         mattedAnim = emptyList()
+        animBounds = null
         val raw = rawAnim
         // İlk kare bitmeden başlama: aynı anda iki model işlemciyi paylaşmasın
         if (!cutting || raw == null || mattedFrame == null) return@LaunchedEffect
@@ -243,7 +261,9 @@ fun StickerEditor(
                 val done = withContext(Dispatchers.Default) {
                     runCatching {
                         val image = f.original.asAndroidBitmap().copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
-                        AnimFrame(cutOf(image, auto, selection, snapSelection).toBitmap().asImageBitmap(), f.original, f.durationMs)
+                        val cut = cutOf(image, auto, selection, snapSelection)
+                        animBounds = unionBounds(animBounds, alphaBounds(cut))
+                        AnimFrame(cut.toBitmap().asImageBitmap(), f.original, f.durationMs)
                     }.getOrNull()
                 } ?: break
                 mattedAnim = mattedAnim + done
@@ -356,7 +376,7 @@ fun StickerEditor(
                     )
                 }
                 if (cropMode != CropMode.FIT && tool == EditorTool.CROP) {
-                    CropOverlay(crop, m.width, m.height, square = cropMode == CropMode.SQUARE, onChange = { crop = it }, modifier = Modifier.fillMaxSize())
+                    CropOverlay(crop, m.width, m.height, square = cropMode == CropMode.SQUARE, onChange = { crop = it; cropTouched = true }, modifier = Modifier.fillMaxSize())
                 }
             }
             }
@@ -393,11 +413,11 @@ fun StickerEditor(
                     Row(Modifier.weight(1f).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         FilterChip(
                             selected = cropMode == CropMode.SQUARE,
-                            onClick = { cropMode = CropMode.SQUARE; crop = crop.squared(m.width, m.height) },
+                            onClick = { cropMode = CropMode.SQUARE; crop = crop.squared(m.width, m.height); cropTouched = true },
                             label = { Text(stringResource(R.string.editor_mode_square)) },
                         )
-                        FilterChip(selected = cropMode == CropMode.FREE, onClick = { cropMode = CropMode.FREE }, label = { Text(stringResource(R.string.editor_mode_free)) })
-                        FilterChip(selected = cropMode == CropMode.FIT, onClick = { cropMode = CropMode.FIT }, label = { Text(stringResource(R.string.editor_mode_fit)) })
+                        FilterChip(selected = cropMode == CropMode.FREE, onClick = { cropMode = CropMode.FREE; cropTouched = true }, label = { Text(stringResource(R.string.editor_mode_free)) })
+                        FilterChip(selected = cropMode == CropMode.FIT, onClick = { cropMode = CropMode.FIT; cropTouched = true }, label = { Text(stringResource(R.string.editor_mode_fit)) })
                     }
                     Spacer(Modifier.width(8.dp))
                     OutlinedButton(onClick = { rotation = (rotation + 90) % 360 }) { Text(stringResource(R.string.editor_rotate)) }
@@ -412,7 +432,7 @@ fun StickerEditor(
                     Slider(
                         value = crop.width / maxSide,
                         valueRange = CropFrame.MIN_FRACTION..1f,
-                        onValueChange = { crop = crop.withSide(it * maxSide, m.width, m.height) },
+                        onValueChange = { crop = crop.withSide(it * maxSide, m.width, m.height); cropTouched = true },
                     )
                 }
 
@@ -714,6 +734,36 @@ private class StillFrame(val image: ArgbImage, val bitmap: ImageBitmap)
 private class EditedFrame(val bitmap: ImageBitmap, val strokeCount: Int)
 
 /** Otomatik maske ([auto]) ve/veya kement ([selection]) ile kesilmiş kare; ikisi de yoksa kare olduğu gibi. */
+/** Görünür (alfa ≥ [SUBJECT_ALPHA]) piksellerin kutusu, görüntüye göre 0..1 (sol, üst, sağ, alt); hiç yoksa null. */
+private fun alphaBounds(image: ArgbImage): FloatArray? {
+    var l = image.width; var t = image.height; var r = -1; var b = -1
+    for (y in 0 until image.height) for (x in 0 until image.width) {
+        if ((image.pixels[y * image.width + x] ushr 24) < SUBJECT_ALPHA) continue
+        if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y
+    }
+    if (r < 0) return null
+    return floatArrayOf(l.toFloat() / image.width, t.toFloat() / image.height, (r + 1f) / image.width, (b + 1f) / image.height)
+}
+
+private fun unionBounds(a: FloatArray?, b: FloatArray?): FloatArray? = when {
+    a == null -> b
+    b == null -> a
+    else -> floatArrayOf(min(a[0], b[0]), min(a[1], b[1]), maxOf(a[2], b[2]), maxOf(a[3], b[3]))
+}
+
+/** Konunun kutusu (0..1) → kaynak pikselinde biraz paylı kırpma çerçevesi. */
+private fun subjectFrame(bounds: FloatArray, sourceW: Int, sourceH: Int): CropFrame {
+    val pad = maxOf((bounds[2] - bounds[0]) * sourceW, (bounds[3] - bounds[1]) * sourceH) * SUBJECT_PAD
+    return CropFrame(
+        (bounds[0] * sourceW - pad).coerceAtLeast(0f), (bounds[1] * sourceH - pad).coerceAtLeast(0f),
+        (bounds[2] * sourceW + pad).coerceAtMost(sourceW.toFloat()), (bounds[3] * sourceH + pad).coerceAtMost(sourceH.toFloat()),
+    )
+}
+
+/** Konu kutusuna giren en düşük alfa ve çerçevenin konu çevresine bıraktığı pay (büyük kenara oranla). */
+private const val SUBJECT_ALPHA = 16
+private const val SUBJECT_PAD = 0.03f
+
 private fun cutOf(image: ArgbImage, auto: Matte?, selection: List<Float>?, snap: Boolean): ArgbImage =
     Matte.of(auto, emptyList(), selection, snap)?.apply(image, Matte.Region.FULL) ?: image
 
