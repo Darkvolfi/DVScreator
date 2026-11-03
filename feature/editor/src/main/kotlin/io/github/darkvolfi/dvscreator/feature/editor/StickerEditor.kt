@@ -696,7 +696,7 @@ private fun sec(ms: Float) = String.format(Locale.ROOT, "%.1f", ms / 1000f)
  * kalite hattı ([io.github.darkvolfi.dvscreator.core.imaging.StickerPipeline]) aynı uzayı bekler.
  */
 private fun readStillMeta(context: Context, uri: Uri, mimeType: String): SourceMeta.Still {
-    val loaded = ImageLoader(context.contentResolver).load(uri, minLongSide = PREVIEW_LONG_SIDE)
+    val loaded = ImageLoader(context.contentResolver).load(uri, longSide = PREVIEW_LONG_SIDE)
     val w = (loaded.image.width / loaded.scale).roundToInt()
     val h = (loaded.image.height / loaded.scale).roundToInt()
     val timeline = if (mimeType == "image/gif") {
