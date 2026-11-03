@@ -3,7 +3,7 @@
     <string name="editor_title">Редактирование стикера</string>
     <string name="editor_mode_square">Квадратная обрезка</string>
     <string name="editor_mode_fit">Изображение целиком</string>
-    <string name="editor_crop_hint">Перетащите рамку, чтобы сдвинуть её; меняйте размер двумя пальцами или ползунком.</string>
+    <string name="editor_crop_hint">Перетащите углы или края, чтобы изменить размер, потяните внутри для перемещения, щипком меняйте масштаб.</string>
     <string name="editor_fit_hint">Изображение сохраняется целиком; пустые края остаются прозрачными.</string>
     <string name="editor_skip">Пропустить</string>
     <string name="editor_confirm">Создать стикер</string>
@@ -39,10 +39,12 @@
     <string name="trim_hint_long">Длинный фрагмент: чтобы уложиться в 500 КБ, может понадобиться снизить качество или частоту кадров. Короче — значит чётче.</string>
     <string name="editor_tool_lasso">Лассо</string>
     <string name="editor_tool_wand">Волшебная палочка</string>
-    <string name="editor_lasso_hint">Обведите объект; всё снаружи удаляется. Если включено «Удалить фон», ИИ ищет только внутри выделения и находит объект даже на сложных снимках.</string>
+    <string name="editor_lasso_hint">Примерно обведите объект; всё снаружи удаляется. Если включено «Привязка к объекту», ИИ находит объект внутри выделения и подгоняет вырез под его границы. Выключите, чтобы резать точно по линии.</string>
     <string name="editor_wand_hint">Нажмите на область: связанные с ней похожие цвета удаляются (или возвращаются). Увеличьте допуск, чтобы захватить больше оттенков.</string>
     <string name="editor_wand_tolerance">Допуск</string>
     <string name="editor_clear_selection">Снять выделение</string>
     <string name="editor_group_cut">Вырезать</string>
     <string name="editor_group_style">Оформить</string>
+    <string name="editor_mode_free">Произвольно</string>
+    <string name="editor_lasso_snap">Привязка к объекту</string>
 </resources>

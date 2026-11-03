@@ -3,7 +3,7 @@
     <string name="editor_title">تعديل الملصق</string>
     <string name="editor_mode_square">قص مربّع</string>
     <string name="editor_mode_fit">الصورة كاملة</string>
-    <string name="editor_crop_hint">اسحب الإطار لتحريكه؛ استخدم إصبعين أو شريط التمرير لتغيير حجمه.</string>
+    <string name="editor_crop_hint">اسحب الزوايا أو الحواف لتغيير الحجم، واسحب من الداخل للتحريك، وقرّب بإصبعين للتكبير.</string>
     <string name="editor_fit_hint">تبقى الصورة كاملة؛ والجوانب الفارغة تبقى شفافة.</string>
     <string name="editor_skip">تخطٍّ</string>
     <string name="editor_confirm">إنشاء الملصق</string>
@@ -39,10 +39,12 @@
     <string name="trim_hint_long">تحديد طويل: قد يحتاج الملصق إلى جودة أو معدل لقطات أقل ليتسع في 500 كيلوبايت. الأقصر أوضح.</string>
     <string name="editor_tool_lasso">اللاسو</string>
     <string name="editor_tool_wand">العصا السحرية</string>
-    <string name="editor_lasso_hint">ارسم حول العنصر؛ يُحذف كل ما خارجه. عند تفعيل «إزالة الخلفية» ينظر الذكاء الاصطناعي داخل تحديدك فقط، فيجد العنصر حتى في الصور المزدحمة.</string>
+    <string name="editor_lasso_hint">ارسم بشكل تقريبي حول العنصر؛ يُحذف كل ما خارجه. عند تفعيل «محاذاة للعنصر»، يعثر الذكاء الاصطناعي على العنصر داخل تحديدك ويضبط القص على حوافه. أوقفه للقص على خطك تمامًا.</string>
     <string name="editor_wand_hint">المس منطقة: تُحذف الألوان المتشابهة المتصلة بها (أو تُستعاد). ارفع التفاوت لتشمل درجات أكثر.</string>
     <string name="editor_wand_tolerance">التفاوت</string>
     <string name="editor_clear_selection">إلغاء التحديد</string>
     <string name="editor_group_cut">عزل</string>
     <string name="editor_group_style">زخرفة</string>
+    <string name="editor_mode_free">حر</string>
+    <string name="editor_lasso_snap">محاذاة للعنصر</string>
 </resources>

@@ -156,9 +156,9 @@ class PackRepository(context: Context) {
         withContext(Dispatchers.Default) {
             // Model (~170 MB) yalnızca gerektiğinde açılır ve iş bitince bırakılır.
             // Videoda kare kare: cihaz destekliyorsa NNAPI de kullanılır (bkz. VideoBackgroundRemover)
-            if (recipe.removeBackground && StickerFactory.isAnimatedSource(mimeType)) VideoBackgroundRemover.open(appContext).use { remover ->
+            if (recipe.usesModel && StickerFactory.isAnimatedSource(mimeType)) VideoBackgroundRemover.open(appContext).use { remover ->
                 StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, remover.matte(), onProgress)
-            } else if (recipe.removeBackground) BackgroundRemover.open(appContext).use { remover ->
+            } else if (recipe.usesModel) BackgroundRemover.open(appContext).use { remover ->
                 StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, remover.matte(), onProgress)
             } else StickerFactory.create(appContext, Uri.fromFile(sourceFile), mimeType, recipe, onProgress = onProgress)
         }

@@ -30,13 +30,13 @@ fun interface Matte {
         /**
          * Tarifteki maske adımları: önce kement [selection] (varsa; [auto] o zaman yalnızca seçimin çevresinde çalışır)
          * ya da [auto] (otomatik arka plan kaldırma), sonra fırça izleri ve sihirli değnek sırayla.
-         * Hiçbiri yoksa null (kare olduğu gibi kalır).
+         * Hiçbiri yoksa null (kare olduğu gibi kalır). [snap]: kement konuya otursun (bkz. EditRecipe.snapSelection).
          */
-        fun of(auto: Matte?, strokes: List<MaskStroke>, selection: List<Float>? = null): Matte? {
+        fun of(auto: Matte?, strokes: List<MaskStroke>, selection: List<Float>? = null, snap: Boolean = false): Matte? {
             if (auto == null && strokes.isEmpty() && selection == null) return null
             return Matte { image, region ->
                 val masked = when {
-                    selection != null -> Selection.cut(image, region, selection, auto)
+                    selection != null -> Selection.cut(image, region, selection, auto, snap)
                     auto != null -> auto.apply(image, region)
                     else -> image
                 }

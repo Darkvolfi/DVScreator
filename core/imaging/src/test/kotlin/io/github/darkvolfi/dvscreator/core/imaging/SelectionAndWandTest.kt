@@ -76,4 +76,27 @@ class SelectionAndWandTest {
         val (w, h) = seen!!
         assertTrue("kutu küçük olmalı: $w×$h", w in 20..24 && h in 20..24)
     }
+
+    /** Konu: sağ yarıdaki küçük mavi kare (70..79 × 40..49). Kement onun sağ kenarını 2 piksel kesiyor. */
+    private val roughLasso = listOf(0.55f, 0.3f, 0.78f, 0.3f, 0.78f, 0.6f, 0.55f, 0.6f)
+    /** "Model": mavi pikselleri konu sayar. */
+    private val blueIsSubject = Matte { i, _ ->
+        ArgbImage(i.width, i.height, IntArray(i.pixels.size) { k -> if (i.pixels[k] == 0xFF2040C0.toInt()) i.pixels[k] else 0 })
+    }
+
+    @Test
+    fun `nesneye oturan kement çizginin kestiği konu kenarını korur`() {
+        val out = Matte.of(blueIsSubject, emptyList(), roughLasso, snap = true)!!.apply(twoHalves(), Matte.Region.FULL)
+        assertEquals(255, alpha(out, 79, 45))   // çizginin dışında kalan konu kenarı
+        assertEquals(255, alpha(out, 72, 45))
+        assertEquals(0, alpha(out, 60, 35))     // seçimin içi ama arka plan (kırmızı)
+        assertEquals(0, alpha(out, 10, 45))     // konu rengi ama seçimden çok uzak
+    }
+
+    @Test
+    fun `oturmayan kement tam çizgiden keser`() {
+        val out = Matte.of(blueIsSubject, emptyList(), roughLasso, snap = false)!!.apply(twoHalves(), Matte.Region.FULL)
+        assertEquals(0, alpha(out, 79, 45))
+        assertEquals(255, alpha(out, 72, 45))
+    }
 }

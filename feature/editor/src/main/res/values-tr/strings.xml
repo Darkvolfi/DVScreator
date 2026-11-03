@@ -3,7 +3,7 @@
     <string name="editor_title">Stickerı düzenle</string>
     <string name="editor_mode_square">Kare kırp</string>
     <string name="editor_mode_fit">Tamamını sığdır</string>
-    <string name="editor_crop_hint">Çerçeveyi sürükleyerek taşı; iki parmakla ya da kaydırıcıyla büyüt / küçült.</string>
+    <string name="editor_crop_hint">Köşelerden ya da kenarlardan tutarak boyutlandır, içinden sürükleyerek taşı, iki parmakla büyüt.</string>
     <string name="editor_fit_hint">Görüntünün tamamı korunur; boş kalan kenarlar şeffaf olur.</string>
     <string name="editor_skip">Atla</string>
     <string name="editor_confirm">Sticker yap</string>
@@ -39,10 +39,12 @@
     <string name="trim_hint_long">Uzun seçim: 500 KB\'a sığması için kalite ya da kare hızı düşebilir. Daha kısa = daha net.</string>
     <string name="editor_tool_lasso">Kement</string>
     <string name="editor_tool_wand">Sihirli değnek</string>
-    <string name="editor_lasso_hint">Konunun etrafını çizin; dışı silinir. “Arka planı kaldır” açıksa yapay zekâ yalnızca seçiminizin içine bakar, karmaşık resimlerde de konuyu bulur.</string>
+    <string name="editor_lasso_hint">Konunun etrafını kabaca çizin; dışı silinir. “Nesneye otur” açıksa yapay zekâ seçimin içinde konuyu bulur ve kesimi kenarlarına oturtur. Kapatırsanız tam çizdiğiniz yerden keser.</string>
     <string name="editor_wand_hint">Bir yere dokunun: ona bitişik benzer renkler silinir (ya da geri gelir). Daha çok tonu almak için toleransı artırın.</string>
     <string name="editor_wand_tolerance">Tolerans</string>
     <string name="editor_clear_selection">Seçimi kaldır</string>
     <string name="editor_group_cut">Kes</string>
     <string name="editor_group_style">Süsle</string>
+    <string name="editor_mode_free">Serbest</string>
+    <string name="editor_lasso_snap">Nesneye otur</string>
 </resources>

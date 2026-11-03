@@ -3,7 +3,7 @@
     <string name="editor_title">Sticker bearbeiten</string>
     <string name="editor_mode_square">Quadratisch zuschneiden</string>
     <string name="editor_mode_fit">Ganzes Bild</string>
-    <string name="editor_crop_hint">Ziehe den Rahmen, um ihn zu verschieben; zum Ändern der Größe zwei Finger oder den Schieberegler benutzen.</string>
+    <string name="editor_crop_hint">Ziehe an den Ecken oder Kanten zum Ändern der Größe, ziehe innen zum Verschieben, mit zwei Fingern zoomen.</string>
     <string name="editor_fit_hint">Das ganze Bild bleibt erhalten; leere Ränder bleiben transparent.</string>
     <string name="editor_skip">Überspringen</string>
     <string name="editor_confirm">Sticker erstellen</string>
@@ -39,10 +39,12 @@
     <string name="trim_hint_long">Lange Auswahl: Der Sticker braucht für 500 KB eventuell weniger Qualität oder Bildrate. Kürzer = schärfer.</string>
     <string name="editor_tool_lasso">Lasso</string>
     <string name="editor_tool_wand">Zauberstab</string>
-    <string name="editor_lasso_hint">Zeichne um das Motiv; alles außerhalb wird entfernt. Mit „Hintergrund entfernen“ sucht die KI nur innerhalb deiner Auswahl und findet das Motiv auch in unruhigen Bildern.</string>
+    <string name="editor_lasso_hint">Zeichne grob um das Motiv; alles außerhalb wird entfernt. Mit „Am Motiv ausrichten“ findet die KI das Motiv innerhalb deiner Auswahl und passt den Schnitt an dessen Kanten an. Deaktiviere es, um exakt an deiner Linie entlangzuschneiden.</string>
     <string name="editor_wand_hint">Tippe auf eine Fläche: ähnliche, zusammenhängende Farben werden entfernt (oder wiederhergestellt). Höhere Toleranz erfasst mehr Farbtöne.</string>
     <string name="editor_wand_tolerance">Toleranz</string>
     <string name="editor_clear_selection">Auswahl aufheben</string>
     <string name="editor_group_cut">Freistellen</string>
     <string name="editor_group_style">Gestalten</string>
+    <string name="editor_mode_free">Frei</string>
+    <string name="editor_lasso_snap">Am Motiv ausrichten</string>
 </resources>

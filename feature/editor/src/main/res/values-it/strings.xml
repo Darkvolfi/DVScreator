@@ -3,7 +3,7 @@
     <string name="editor_title">Modifica sticker</string>
     <string name="editor_mode_square">Ritaglio quadrato</string>
     <string name="editor_mode_fit">Immagine intera</string>
-    <string name="editor_crop_hint">Trascina la cornice per spostarla; avvicina due dita o usa il cursore per ridimensionarla.</string>
+    <string name="editor_crop_hint">Trascina gli angoli o i bordi per ridimensionare, trascina all’interno per spostare, pizzica per ingrandire.</string>
     <string name="editor_fit_hint">L’immagine resta intera; i lati vuoti restano trasparenti.</string>
     <string name="editor_skip">Salta</string>
     <string name="editor_confirm">Crea sticker</string>
@@ -39,10 +39,12 @@
     <string name="trim_hint_long">Selezione lunga: per stare in 500 KB lo sticker potrebbe richiedere meno qualità o fotogrammi. Più breve = più nitido.</string>
     <string name="editor_tool_lasso">Lazo</string>
     <string name="editor_tool_wand">Bacchetta magica</string>
-    <string name="editor_lasso_hint">Disegna intorno al soggetto; tutto ciò che è fuori viene rimosso. Con “Rimuovi sfondo” attivo, l’IA guarda solo dentro la selezione e trova il soggetto anche nelle immagini complesse.</string>
+    <string name="editor_lasso_hint">Disegna a grandi linee intorno al soggetto; tutto ciò che è fuori viene rimosso. Con “Aggancia al soggetto” attivo, l’IA individua il soggetto dentro la selezione e adatta il taglio ai suoi contorni. Disattivalo per tagliare esattamente lungo la linea.</string>
     <string name="editor_wand_hint">Tocca un’area: i colori simili collegati vengono rimossi (o ripristinati). Aumenta la tolleranza per includere più sfumature.</string>
     <string name="editor_wand_tolerance">Tolleranza</string>
     <string name="editor_clear_selection">Annulla selezione</string>
     <string name="editor_group_cut">Scontorna</string>
     <string name="editor_group_style">Decora</string>
+    <string name="editor_mode_free">Libero</string>
+    <string name="editor_lasso_snap">Aggancia al soggetto</string>
 </resources>

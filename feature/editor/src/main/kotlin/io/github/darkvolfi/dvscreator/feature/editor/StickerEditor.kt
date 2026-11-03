@@ -134,8 +134,8 @@ fun StickerEditor(
         return
     }
 
-    var squareMode by remember(uri) { mutableStateOf(true) }
-    var crop by remember(uri) { mutableStateOf(SquareCrop.largest(m.width, m.height)) }
+    var cropMode by remember(uri) { mutableStateOf(CropMode.SQUARE) }
+    var crop by remember(uri) { mutableStateOf(CropFrame.largestSquare(m.width, m.height)) }
     var range by remember(uri) { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
     var player by remember(uri) { mutableStateOf<VideoView?>(null) }
     var removeBackground by remember(uri) { mutableStateOf(false) }
@@ -147,10 +147,14 @@ fun StickerEditor(
     var brush by remember(uri) { mutableStateOf(DEFAULT_BRUSH) }
     // Kement seçimi (kaynağa göre 0..1 çokgen) ve sihirli değnek ayarları
     var selection by remember(uri) { mutableStateOf<List<Float>?>(null) }
+    // Kement konuya otursun (yapay zekâ seçimin içinde konuyu bulur); kapalıysa tam çizilen yerden kesilir
+    var snapSelection by remember(uri) { mutableStateOf(true) }
     var wandTolerance by remember(uri) { mutableStateOf(DEFAULT_WAND_TOLERANCE) }
     var wandRestore by remember(uri) { mutableStateOf(false) }
     // Kesim var mı: otomatik arka plan ya da kement → önizleme kesilmiş kareyi gösterir
     val cutting = removeBackground || selection != null
+    // Model gerekiyor mu (EditRecipe.usesModel ile aynı kural)
+    val useModel = removeBackground || (selection != null && snapSelection)
     var rotation by remember(uri) { mutableStateOf(0) }
     var margin by remember(uri) { mutableStateOf(EditRecipe().marginPx) }
     var outline by remember(uri) { mutableStateOf(0) }
@@ -178,13 +182,13 @@ fun StickerEditor(
     val frame: StillFrame? = remember(m, videoFrame) { (m as? SourceMeta.Still)?.let { StillFrame(it.previewImage, it.preview) } ?: videoFrame }
     // Kesimin (arka plan kaldırma ve/veya kement) sonucu hemen gösterilir (önizleme çözünürlüğünde ~1 sn).
     // Seçim değişirken eski sonuç yenisi hazır olana dek kalır (titremesin)
-    val mattedFrame by produceState<StillFrame?>(null, removeBackground, selection, frame) {
+    val mattedFrame by produceState<StillFrame?>(null, useModel, selection, snapSelection, frame) {
         val f = frame
         if (!cutting || f == null) { value = null; return@produceState }
         value = withContext(Dispatchers.Default) {
             runCatching {
-                val cut = if (removeBackground) BackgroundRemover.open(context).use { cutOf(f.image, it.matte(), selection) }
-                else cutOf(f.image, null, selection)
+                val cut = if (useModel) BackgroundRemover.open(context).use { cutOf(f.image, it.matte(), selection, snapSelection) }
+                else cutOf(f.image, null, selection, snap = false)
                 StillFrame(cut, cut.toBitmap().asImageBitmap())
             }.getOrNull()
         }
@@ -211,10 +215,10 @@ fun StickerEditor(
     val animStart = ((currentRange?.start ?: 0f) / 100f).roundToInt() * 100
     val animEnd = ((currentRange?.endInclusive ?: 0f) / 100f).roundToInt() * 100
     val wantAnim = timeline != null && (video == null || cutting)
-    val rawAnim by produceState<List<AnimFrame>?>(null, uri, wantAnim, removeBackground, animStart, animEnd) {
+    val rawAnim by produceState<List<AnimFrame>?>(null, uri, wantAnim, useModel, animStart, animEnd) {
         if (!wantAnim) { value = null; return@produceState }
         delay(300)   // aralık sürüklenirken her adımda okuma
-        val maxFrames = if (removeBackground) MATTED_PREVIEW_FRAMES else ANIM_PREVIEW_FRAMES
+        val maxFrames = if (useModel) MATTED_PREVIEW_FRAMES else ANIM_PREVIEW_FRAMES
         value = withContext(Dispatchers.IO) {
             runCatching {
                 val raw = if (video != null) readVideoPreview(context, uri, animStart, animEnd, maxFrames)
@@ -224,12 +228,12 @@ fun StickerEditor(
         }
     }
     var mattedAnim by remember(uri) { mutableStateOf<List<AnimFrame>>(emptyList()) }
-    LaunchedEffect(rawAnim, removeBackground, selection, mattedFrame != null) {
+    LaunchedEffect(rawAnim, useModel, selection, snapSelection, mattedFrame != null) {
         mattedAnim = emptyList()
         val raw = rawAnim
         // İlk kare bitmeden başlama: aynı anda iki model işlemciyi paylaşmasın
         if (!cutting || raw == null || mattedFrame == null) return@LaunchedEffect
-        val remover = if (!removeBackground) null
+        val remover = if (!useModel) null
         else withContext(Dispatchers.Default) { runCatching { BackgroundRemover.open(context) }.getOrNull() } ?: return@LaunchedEffect
         try {
             val auto = remover?.matte()
@@ -237,7 +241,7 @@ fun StickerEditor(
                 val done = withContext(Dispatchers.Default) {
                     runCatching {
                         val image = f.original.asAndroidBitmap().copy(Bitmap.Config.ARGB_8888, false).toArgbImage()
-                        AnimFrame(cutOf(image, auto, selection).toBitmap().asImageBitmap(), f.original, f.durationMs)
+                        AnimFrame(cutOf(image, auto, selection, snapSelection).toBitmap().asImageBitmap(), f.original, f.durationMs)
                     }.getOrNull()
                 } ?: break
                 mattedAnim = mattedAnim + done
@@ -264,7 +268,7 @@ fun StickerEditor(
     val animFrame = playing?.let { it[animIndex % it.size] }
     // Yazı aracındaki "son hâl": sticker üretimiyle aynı kod (kırpma, maske, silgi, kenar boşluğu, döndürme, dış çizgi)
     val previewRecipe = EditRecipe(
-        crop = if (squareMode) crop.toCropRect() else null, rotationDegrees = rotation, marginPx = margin,
+        crop = if (cropMode != CropMode.FIT) crop.toCropRect() else null, rotationDegrees = rotation, marginPx = margin,
         strokes = strokes, outlinePx = outline, outlineArgb = outlineColor,
     )
     val finalCanvas by produceState<ImageBitmap?>(null, tool == EditorTool.TEXT, frame, mattedFrame, previewRecipe) {
@@ -349,8 +353,8 @@ fun StickerEditor(
                         onRelease = { it.stopPlayback() },
                     )
                 }
-                if (squareMode && tool == EditorTool.CROP) {
-                    CropOverlay(crop, m.width, m.height, onChange = { crop = it }, modifier = Modifier.fillMaxSize())
+                if (cropMode != CropMode.FIT && tool == EditorTool.CROP) {
+                    CropOverlay(crop, m.width, m.height, square = cropMode == CropMode.SQUARE, onChange = { crop = it }, modifier = Modifier.fillMaxSize())
                 }
             }
             }
@@ -383,22 +387,31 @@ fun StickerEditor(
                         )
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    FilterChip(selected = squareMode, onClick = { squareMode = true }, label = { Text(stringResource(R.string.editor_mode_square)) })
-                    FilterChip(selected = !squareMode, onClick = { squareMode = false }, label = { Text(stringResource(R.string.editor_mode_fit)) })
-                    Spacer(Modifier.weight(1f))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(Modifier.weight(1f).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilterChip(
+                            selected = cropMode == CropMode.SQUARE,
+                            onClick = { cropMode = CropMode.SQUARE; crop = crop.squared(m.width, m.height) },
+                            label = { Text(stringResource(R.string.editor_mode_square)) },
+                        )
+                        FilterChip(selected = cropMode == CropMode.FREE, onClick = { cropMode = CropMode.FREE }, label = { Text(stringResource(R.string.editor_mode_free)) })
+                        FilterChip(selected = cropMode == CropMode.FIT, onClick = { cropMode = CropMode.FIT }, label = { Text(stringResource(R.string.editor_mode_fit)) })
+                    }
+                    Spacer(Modifier.width(8.dp))
                     OutlinedButton(onClick = { rotation = (rotation + 90) % 360 }) { Text(stringResource(R.string.editor_rotate)) }
                 }
-                if (squareMode) {
-                    val maxSide = min(m.width, m.height).toFloat()
-                    Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Slider(
-                        value = crop.side / maxSide,
-                        valueRange = SquareCrop.MIN_FRACTION..1f,
-                        onValueChange = { crop = crop.copy(side = it * maxSide).clamped(m.width, m.height) },
-                    )
-                } else {
+                if (cropMode == CropMode.FIT) {
                     Text(stringResource(R.string.editor_fit_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else {
+                    Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                if (cropMode == CropMode.SQUARE) {
+                    val maxSide = min(m.width, m.height).toFloat()
+                    Slider(
+                        value = crop.width / maxSide,
+                        valueRange = CropFrame.MIN_FRACTION..1f,
+                        onValueChange = { crop = crop.withSide(it * maxSide, m.width, m.height) },
+                    )
                 }
 
                 if (timeline != null && currentRange != null) {
@@ -420,7 +433,7 @@ fun StickerEditor(
                         },
                     )
                     val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-                    val fps = plannedFps(selMs, timeline, video != null, removeBackground)
+                    val fps = plannedFps(selMs, timeline, video != null, useModel)
                     val frames = (selMs * fps / 1000).roundToInt()
                     Text(
                         stringResource(R.string.trim_selection, sec(currentRange.start), sec(currentRange.endInclusive), sec(selMs.toFloat())),
@@ -441,7 +454,7 @@ fun StickerEditor(
                         Text(stringResource(R.string.editor_remove_bg), style = MaterialTheme.typography.titleSmall)
                         val hint = if (timeline != null && currentRange != null) {
                             val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()
-                            val frames = (selMs * plannedFps(selMs, timeline, video != null, removeBackground) / 1000).roundToInt()
+                            val frames = (selMs * plannedFps(selMs, timeline, video != null, useModel) / 1000).roundToInt()
                             stringResource(R.string.editor_remove_bg_hint_video, (frames * SECONDS_PER_MATTE_FRAME).roundToInt().coerceAtLeast(1))
                         } else stringResource(R.string.editor_remove_bg_hint)
                         Text(hint, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -457,10 +470,13 @@ fun StickerEditor(
                 }
                 when (tool) {
                     EditorTool.LASSO -> {
-                        Text(stringResource(R.string.editor_lasso_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        if (selection != null) {
-                            TextButton(onClick = { selection = null }) { Text(stringResource(R.string.editor_clear_selection)) }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            FilterChip(selected = snapSelection, onClick = { snapSelection = !snapSelection }, label = { Text(stringResource(R.string.editor_lasso_snap)) })
+                            if (selection != null) {
+                                TextButton(onClick = { selection = null }) { Text(stringResource(R.string.editor_clear_selection)) }
+                            }
                         }
+                        Text(stringResource(R.string.editor_lasso_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     EditorTool.WAND -> {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -544,10 +560,11 @@ fun StickerEditor(
             Button(onClick = {
                 onConfirm(
                     EditRecipe(
-                        crop = if (squareMode) crop.toCropRect() else null,
+                        crop = if (cropMode != CropMode.FIT) crop.toCropRect() else null,
                         trim = currentRange?.let { TrimRange(it.start.roundToInt(), it.endInclusive.roundToInt()) },
                         removeBackground = removeBackground,
                         selection = selection,
+                        snapSelection = snapSelection,
                         strokes = strokes,
                         texts = texts,
                         rotationDegrees = rotation,
@@ -695,8 +712,8 @@ private class StillFrame(val image: ArgbImage, val bitmap: ImageBitmap)
 private class EditedFrame(val bitmap: ImageBitmap, val strokeCount: Int)
 
 /** Otomatik maske ([auto]) ve/veya kement ([selection]) ile kesilmiş kare; ikisi de yoksa kare olduğu gibi. */
-private fun cutOf(image: ArgbImage, auto: Matte?, selection: List<Float>?): ArgbImage =
-    Matte.of(auto, emptyList(), selection)?.apply(image, Matte.Region.FULL) ?: image
+private fun cutOf(image: ArgbImage, auto: Matte?, selection: List<Float>?, snap: Boolean): ArgbImage =
+    Matte.of(auto, emptyList(), selection, snap)?.apply(image, Matte.Region.FULL) ?: image
 
 /** Hareketli önizleme karesi: gösterilen ([bitmap], arka planı kaldırılmış olabilir), [original] ve süresi. */
 private class AnimFrame(val bitmap: ImageBitmap, val original: ImageBitmap, val durationMs: Int)

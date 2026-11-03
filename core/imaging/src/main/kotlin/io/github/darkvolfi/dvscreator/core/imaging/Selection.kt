@@ -4,6 +4,7 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * Kement seçimi: çokgenin dışı silinir. Otomatik maske ([Matte]) verilirse yalnızca seçimin çevresindeki bölgeye
@@ -15,8 +16,10 @@ internal object Selection {
     /**
      * @param polygon kaynağın tamamına göre 0..1 (x0, y0, x1, y1, …)
      * @param region [image]'in kaynaktaki yeri
+     * @param snap [auto] varsa kesim çizgiye değil konuya oturur: modelin maskesi, çizginin [PAD] kadar genişletilmiş
+     *   hâli içinde kalır — kabaca çizilen kement konunun kenarını kesmez
      */
-    fun cut(image: ArgbImage, region: Matte.Region, polygon: List<Float>, auto: Matte?): ArgbImage {
+    fun cut(image: ArgbImage, region: Matte.Region, polygon: List<Float>, auto: Matte?, snap: Boolean = false): ArgbImage {
         val w = image.width; val h = image.height
         val out = ArgbImage(w, h)
         if (polygon.size < 6) return out   // üç noktadan az: alan yok
@@ -38,8 +41,10 @@ internal object Selection {
                 region.left + left / sx, region.top + top / sy, region.left + right / sx, region.top + bottom / sy,
             ))
         }
+        val bw = right - left
+        val band = if (snap && auto != null) dilate(coverage, w, left, top, right, bottom, pad.roundToInt()) else null
         for (y in top until bottom) for (x in left until right) {
-            val c = coverage[y * w + x]
+            val c = band?.get((y - top) * bw + (x - left)) ?: coverage[y * w + x]
             if (c <= 0f) continue
             val p = inner.pixels[(y - top) * inner.width + (x - left)]
             val a = ((p ushr 24) * c + 0.5f).toInt()
@@ -79,7 +84,32 @@ internal object Selection {
         return cov
     }
 
+    /**
+     * Seçimin [left]..[right] × [top]..[bottom] kutusunda, çokgenin içine [r] pikselden (kare pencere) yakın her yer 1,
+     * gerisi 0. Satır ve sütun önek toplamlarıyla: süre r'den bağımsız.
+     */
+    internal fun dilate(coverage: FloatArray, w: Int, left: Int, top: Int, right: Int, bottom: Int, r: Int): FloatArray {
+        val bw = right - left; val bh = bottom - top
+        val rows = BooleanArray(bw * bh)
+        val pre = IntArray(max(bw, bh) + 1)
+        for (y in 0 until bh) {
+            for (x in 0 until bw) pre[x + 1] = pre[x] + if (coverage[(y + top) * w + x + left] > 0f) 1 else 0
+            if (pre[bw] == 0) continue
+            for (x in 0 until bw) rows[y * bw + x] = pre[min(bw, x + r + 1)] - pre[max(0, x - r)] > 0
+        }
+        val out = FloatArray(bw * bh)
+        for (x in 0 until bw) {
+            for (y in 0 until bh) pre[y + 1] = pre[y] + if (rows[y * bw + x]) 1 else 0
+            if (pre[bh] == 0) continue
+            for (y in 0 until bh) if (pre[min(bh, y + r + 1)] - pre[max(0, y - r)] > 0) out[y * bw + x] = 1f
+        }
+        return out
+    }
+
     private const val SUB = 4
-    /** Model kutusunun seçimin çevresine bıraktığı pay (seçimin büyük kenarına oranla): kenarları bağlamla görsün. */
-    private const val PAD = 0.05f
+    /**
+     * Model kutusunun seçimin çevresine bıraktığı pay (seçimin büyük kenarına oranla): kenarları bağlamla görsün.
+     * Nesneye oturan kement de en fazla bu kadar dışarı taşar.
+     */
+    private const val PAD = 0.08f
 }

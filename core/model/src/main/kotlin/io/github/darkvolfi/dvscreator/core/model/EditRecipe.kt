@@ -21,6 +21,12 @@ data class EditRecipe(
      * model yalnızca seçimin çevresinde çalışır (karmaşık resimlerde konuyu büyük görüp daha iyi bulur). null: seçim yok.
      */
     val selection: List<Float>? = null,
+    /**
+     * Kement nesneye otursun: model seçimin içinde konuyu bulur ([removeBackground] kapalı olsa da), kesim çizginin
+     * biraz dışına taşabilir — kabaca çizilen kement konunun kenarına oturur. false: tam çizilen yerden kesilir
+     * (1.2.1 ile kaydedilen tarifler de böyle; düzenleyici yeni seçimlerde varsayılan olarak açar).
+     */
+    val snapSelection: Boolean = false,
     val texts: List<TextLayer> = emptyList(),
     /** Küçültme sonrası keskinleştirme (0 = kapalı). */
     val sharpen: Float = 0f,
@@ -31,7 +37,10 @@ data class EditRecipe(
     /** Konunun etrafına dış çizgi kalınlığı (512 tuvalde px; 0 = yok) ve rengi. */
     val outlinePx: Int = 0,
     val outlineArgb: Int = 0xFFFFFFFF.toInt(),
-)
+) {
+    /** Arka plan modeli gerekiyor mu: otomatik arka plan kaldırma ya da nesneye oturan kement. */
+    val usesModel: Boolean get() = removeBackground || (selection != null && snapSelection)
+}
 
 @Serializable
 data class CropRect(val left: Int, val top: Int, val right: Int, val bottom: Int)

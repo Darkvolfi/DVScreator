@@ -3,7 +3,7 @@
     <string name="editor_title">Editar sticker</string>
     <string name="editor_mode_square">Recorte cuadrado</string>
     <string name="editor_mode_fit">Imagen completa</string>
-    <string name="editor_crop_hint">Arrastra el marco para moverlo; pellizca o usa el control deslizante para cambiar su tamaño.</string>
+    <string name="editor_crop_hint">Arrastra las esquinas o bordes para cambiar el tamaño, arrastra por dentro para mover, pellizca para hacer zoom.</string>
     <string name="editor_fit_hint">Se conserva toda la imagen; los lados vacíos quedan transparentes.</string>
     <string name="editor_skip">Omitir</string>
     <string name="editor_confirm">Crear sticker</string>
@@ -39,10 +39,12 @@
     <string name="trim_hint_long">Selección larga: puede que el sticker necesite menos calidad o fotogramas para caber en 500 KB. Más corto = más nítido.</string>
     <string name="editor_tool_lasso">Lazo</string>
     <string name="editor_tool_wand">Varita mágica</string>
-    <string name="editor_lasso_hint">Dibuja alrededor del sujeto; todo lo de fuera se elimina. Con “Quitar fondo” activado, la IA solo mira dentro de tu selección y encuentra el sujeto incluso en imágenes complejas.</string>
+    <string name="editor_lasso_hint">Dibuja aproximadamente alrededor del sujeto; todo lo de fuera se elimina. Con “Ajustar al sujeto” activado, la IA encuentra el sujeto dentro de tu selección y ajusta el corte a sus bordes. Desactívalo para cortar exactamente por tu línea.</string>
     <string name="editor_wand_hint">Toca una zona: se eliminan (o restauran) los colores parecidos conectados a ella. Sube la tolerancia para incluir más tonos.</string>
     <string name="editor_wand_tolerance">Tolerancia</string>
     <string name="editor_clear_selection">Quitar selección</string>
     <string name="editor_group_cut">Cortar</string>
     <string name="editor_group_style">Decorar</string>
+    <string name="editor_mode_free">Libre</string>
+    <string name="editor_lasso_snap">Ajustar al sujeto</string>
 </resources>

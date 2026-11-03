@@ -60,11 +60,11 @@ object StickerFactory {
         uri: Uri,
         mimeType: String,
         recipe: EditRecipe = EditRecipe(),
-        /** recipe.removeBackground için otomatik maske (çağıran açar; imaging modeli bilmez). Silgi izleri burada eklenir. */
+        /** recipe.usesModel için otomatik maske (çağıran açar; imaging modeli bilmez). Silgi izleri burada eklenir. */
         matte: Matte? = null,
         onProgress: (Progress) -> Unit = {},
     ): CreatedSticker =
-        Matte.of(matte, recipe.strokes, recipe.selection).let { full ->
+        Matte.of(matte, recipe.strokes, recipe.selection, recipe.snapSelection).let { full ->
             if (isAnimatedSource(mimeType)) animated(context, uri, mimeType, recipe, full, onProgress) else still(context, uri, recipe, full)
         }
 
