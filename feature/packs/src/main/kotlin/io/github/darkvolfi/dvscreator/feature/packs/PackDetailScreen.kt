@@ -9,6 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts.PickMultipleVis
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.background
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -254,6 +256,7 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
     editing?.let { sticker ->
         StickerDialog(
             sticker = sticker,
+            bytes = remember(sticker.imageFile) { vm.repository.stickerBytes(pack.identifier, sticker.imageFile) },
             onDismiss = { editing = null },
             onEmojis = { vm.setEmojis(pack.identifier, sticker.imageFile, it); editing = null },
             onDelete = { vm.removeSticker(pack.identifier, sticker.imageFile); editing = null },
@@ -362,6 +365,8 @@ private val EMOJIS = listOf(
 @Composable
 private fun StickerDialog(
     sticker: StickerEntry,
+    /** Büyük önizleme için stickerın kendisi (hareketliyse oynar). */
+    bytes: ByteArray?,
     onDismiss: () -> Unit,
     onEmojis: (List<String>) -> Unit,
     onDelete: () -> Unit,
@@ -373,7 +378,13 @@ private fun StickerDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.sticker_emojis_title)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Stickerın büyük hâli: küçük karede görünmeyen ayrıntılar (ince parçalar, kenarlar) kontrol edilebilsin
+                StickerImage(
+                    bytes,
+                    Modifier.fillMaxWidth().aspectRatio(1f).clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant).padding(8.dp),
+                )
                 Text(stringResource(R.string.sticker_emojis_hint), style = MaterialTheme.typography.bodySmall)
                 for (row in EMOJIS.chunked(6)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

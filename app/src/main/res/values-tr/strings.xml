@@ -24,4 +24,10 @@
     <string name="settings_support">Destek</string>
     <string name="settings_support_text">Soru, hata bildirimi ya da fikir mi var? Bize yazın.</string>
     <string name="settings_support_send">E-posta gönder</string>
+    <string name="settings_bg_quality">Arka plan silme kalitesi</string>
+    <string name="settings_bg_quality_auto_detail">Otomatik (bu cihazda: %1$s)</string>
+    <string name="settings_bg_quality_fast">Hızlı</string>
+    <string name="settings_bg_quality_high">Yüksek kalite</string>
+    <string name="settings_bg_quality_unknown">ilk kullanımda ölçülür</string>
+    <string name="settings_bg_quality_text">Yüksek kalite ince parçaları (direk, anten, namlu) çok daha iyi korur ama fotoğraf başına birkaç kat uzun sürer. Otomatik, telefonun hızına göre seçer. Videolar her zaman hızlı modda işlenir.</string>
 </resources>

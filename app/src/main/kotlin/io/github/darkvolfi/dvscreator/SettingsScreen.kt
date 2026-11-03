@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.Role
 import io.github.darkvolfi.dvscreator.feature.packs.language.AppLanguage
+import io.github.darkvolfi.dvscreator.core.segmentation.PhotoBackgroundRemover
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -83,6 +84,9 @@ fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () 
 
         item { SectionTitle(stringResource(R.string.settings_language)) }
         item { LanguageCard() }
+
+        item { SectionTitle(stringResource(R.string.settings_bg_quality)) }
+        item { BackgroundQualityCard() }
 
         item { SectionTitle(stringResource(R.string.settings_keyboard)) }
         item { KeyboardCard() }
@@ -232,6 +236,59 @@ private fun LanguageCard() {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
                     LanguageOption(systemLabel, selected = current == null) { choose(null) }
                     for ((tag, name) in AppLanguage.SUPPORTED) LanguageOption(name, selected = current == tag) { choose(tag) }
+                }
+            },
+            confirmButton = { TextButton(onClick = { choosing = false }) { Text(stringResource(PacksR.string.cancel)) } },
+        )
+    }
+}
+
+/** Fotoğrafta arka plan silme: otomatik (cihaza göre), hızlı ya da yüksek kalite (bkz. PhotoBackgroundRemover). */
+@Composable
+private fun BackgroundQualityCard() {
+    val context = LocalContext.current
+    var mode by remember { mutableStateOf(PhotoBackgroundRemover.mode(context)) }
+    var choosing by remember { mutableStateOf(false) }
+    val autoLabel = stringResource(
+        R.string.settings_bg_quality_auto_detail,
+        when (PhotoBackgroundRemover.autoUsesQuality(context)) {
+            true -> stringResource(R.string.settings_bg_quality_high)
+            false -> stringResource(R.string.settings_bg_quality_fast)
+            null -> stringResource(R.string.settings_bg_quality_unknown)
+        },
+    )
+    val options = listOf(
+        PhotoBackgroundRemover.Mode.AUTO to autoLabel,
+        PhotoBackgroundRemover.Mode.FAST to stringResource(R.string.settings_bg_quality_fast),
+        PhotoBackgroundRemover.Mode.QUALITY to stringResource(R.string.settings_bg_quality_high),
+    )
+
+    Card(
+        onClick = { choosing = true },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+    ) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(options.first { it.first == mode }.second, style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.settings_bg_quality_text), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Icon(painterResource(PacksR.drawable.ic_chevron_right), contentDescription = null)
+        }
+    }
+
+    if (choosing) {
+        AlertDialog(
+            onDismissRequest = { choosing = false },
+            title = { Text(stringResource(R.string.settings_bg_quality)) },
+            text = {
+                Column {
+                    for ((m, label) in options) LanguageOption(label, selected = mode == m) {
+                        choosing = false
+                        mode = m
+                        PhotoBackgroundRemover.setMode(context, m)
+                    }
                 }
             },
             confirmButton = { TextButton(onClick = { choosing = false }) { Text(stringResource(PacksR.string.cancel)) } },

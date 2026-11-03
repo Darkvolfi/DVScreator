@@ -24,4 +24,10 @@
     <string name="settings_support">Assistance</string>
     <string name="settings_support_text">Une question, un bug ou une idée ? Écrivez-nous.</string>
     <string name="settings_support_send">Envoyer un e-mail</string>
+    <string name="settings_bg_quality">Qualité de suppression de l’arrière-plan</string>
+    <string name="settings_bg_quality_auto_detail">Automatique (sur cet appareil : %1$s)</string>
+    <string name="settings_bg_quality_fast">Rapide</string>
+    <string name="settings_bg_quality_high">Haute qualité</string>
+    <string name="settings_bg_quality_unknown">mesuré à la première utilisation</string>
+    <string name="settings_bg_quality_text">La haute qualité préserve bien mieux les éléments fins (poteaux, antennes, canons), mais prend plusieurs fois plus de temps par photo. Le mode automatique s’adapte à la vitesse de votre téléphone. Les vidéos utilisent toujours le mode rapide.</string>
 </resources>

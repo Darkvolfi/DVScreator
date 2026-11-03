@@ -39,6 +39,7 @@ class BackgroundRemover private constructor(
      */
     internal fun infer(input: java.nio.FloatBuffer): FloatArray {
         val n = inputSize
+        firstInference?.started()
         val t0 = System.nanoTime()
         val raw = OnnxTensor.createTensor(env, input, longArrayOf(1, 3, n.toLong(), n.toLong())).use { tensor ->
             session.run(mapOf(inputName to tensor)).use { out ->
@@ -47,8 +48,17 @@ class BackgroundRemover private constructor(
             }
         }
         lastInferenceMs = (System.nanoTime() - t0) / 1_000_000
+        firstInference?.let { firstInference = null; it.finished() }
         return raw
     }
+
+    /** İlk çıkarımın başı ve sonu (bkz. PhotoBackgroundRemover: 1024 girdi bu cihazda çalışıyor mu). */
+    internal interface FirstInference {
+        fun started()
+        fun finished()
+    }
+
+    @Volatile internal var firstInference: FirstInference? = null
 
     /** Model çıktısı → [width]×[height] maske (0..255). */
     internal fun finishMask(raw: FloatArray, width: Int, height: Int): ByteArray {
@@ -161,6 +171,11 @@ class BackgroundRemover private constructor(
             nnapiFp16: Boolean = true,
             /** Test için: APK dışındaki bir model dosyası. */
             modelFile: java.io.File? = null,
+            /**
+             * Modelin girdi boyutu: [FAST_INPUT] (video, yavaş cihazlar) ya da [QUALITY_INPUT] (eğitildiği boyut; ince
+             * parçalar kaybolmaz, ~4 kat yavaş). Modelin boyutu serbesttir (build.gradle.kts — OnnxDynamicSize).
+             */
+            inputSize: Int = FAST_INPUT,
         ): BackgroundRemover {
             val env = OrtEnvironment.getEnvironment()
             val t0 = System.nanoTime()
@@ -173,6 +188,9 @@ class BackgroundRemover private constructor(
             val options = OrtSession.SessionOptions().apply {
                 setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT)
                 setIntraOpNumThreads(threads)
+                // Serbest boyutu sabitle: şekiller oturum açılırken bilinir (NNAPI statik şekil ister)
+                setSymbolicDimensionValue("h", inputSize.toLong())
+                setSymbolicDimensionValue("w", inputSize.toLong())
                 if (useXnnpack) addXnnpack(mapOf("intra_op_num_threads" to threads.toString()))
                 if (useNnapi) addNnapi(
                     if (nnapiFp16) java.util.EnumSet.of(ai.onnxruntime.providers.NNAPIFlags.USE_FP16)
@@ -180,10 +198,16 @@ class BackgroundRemover private constructor(
                 )
             }
             val session = env.createSession(model, options)
-            // Girdi boyutu derlemede modele yazılır (core/segmentation/build.gradle.kts — inputSize)
-            val inputSize = (session.inputInfo.values.first().info as ai.onnxruntime.TensorInfo).shape[2].toInt()
-            Log.i(TAG, "model açıldı: ${(System.nanoTime() - t0) / 1_000_000} ms, xnnpack=$useXnnpack nnapi=$useNnapi boyut=$inputSize")
-            return BackgroundRemover(env, session, inputSize)
+            // Sabit boyutlu model (ör. testte yamasız model) kendi boyutunda çalışır
+            val fixed = (session.inputInfo.values.first().info as ai.onnxruntime.TensorInfo).shape[2].toInt()
+            val size = if (fixed > 0) fixed else inputSize
+            Log.i(TAG, "model açıldı: ${(System.nanoTime() - t0) / 1_000_000} ms, xnnpack=$useXnnpack nnapi=$useNnapi boyut=$size")
+            return BackgroundRemover(env, session, size)
         }
+
+        /** Hızlı girdi boyutu (video ve yavaş cihazlar). */
+        const val FAST_INPUT = 512
+        /** Modelin eğitildiği girdi boyutu: fotoğrafta, hızlı cihazlarda. */
+        const val QUALITY_INPUT = 1024
     }
 }

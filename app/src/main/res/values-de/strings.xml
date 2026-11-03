@@ -24,4 +24,10 @@
     <string name="settings_support">Support</string>
     <string name="settings_support_text">Fragen, Fehler oder Ideen? Schreib uns.</string>
     <string name="settings_support_send">E-Mail senden</string>
+    <string name="settings_bg_quality">Qualität der Hintergrundentfernung</string>
+    <string name="settings_bg_quality_auto_detail">Automatisch (auf diesem Gerät: %1$s)</string>
+    <string name="settings_bg_quality_fast">Schnell</string>
+    <string name="settings_bg_quality_high">Hohe Qualität</string>
+    <string name="settings_bg_quality_unknown">beim ersten Verwenden gemessen</string>
+    <string name="settings_bg_quality_text">Hohe Qualität erhält feine Details (Stangen, Antennen, Gewehrläufe) viel besser, dauert aber pro Foto mehrfach länger. Automatisch wählt basierend auf der Geschwindigkeit deines Telefons. Videos nutzen immer den schnellen Modus.</string>
 </resources>

@@ -24,4 +24,10 @@
     <string name="settings_support">Soporte</string>
     <string name="settings_support_text">¿Preguntas, errores o ideas? Escríbenos.</string>
     <string name="settings_support_send">Enviar correo</string>
+    <string name="settings_bg_quality">Calidad de quitar fondo</string>
+    <string name="settings_bg_quality_auto_detail">Automático (en este dispositivo: %1$s)</string>
+    <string name="settings_bg_quality_fast">Rápido</string>
+    <string name="settings_bg_quality_high">Alta calidad</string>
+    <string name="settings_bg_quality_unknown">medido en el primer uso</string>
+    <string name="settings_bg_quality_text">La alta calidad conserva las partes delgadas (postes, antenas, cañones) mucho mejor, pero tarda varias veces más por foto. La opción automática elige según la velocidad de tu teléfono. Los videos siempre usan el modo rápido.</string>
 </resources>

@@ -100,7 +100,6 @@ class AnimationLoader(private val context: Context) {
             val cropLong = crop?.let { maxOf(it.right - it.left, it.bottom - it.top) } ?: displayLong
             val targetLongSide = (2 * (STICKER_SIZE - 2 * margin) * displayLong / cropLong.coerceAtLeast(1)).coerceAtMost(displayLong)
 
-            val region = Matte.Region.of(crop, info.displayWidth, info.displayHeight)
             // Hızlı yol: MediaCodec ile tek geçiş. Desteklenmeyen videoda (ör. 10-bit HDR) eski yönteme dön.
             val frames = ArrayList<ArgbImage>(count)
             val fast = try {
@@ -113,8 +112,7 @@ class AnimationLoader(private val context: Context) {
                         gate.acquire()
                         pending += async(Dispatchers.Default) {
                             try {
-                                val cropped = cropScaled(image, crop, info.displayWidth)
-                                StickerCanvas.fit(matte?.apply(cropped, region) ?: cropped, STICKER_SIZE, margin, fast = true)
+                                StickerCanvas.fit(matteThenCrop(image, crop, info.displayWidth, matte), STICKER_SIZE, margin, fast = true)
                             } finally {
                                 gate.release()
                             }
@@ -139,7 +137,7 @@ class AnimationLoader(private val context: Context) {
                     } else {
                         retriever.getFrameAtTime((timeMs * 1000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
                     } ?: error("Kare okunamadı: ${timeMs.roundToInt()} ms")
-                    frames += toStickerFrame(bitmap, margin, crop = crop, displayWidth = info.displayWidth, displayHeight = info.displayHeight, matte = matte)
+                    frames += toStickerFrame(bitmap, margin, crop = crop, displayWidth = info.displayWidth, matte = matte)
                     onFrame(k + 1, count)
                 }
             }
@@ -188,7 +186,7 @@ class AnimationLoader(private val context: Context) {
             val visible = min(t, endMs) - maxOf(frameStart, startMs)   // seçimle kesişen süre
             if (visible <= 0) continue
             if (visibleIndex++ % step == 0 || frames.isEmpty()) {
-                frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width, displayHeight = decoder.height, matte = matte)   // çözücü bitmap'i yeniden kullanabilir
+                frames += toStickerFrame(bitmap, margin, recycle = false, crop = crop, displayWidth = decoder.width, matte = matte)   // çözücü bitmap'i yeniden kullanabilir
                 durations += visible
             } else {
                 durations[durations.lastIndex] += visible
@@ -272,18 +270,24 @@ class AnimationLoader(private val context: Context) {
     }
 
     private fun toStickerFrame(
-        bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width, displayHeight: Int = bitmap.height, matte: Matte? = null,
+        bitmap: Bitmap, margin: Int, recycle: Boolean = true, crop: CropRect? = null, displayWidth: Int = bitmap.width, matte: Matte? = null,
     ): ArgbImage {
         val image = bitmap.toArgbImage()
         if (recycle) bitmap.recycle()
-        val cropped = cropScaled(image, crop, displayWidth)
-        return StickerCanvas.fit(matte?.apply(cropped, Matte.Region.of(crop, displayWidth, displayHeight)) ?: cropped, STICKER_SIZE, margin, fast = true)
+        return StickerCanvas.fit(matteThenCrop(image, crop, displayWidth, matte), STICKER_SIZE, margin, fast = true)
     }
 
     /**
      * [crop] kaynağın görünen çözünürlüğünde ([displayWidth] genişlik) verilir; kare daha düşük
      * çözünürlükte çıkarılmış olabileceği için orana göre ölçeklenir.
      */
+    /**
+     * Maske karenin tamamına, kırpmadan ÖNCE uygulanır: düzenleyici önizlemesiyle aynı. Model kırpılmış kareye
+     * bakınca kenardan taşan parçaları (ör. tank namlusu) konudan saymıyordu.
+     */
+    private fun matteThenCrop(image: ArgbImage, crop: CropRect?, displayWidth: Int, matte: Matte?): ArgbImage =
+        cropScaled(matte?.apply(image, Matte.Region.FULL) ?: image, crop, displayWidth)
+
     private fun cropScaled(image: ArgbImage, crop: CropRect?, displayWidth: Int): ArgbImage {
         if (crop == null) return image
         val s = image.width.toDouble() / displayWidth

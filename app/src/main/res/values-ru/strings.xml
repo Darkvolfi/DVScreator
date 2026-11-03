@@ -24,4 +24,10 @@
     <string name="settings_support">Поддержка</string>
     <string name="settings_support_text">Вопросы, ошибки или идеи? Напишите нам.</string>
     <string name="settings_support_send">Написать письмо</string>
+    <string name="settings_bg_quality">Качество удаления фона</string>
+    <string name="settings_bg_quality_auto_detail">Автоматически (на этом устройстве: %1$s)</string>
+    <string name="settings_bg_quality_fast">Быстро</string>
+    <string name="settings_bg_quality_high">Высокое качество</string>
+    <string name="settings_bg_quality_unknown">измеряется при первом использовании</string>
+    <string name="settings_bg_quality_text">Высокое качество значительно лучше сохраняет тонкие детали (столбы, антенны, стволы), но обработка каждого фото занимает в несколько раз больше времени. Автоматический режим выбирается в зависимости от скорости телефона. Для видео всегда используется быстрый режим.</string>
 </resources>

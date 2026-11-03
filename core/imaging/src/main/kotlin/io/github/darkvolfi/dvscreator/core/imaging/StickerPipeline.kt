@@ -18,12 +18,13 @@ class StickerPipeline(
     private val encoder = StickerEncoder(codec, limitBytes)
 
     fun render(source: ArgbImage, recipe: EditRecipe, sourceScale: Double = 1.0, matte: Matte? = null): ArgbImage {
-        var image = source
+        // Maske kaynağın tamamına, kırpmadan ÖNCE: düzenleyici önizlemesiyle aynı. Model kırpılmış kareye bakınca
+        // kenardan taşan parçaları (ör. tank namlusu) konudan saymıyordu.
+        var image = matte?.apply(source, Matte.Region.FULL) ?: source
         recipe.crop?.let { c ->
             fun s(v: Int) = (v * sourceScale).roundToInt()
             image = image.crop(s(c.left), s(c.top), s(c.right), s(c.bottom))
         }
-        matte?.let { image = it.apply(image, Matte.Region.of(recipe.crop, (source.width / sourceScale).roundToInt(), (source.height / sourceScale).roundToInt())) }
         // Döndürme son tuvalde (kare → boyut değişmez; video kareleriyle aynı yol, yazılar düz kalır)
         val canvas = StickerCanvas.fit(image, size, recipe.marginPx.coerceIn(0, MAX_MARGIN)).rotate(recipe.rotationDegrees)
         StickerOutline.apply(canvas, recipe.outlinePx, recipe.outlineArgb)

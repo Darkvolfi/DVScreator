@@ -27,4 +27,10 @@
     <string name="settings_support">Support</string>
     <string name="settings_support_text">Questions, bug reports or ideas? Write to us.</string>
     <string name="settings_support_send">Send email</string>
+    <string name="settings_bg_quality">Background removal quality</string>
+    <string name="settings_bg_quality_auto_detail">Automatic (on this device: %1$s)</string>
+    <string name="settings_bg_quality_fast">Fast</string>
+    <string name="settings_bg_quality_high">High quality</string>
+    <string name="settings_bg_quality_unknown">measured on first use</string>
+    <string name="settings_bg_quality_text">High quality keeps thin parts (poles, antennas, gun barrels) much better, but takes several times longer per photo. Automatic picks based on your phone’s speed. Videos always use fast mode.</string>
 </resources>

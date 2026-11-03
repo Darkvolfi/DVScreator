@@ -79,6 +79,7 @@ import io.github.darkvolfi.dvscreator.core.model.MaskStroke
 import io.github.darkvolfi.dvscreator.core.model.TextLayer
 import io.github.darkvolfi.dvscreator.core.model.TrimRange
 import io.github.darkvolfi.dvscreator.core.segmentation.BackgroundRemover
+import io.github.darkvolfi.dvscreator.core.segmentation.PhotoBackgroundRemover
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -187,7 +188,8 @@ fun StickerEditor(
         if (!cutting || f == null) { value = null; return@produceState }
         value = withContext(Dispatchers.Default) {
             runCatching {
-                val cut = if (useModel) BackgroundRemover.open(context).use { cutOf(f.image, it.matte(), selection, snapSelection) }
+                // Fotoğrafta sticker üretimiyle aynı girdi boyutu (cihaza göre 512 / 1024); hareketli kaynakta 512
+                val cut = if (useModel) (if (timeline == null) PhotoBackgroundRemover.open(context) else BackgroundRemover.open(context)).use { cutOf(f.image, it.matte(), selection, snapSelection) }
                 else cutOf(f.image, null, selection, snap = false)
                 StillFrame(cut, cut.toBitmap().asImageBitmap())
             }.getOrNull()
@@ -759,12 +761,7 @@ private fun readVideoFrame(context: Context, uri: Uri, ms: Int): StillFrame? {
  */
 private fun renderFinal(frame: ArgbImage, matted: ArgbImage?, recipe: EditRecipe, sourceWidth: Int): ImageBitmap {
     val scale = frame.width.toDouble() / sourceWidth
-    val auto = matted?.let { full ->
-        Matte { image, _ ->
-            val c = recipe.crop ?: return@Matte full
-            fun s(v: Int) = (v * scale).roundToInt()
-            full.crop(s(c.left), s(c.top), s(c.right), s(c.bottom)).takeIf { it.width == image.width && it.height == image.height } ?: image
-        }
-    }
+    // Pipeline maskeyi karenin tamamına, kırpmadan önce uygular: önbellekteki sonuç aynen kullanılır
+    val auto = matted?.let { full -> Matte { image, _ -> full.takeIf { it.width == image.width && it.height == image.height } ?: image } }
     return StickerPipeline(NativeWebp).render(frame, recipe, scale, Matte.of(auto, recipe.strokes)).toBitmap().asImageBitmap()
 }

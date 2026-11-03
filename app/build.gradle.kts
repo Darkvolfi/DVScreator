@@ -87,6 +87,7 @@ dependencies {
     implementation(project(":core:imaging"))
     implementation(project(":core:webp"))
     implementation(project(":core:whatsapp"))
+    implementation(project(":core:segmentation"))
     implementation(project(":feature:packs"))
     implementation(project(":feature:editor"))
     implementation(project(":feature:export"))

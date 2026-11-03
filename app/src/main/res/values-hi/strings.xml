@@ -24,4 +24,10 @@
     <string name="settings_support">सहायता</string>
     <string name="settings_support_text">कोई सवाल, गड़बड़ी या सुझाव? हमें लिखें।</string>
     <string name="settings_support_send">ईमेल भेजें</string>
+    <string name="settings_bg_quality">बैकग्राउंड हटाने की क्वालिटी</string>
+    <string name="settings_bg_quality_auto_detail">स्वचालित (इस डिवाइस पर: %1$s)</string>
+    <string name="settings_bg_quality_fast">तेज़</string>
+    <string name="settings_bg_quality_high">उच्च क्वालिटी</string>
+    <string name="settings_bg_quality_unknown">पहले इस्तेमाल पर मापा गया</string>
+    <string name="settings_bg_quality_text">उच्च क्वालिटी पतले हिस्सों (खंभे, एंटीना, बंदूक की नली) को बहुत बेहतर बनाए रखती है, लेकिन प्रति फोटो कई गुना अधिक समय लेती है। स्वचालित आपके फ़ोन की गति के आधार पर चुनता है। वीडियो हमेशा तेज़ मोड का उपयोग करते हैं।</string>
 </resources>

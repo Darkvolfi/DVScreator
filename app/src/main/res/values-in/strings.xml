@@ -24,4 +24,10 @@
     <string name="settings_support">Dukungan</string>
     <string name="settings_support_text">Ada pertanyaan, bug, atau ide? Kirimi kami email.</string>
     <string name="settings_support_send">Kirim email</string>
+    <string name="settings_bg_quality">Kualitas hapus latar belakang</string>
+    <string name="settings_bg_quality_auto_detail">Otomatis (di perangkat ini: %1$s)</string>
+    <string name="settings_bg_quality_fast">Cepat</string>
+    <string name="settings_bg_quality_high">Kualitas tinggi</string>
+    <string name="settings_bg_quality_unknown">diukur saat penggunaan pertama</string>
+    <string name="settings_bg_quality_text">Kualitas tinggi mempertahankan bagian tipis (tiang, antena, laras senjata) jauh lebih baik, tetapi butuh waktu beberapa kali lebih lama per foto. Otomatis memilih berdasarkan kecepatan ponsel Anda. Video selalu menggunakan mode cepat.</string>
 </resources>

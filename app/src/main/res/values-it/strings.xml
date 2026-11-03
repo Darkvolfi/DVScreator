@@ -24,4 +24,10 @@
     <string name="settings_support">Assistenza</string>
     <string name="settings_support_text">Domande, errori o idee? Scrivici.</string>
     <string name="settings_support_send">Invia email</string>
+    <string name="settings_bg_quality">Qualità rimozione sfondo</string>
+    <string name="settings_bg_quality_auto_detail">Automatico (su questo dispositivo: %1$s)</string>
+    <string name="settings_bg_quality_fast">Veloce</string>
+    <string name="settings_bg_quality_high">Alta qualità</string>
+    <string name="settings_bg_quality_unknown">misurato al primo utilizzo</string>
+    <string name="settings_bg_quality_text">L’alta qualità mantiene le parti sottili (pali, antenne, canne di pistole) molto meglio, ma richiede diverse volte più tempo per ciascuna foto. La scelta automatica si basa sulla velocità del telefono. I video usano sempre la modalità veloce.</string>
 </resources>
