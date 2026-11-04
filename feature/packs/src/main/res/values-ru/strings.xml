@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">Выберите 1–3 эмодзи. WhatsApp по ним предлагает этот стикер.</string>
     <string name="sticker_delete">Удалить стикер</string>
 
-    <string name="quick_start">Сделать один стикер</string>
-    <string name="quick_title">Отдельный стикер</string>
+    <string name="quick_start">Быстрый стикер</string>
+    <string name="quick_title">Быстрый стикер</string>
     <string name="quick_working">Готовим стикер…</string>
-    <string name="quick_pack_name">Быстрые стикеры</string>
-    <string name="quick_explain">WhatsApp не позволяет отправить в чат отдельный стикер (он приходит как фото). Поэтому стикер попадает в набор «Быстрые стикеры»: добавьте набор в WhatsApp один раз, а потом для каждого нового стикера просто подтверждайте обновление.</string>
-    <string name="quick_add_whatsapp">В быстрый набор → WhatsApp</string>
-    <string name="quick_add_business">В быстрый набор → WhatsApp Business</string>
-    <string name="quick_added">Добавлено в «%1$s» (%2$d / %3$d).</string>
-    <string name="quick_wa_ok">✅ В WhatsApp. Стикер появится в наборе на панели стикеров.</string>
-    <string name="quick_wa_already">Набор уже есть в WhatsApp; обновление не подтверждено. Нажмите «Обновить в WhatsApp», чтобы новый стикер появился.</string>
+    <string name="quick_pack_name">Быстрый стикер</string>
+    <string name="quick_add_whatsapp">Добавить в WhatsApp</string>
+    <string name="quick_add_business">Добавить в WhatsApp Business</string>
+    <string name="quick_wa_ok">✅ Добавлено в WhatsApp. Стикер появится на панели стикеров.</string>
+    <string name="quick_wa_already">Этот стикер уже есть в WhatsApp.</string>
     <string name="quick_wa_cancelled">Не добавлено в WhatsApp (отменено).</string>
-    <string name="quick_share_other">Поделиться через другое приложение (в WhatsApp придёт как фото)</string>
     <string name="quick_done">Готово</string>
 
     <string name="pack_import_whatsapp">Импорт из WhatsApp</string>
@@ -94,12 +91,12 @@
     <string name="keyboard_enable">1. Включить в настройках</string>
     <string name="keyboard_pick">2. Выбрать клавиатуру</string>
     <string name="keyboard_ready">✅ Клавиатура включена. В чате выберите «DVScreator Sticker» в переключателе клавиатур; чтобы вернуться, нажмите значок клавиатуры в самом низу.</string>
-    <string name="save_to_gallery">Сохранить в галерею (для Samsung Keyboard)</string>
-    <string name="saved_to_gallery">Сохранено в Pictures/DVScreator. В Samsung Keyboard: вкладка стикеров → + (Создать стикер) → выберите это изображение.</string>
+    <string name="save_to_gallery">Сохранить в галерею</string>
+    <string name="saved_to_gallery">Сохранено в Pictures/DVScreator.</string>
     <string name="save_failed">Не удалось сохранить в галерею.</string>
 
     <string name="home_title">Мои стикеры</string>
-    <string name="home_quick_subtitle">Сделайте и отправьте с клавиатуры</string>
+    <string name="home_quick_subtitle">Создай и сразу добавь в WhatsApp</string>
     <string name="home_new_pack_subtitle">Набор для WhatsApp</string>
     <string name="settings_title">Настройки</string>
     <string name="operation_failed">Не удалось выполнить: %1$s</string>

@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">اختر من 1 إلى 3 رموز تعبيرية. يستخدمها واتساب لاقتراح هذا الملصق.</string>
     <string name="sticker_delete">حذف الملصق</string>
 
-    <string name="quick_start">إنشاء ملصق واحد</string>
-    <string name="quick_title">ملصق منفرد</string>
+    <string name="quick_start">ملصق سريع</string>
+    <string name="quick_title">ملصق سريع</string>
     <string name="quick_working">جارٍ تجهيز الملصق…</string>
-    <string name="quick_pack_name">ملصقات سريعة</string>
-    <string name="quick_explain">لا يسمح واتساب بإرسال ملصق منفرد إلى محادثة (يصل كصورة). لذلك يذهب الملصق إلى حزمة «ملصقات سريعة»: أضف الحزمة إلى واتساب مرة واحدة، ثم أكّد التحديث فقط مع كل ملصق جديد.</string>
-    <string name="quick_add_whatsapp">إلى الحزمة السريعة ← واتساب</string>
-    <string name="quick_add_business">إلى الحزمة السريعة ← واتساب للأعمال</string>
-    <string name="quick_added">أُضيف إلى «%1$s» (%2$d / %3$d).</string>
-    <string name="quick_wa_ok">✅ في واتساب. يظهر داخل الحزمة في لوحة الملصقات.</string>
-    <string name="quick_wa_already">الحزمة موجودة في واتساب بالفعل؛ لم يُؤكَّد التحديث. المس «تحديث في واتساب» ليظهر الملصق الجديد.</string>
+    <string name="quick_pack_name">ملصق سريع</string>
+    <string name="quick_add_whatsapp">إضافة إلى WhatsApp</string>
+    <string name="quick_add_business">إضافة إلى WhatsApp Business</string>
+    <string name="quick_wa_ok">✅ تمت الإضافة إلى WhatsApp. ستجده في لوحة الملصقات.</string>
+    <string name="quick_wa_already">هذا الملصق موجود بالفعل في WhatsApp.</string>
     <string name="quick_wa_cancelled">لم يُضف إلى واتساب (أُلغي).</string>
-    <string name="quick_share_other">المشاركة مع تطبيق آخر (يصل كصورة في واتساب)</string>
     <string name="quick_done">تم</string>
 
     <string name="pack_import_whatsapp">استيراد من واتساب</string>
@@ -94,12 +91,12 @@
     <string name="keyboard_enable">1. التفعيل من الإعدادات</string>
     <string name="keyboard_pick">2. اختيار لوحة المفاتيح</string>
     <string name="keyboard_ready">✅ فُعّلت لوحة المفاتيح. في المحادثة اختر «DVScreator Sticker» من مبدّل لوحات المفاتيح؛ والمس أيقونة لوحة المفاتيح في الأسفل للعودة.</string>
-    <string name="save_to_gallery">الحفظ في المعرض (للوحة مفاتيح Samsung)</string>
-    <string name="saved_to_gallery">حُفظ في Pictures/DVScreator. في لوحة مفاتيح Samsung: تبويب الملصقات ← + (إنشاء ملصق) ← اختر هذه الصورة.</string>
+    <string name="save_to_gallery">حفظ في المعرض</string>
+    <string name="saved_to_gallery">تم الحفظ في Pictures/DVScreator.</string>
     <string name="save_failed">تعذّر الحفظ في المعرض.</string>
 
     <string name="home_title">ملصقاتي</string>
-    <string name="home_quick_subtitle">أنشئه وأرسله بلوحة المفاتيح</string>
+    <string name="home_quick_subtitle">اصنعه وأضفه مباشرة إلى WhatsApp</string>
     <string name="home_new_pack_subtitle">حزمة لإضافتها إلى واتساب</string>
     <string name="settings_title">الإعدادات</string>
     <string name="operation_failed">تعذّر الإكمال: %1$s</string>

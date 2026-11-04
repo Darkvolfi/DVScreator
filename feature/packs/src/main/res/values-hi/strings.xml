@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">1–3 इमोजी चुनें। WhatsApp इनसे यह स्टिकर सुझाता है।</string>
     <string name="sticker_delete">स्टिकर हटाएँ</string>
 
-    <string name="quick_start">एक स्टिकर बनाएँ</string>
-    <string name="quick_title">अकेला स्टिकर</string>
+    <string name="quick_start">झटपट स्टिकर</string>
+    <string name="quick_title">झटपट स्टिकर</string>
     <string name="quick_working">स्टिकर तैयार हो रहा है…</string>
-    <string name="quick_pack_name">क्विक स्टिकर</string>
-    <string name="quick_explain">WhatsApp किसी चैट में अकेला स्टिकर भेजने नहीं देता (वह फ़ोटो की तरह पहुँचता है)। इसलिए स्टिकर “क्विक स्टिकर” पैक में जाता है: पैक को एक बार WhatsApp में जोड़ें, फिर हर नए स्टिकर पर बस अपडेट की पुष्टि करें।</string>
-    <string name="quick_add_whatsapp">क्विक पैक में जोड़ें → WhatsApp</string>
-    <string name="quick_add_business">क्विक पैक में जोड़ें → WhatsApp Business</string>
-    <string name="quick_added">“%1$s” में जोड़ा गया (%2$d / %3$d)।</string>
-    <string name="quick_wa_ok">✅ WhatsApp में है। यह आपके स्टिकर पैनल में पैक के अंदर दिखेगा।</string>
-    <string name="quick_wa_already">पैक पहले से WhatsApp में है; अपडेट की पुष्टि नहीं हुई। नया स्टिकर दिखाने के लिए “WhatsApp में अपडेट करें” पर टैप करें।</string>
+    <string name="quick_pack_name">झटपट स्टिकर</string>
+    <string name="quick_add_whatsapp">WhatsApp में जोड़ें</string>
+    <string name="quick_add_business">WhatsApp Business में जोड़ें</string>
+    <string name="quick_wa_ok">✅ WhatsApp में जोड़ दिया गया। यह आपके स्टिकर पैनल में मिल जाएगा।</string>
+    <string name="quick_wa_already">यह स्टिकर पहले से ही WhatsApp में मौजूद है।</string>
     <string name="quick_wa_cancelled">WhatsApp में नहीं जोड़ा गया (रद्द किया गया)।</string>
-    <string name="quick_share_other">किसी दूसरे ऐप से शेयर करें (WhatsApp में फ़ोटो की तरह पहुँचेगा)</string>
     <string name="quick_done">हो गया</string>
 
     <string name="pack_import_whatsapp">WhatsApp से इंपोर्ट करें</string>
@@ -94,12 +91,12 @@
     <string name="keyboard_enable">1. सेटिंग में चालू करें</string>
     <string name="keyboard_pick">2. कीबोर्ड चुनें</string>
     <string name="keyboard_ready">✅ कीबोर्ड चालू है। चैट में कीबोर्ड बदलने वाले मेनू से “DVScreator Sticker” चुनें; वापस जाने के लिए सबसे नीचे कीबोर्ड आइकॉन पर टैप करें।</string>
-    <string name="save_to_gallery">गैलरी में सेव करें (Samsung Keyboard के लिए)</string>
-    <string name="saved_to_gallery">Pictures/DVScreator में सेव हुआ। Samsung Keyboard में: स्टिकर टैब → + (स्टिकर बनाएँ) → यह इमेज चुनें।</string>
+    <string name="save_to_gallery">गैलरी में सेव करें</string>
+    <string name="saved_to_gallery">Pictures/DVScreator में सेव किया गया।</string>
     <string name="save_failed">गैलरी में सेव नहीं हो सका।</string>
 
     <string name="home_title">मेरे स्टिकर</string>
-    <string name="home_quick_subtitle">बनाएँ और कीबोर्ड से भेजें</string>
+    <string name="home_quick_subtitle">बनाएं और सीधे WhatsApp में जोड़ें</string>
     <string name="home_new_pack_subtitle">WhatsApp में जोड़ने के लिए पैक</string>
     <string name="settings_title">सेटिंग</string>
     <string name="operation_failed">पूरा नहीं हो सका: %1$s</string>

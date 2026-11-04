@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">Choose 1–3 emojis. WhatsApp uses them to suggest this sticker.</string>
     <string name="sticker_delete">Delete sticker</string>
 
-    <string name="quick_start">Make a single sticker</string>
-    <string name="quick_title">Single sticker</string>
+    <string name="quick_start">Quick sticker</string>
+    <string name="quick_title">Quick sticker</string>
     <string name="quick_working">Preparing sticker…</string>
-    <string name="quick_pack_name">Quick stickers</string>
-    <string name="quick_explain">WhatsApp doesn\'t allow sending a single sticker to a chat (it arrives as a photo). Instead the sticker goes into the \"Quick stickers\" pack: add the pack to WhatsApp once, then just confirm the update for each new sticker.</string>
-    <string name="quick_add_whatsapp">Add to quick pack → WhatsApp</string>
-    <string name="quick_add_business">Add to quick pack → WhatsApp Business</string>
-    <string name="quick_added">Added to \"%1$s\" (%2$d / %3$d).</string>
-    <string name="quick_wa_ok">✅ In WhatsApp. It appears inside the pack in your sticker panel.</string>
-    <string name="quick_wa_already">The pack is already in WhatsApp; the update wasn\'t confirmed. Tap \"Update in WhatsApp\" to make the new sticker appear.</string>
+    <string name="quick_pack_name">Quick sticker</string>
+    <string name="quick_add_whatsapp">Add to WhatsApp</string>
+    <string name="quick_add_business">Add to WhatsApp Business</string>
+    <string name="quick_wa_ok">✅ Added to WhatsApp. You\'ll find it in your sticker panel.</string>
+    <string name="quick_wa_already">This sticker is already in WhatsApp.</string>
     <string name="quick_wa_cancelled">Not added to WhatsApp (cancelled).</string>
-    <string name="quick_share_other">Share with another app (arrives as a photo in WhatsApp)</string>
     <string name="quick_done">Done</string>
 
     <string name="pack_import_whatsapp">Import from WhatsApp</string>
@@ -94,13 +91,13 @@
     <string name="keyboard_enable">1. Enable in Settings</string>
     <string name="keyboard_pick">2. Choose keyboard</string>
     <string name="keyboard_ready">✅ Keyboard enabled. In a chat pick “DVScreator Sticker” from the keyboard switcher; tap the keyboard icon at the very bottom to go back.</string>
-    <string name="save_to_gallery">Save to gallery (for Samsung Keyboard)</string>
-    <string name="saved_to_gallery">Saved to Pictures/DVScreator. In Samsung Keyboard: sticker tab → + (Create sticker) → pick this image.</string>
+    <string name="save_to_gallery">Save to gallery</string>
+    <string name="saved_to_gallery">Saved to Pictures/DVScreator.</string>
     <string name="save_failed">Couldn\'t save to gallery.</string>
     <string name="keyboard_abc" translatable="false">⌨  ABC</string>
 
     <string name="home_title">My stickers</string>
-    <string name="home_quick_subtitle">Make it, send it with the keyboard</string>
+    <string name="home_quick_subtitle">Make it, add it straight to WhatsApp</string>
     <string name="home_new_pack_subtitle">A pack to add to WhatsApp</string>
     <string name="settings_title">Settings</string>
     <string name="operation_failed">Couldn\'t complete: %1$s</string>

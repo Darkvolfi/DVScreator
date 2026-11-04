@@ -30,6 +30,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +67,7 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -534,12 +537,21 @@ fun StickerEditor(
                         Text(stringResource(R.string.editor_erase_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                if (strokes.isNotEmpty() || redo.isNotEmpty()) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }) { Text(stringResource(R.string.editor_undo)) }
-                        TextButton(enabled = redo.isNotEmpty(), onClick = { strokes = strokes + redo.last(); redo = redo.dropLast(1) }) { Text(stringResource(R.string.editor_redo)) }
-                        TextButton(enabled = strokes.isNotEmpty(), onClick = { redo = emptyList(); strokes = emptyList() }) { Text(stringResource(R.string.editor_clear_strokes)) }
+                // Hep görünür: yalnızca çizimden sonra çıkınca fark edilmiyordu
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilledTonalButton(modifier = Modifier.weight(1f), enabled = strokes.isNotEmpty(), onClick = { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }) {
+                        Icon(painterResource(R.drawable.ic_undo), contentDescription = null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.editor_undo))
                     }
+                    FilledTonalButton(modifier = Modifier.weight(1f), enabled = redo.isNotEmpty(), onClick = { strokes = strokes + redo.last(); redo = redo.dropLast(1) }) {
+                        Icon(painterResource(R.drawable.ic_redo), contentDescription = null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.editor_redo))
+                    }
+                }
+                if (strokes.isNotEmpty()) {
+                    TextButton(onClick = { redo = emptyList(); strokes = emptyList() }) { Text(stringResource(R.string.editor_clear_strokes)) }
                 }
             }
 

@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">Pilih 1–3 emoji. WhatsApp memakainya untuk menyarankan stiker ini.</string>
     <string name="sticker_delete">Hapus stiker</string>
 
-    <string name="quick_start">Buat satu stiker</string>
-    <string name="quick_title">Stiker tunggal</string>
+    <string name="quick_start">Stiker cepat</string>
+    <string name="quick_title">Stiker cepat</string>
     <string name="quick_working">Menyiapkan stiker…</string>
     <string name="quick_pack_name">Stiker cepat</string>
-    <string name="quick_explain">WhatsApp tidak mengizinkan pengiriman satu stiker ke chat (stiker tiba sebagai foto). Karena itu stiker masuk ke paket “Stiker cepat”: tambahkan paket ke WhatsApp sekali, lalu cukup konfirmasi pembaruan untuk setiap stiker baru.</string>
-    <string name="quick_add_whatsapp">Tambah ke paket cepat → WhatsApp</string>
-    <string name="quick_add_business">Tambah ke paket cepat → WhatsApp Business</string>
-    <string name="quick_added">Ditambahkan ke “%1$s” (%2$d / %3$d).</string>
-    <string name="quick_wa_ok">✅ Ada di WhatsApp. Stiker muncul di dalam paket pada panel stiker Anda.</string>
-    <string name="quick_wa_already">Paket sudah ada di WhatsApp; pembaruan belum dikonfirmasi. Ketuk “Perbarui di WhatsApp” agar stiker baru muncul.</string>
+    <string name="quick_add_whatsapp">Tambah ke WhatsApp</string>
+    <string name="quick_add_business">Tambah ke WhatsApp Business</string>
+    <string name="quick_wa_ok">✅ Ditambahkan ke WhatsApp. Temukan di panel stiker kamu.</string>
+    <string name="quick_wa_already">Stiker ini sudah ada di WhatsApp.</string>
     <string name="quick_wa_cancelled">Tidak ditambahkan ke WhatsApp (dibatalkan).</string>
-    <string name="quick_share_other">Bagikan ke aplikasi lain (tiba sebagai foto di WhatsApp)</string>
     <string name="quick_done">Selesai</string>
 
     <string name="pack_import_whatsapp">Impor dari WhatsApp</string>
@@ -94,12 +91,12 @@
     <string name="keyboard_enable">1. Aktifkan di Setelan</string>
     <string name="keyboard_pick">2. Pilih keyboard</string>
     <string name="keyboard_ready">✅ Keyboard aktif. Di chat pilih “DVScreator Sticker” dari pengalih keyboard; ketuk ikon keyboard di paling bawah untuk kembali.</string>
-    <string name="save_to_gallery">Simpan ke galeri (untuk Samsung Keyboard)</string>
-    <string name="saved_to_gallery">Disimpan di Pictures/DVScreator. Di Samsung Keyboard: tab stiker → + (Buat stiker) → pilih gambar ini.</string>
+    <string name="save_to_gallery">Simpan ke galeri</string>
+    <string name="saved_to_gallery">Tersimpan di Pictures/DVScreator.</string>
     <string name="save_failed">Tidak dapat menyimpan ke galeri.</string>
 
     <string name="home_title">Stiker saya</string>
-    <string name="home_quick_subtitle">Buat, kirim lewat keyboard</string>
+    <string name="home_quick_subtitle">Bikin dan langsung tambah ke WhatsApp</string>
     <string name="home_new_pack_subtitle">Paket untuk ditambahkan ke WhatsApp</string>
     <string name="settings_title">Setelan</string>
     <string name="operation_failed">Tidak dapat diselesaikan: %1$s</string>

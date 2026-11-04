@@ -1,9 +1,7 @@
 package io.github.darkvolfi.dvscreator.core.whatsapp
 
-import android.content.ClipData
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -12,29 +10,11 @@ import androidx.core.content.FileProvider
 import java.io.File
 
 /**
- * Stickerı dosya olarak başka uygulamalara verme. Paylaşım menüsüyle WhatsApp'a giden WebP fotoğraf olur
- * (WhatsApp'ın SEND_STICKER eylemi yalnızca imzası izin listesinde olan uygulamalara açık — 2026-10-13
+ * Stickerı dosya olarak verme: galeriye kaydetme ve klavye. Paylaşım menüsüyle WhatsApp'a giden WebP fotoğraf
+ * olur (WhatsApp'ın SEND_STICKER eylemi yalnızca imzası izin listesinde olan uygulamalara açık — 2026-10-13
  * incelemesi); sticker olarak göndermenin yolu klavye: `image/webp.wasticker` içeriği ([keyboardUri]).
  */
 object StickerShare {
-
-    /**
-     * WhatsApp'ın kişi seçme ekranını açan istek. [whatsAppPackage] null ise sistemin paylaşım menüsü açılır.
-     * Dosya önbelleğe yazılır; önceki paylaşımın dosyası bu sırada silinir.
-     */
-    fun intent(context: Context, webp: ByteArray, whatsAppPackage: String?): Intent {
-        val dir = File(context.cacheDir, SHARE_DIR).apply { mkdirs() }
-        dir.listFiles()?.filter { !it.name.startsWith(KEYBOARD_PREFIX) }?.forEach { it.delete() }
-        val file = File(dir, "sticker_${System.currentTimeMillis()}.webp").apply { writeBytes(webp) }
-        val uri = FileProvider.getUriForFile(context, authorityFor(context.packageName), file)
-        val send = Intent(Intent.ACTION_SEND).apply {
-            type = "image/webp"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            clipData = ClipData.newRawUri("", uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        return if (whatsAppPackage != null) send.setPackage(whatsAppPackage) else Intent.createChooser(send, null)
-    }
 
     /**
      * Sticker klavyesi için: dosyayı önbelleğe yazar ve başka uygulamaya okuma izniyle verilebilecek adresini döndürür.

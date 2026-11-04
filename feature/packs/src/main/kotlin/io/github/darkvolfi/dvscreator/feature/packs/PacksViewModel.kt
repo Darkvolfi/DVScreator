@@ -182,7 +182,7 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
 
     fun dismissAddState(packId: String) = _addState.update { it - packId }
 
-    /** Paketsiz tek sticker: seç → düzenle → üret → sohbete gönder. */
+    /** Hızlı sticker: seç → düzenle → üret → WhatsApp'a ekle. */
     private val _quick = MutableStateFlow<QuickState>(QuickState.Idle)
     val quick: StateFlow<QuickState> = _quick.asStateFlow()
 
@@ -203,12 +203,12 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** Üretilen stickerı hızlı pakete ekler; ardından [onAdded] ile WhatsApp'a ekleme / güncelleme başlatılır. */
-    fun addQuickToPack(baseName: String, onAdded: (PackManifest) -> Unit) {
+    /** Üretilen stickerla tek stickerlık paket açar; ardından [onAdded] ile WhatsApp'a ekleme başlatılır. */
+    fun createQuickPack(baseName: String, onAdded: (PackManifest) -> Unit) {
         val done = _quick.value as? QuickState.Done ?: return
         if (done.packId != null) return
         launchSafely {
-            val pack = repository.addToQuickPack(done.sticker.webp, done.recipe, baseName)
+            val pack = repository.createQuickPack(done.sticker.webp, done.recipe, baseName)
             _quick.update { if (it === done) done.copy(packId = pack.identifier) else it }
             onAdded(pack)
         }

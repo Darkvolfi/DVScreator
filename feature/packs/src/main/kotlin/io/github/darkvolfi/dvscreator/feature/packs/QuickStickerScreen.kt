@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +46,7 @@ import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppIntents
 import io.github.darkvolfi.dvscreator.core.whatsapp.WhatsAppLimits
 import io.github.darkvolfi.dvscreator.feature.editor.StickerEditor
 
-/** Paketsiz tek sticker: düzenle → üret → WhatsApp'ta sohbete gönder. */
+/** Hızlı sticker: düzenle → üret → tek stickerlık paketle doğrudan WhatsApp'a ekle. */
 @Composable
 internal fun QuickStickerScreen(state: QuickState, vm: PacksViewModel, modifier: Modifier) {
     BackHandler { vm.dismissQuick() }
@@ -93,7 +94,7 @@ internal fun QuickStickerScreen(state: QuickState, vm: PacksViewModel, modifier:
     }
 }
 
-/** Hızlı paketin WhatsApp'a ekleme / güncelleme sonucu. */
+/** Paketin WhatsApp'a ekleme sonucu. */
 private enum class QuickWaResult { OK, ALREADY, CANCELLED }
 
 @Composable
@@ -136,48 +137,35 @@ private fun QuickResult(state: QuickState.Done, vm: PacksViewModel) {
         colors = if (sticker.degraded) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer) else CardDefaults.cardColors(),
     ) { Text(describe(sticker), Modifier.padding(12.dp), style = MaterialTheme.typography.bodySmall) }
 
+    fun send(pkg: String) {
+        if (pack != null) sendToWhatsApp(pack, pkg)
+        else vm.createQuickPack(quickName) { added -> sendToWhatsApp(added, pkg) }
+    }
+
+    // Tek WhatsApp kuruluysa doğrudan oraya gider; ikisi de kuruluysa hangisi olduğu düğmeyle seçilir
+    LaunchedEffect(Unit) {
+        if (state.packId == null) whatsApps.singleOrNull()?.let { send(it) }
+    }
+
     if (whatsApps.isEmpty()) Text(stringResource(R.string.pack_no_whatsapp), color = MaterialTheme.colorScheme.error)
-    if (pack == null) {
-        Text(stringResource(R.string.quick_explain), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        for (pkg in whatsApps) {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { vm.addQuickToPack(quickName) { added -> sendToWhatsApp(added, pkg) } },
-            ) {
-                Text(stringResource(if (pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE) R.string.quick_add_business else R.string.quick_add_whatsapp))
-            }
-        }
-    } else {
-        Card(Modifier.fillMaxWidth()) {
-            Text(
-                stringResource(R.string.quick_added, pack.name, pack.stickers.size, WhatsAppLimits.PACK_MAX_STICKERS),
-                Modifier.padding(12.dp), style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-        waResult?.let { r ->
-            Text(
-                stringResource(
-                    when (r) {
-                        QuickWaResult.OK -> R.string.quick_wa_ok
-                        QuickWaResult.ALREADY -> R.string.quick_wa_already
-                        QuickWaResult.CANCELLED -> R.string.quick_wa_cancelled
-                    },
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-        // Eklendikten sonra yeniden deneme (ör. güncelleme iptal edildiyse)
-        for (pkg in whatsApps) {
-            OutlinedButton(modifier = Modifier.fillMaxWidth(), enabled = pendingPackage == null, onClick = { sendToWhatsApp(pack, pkg) }) {
-                Text(stringResource(if (pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE) R.string.pack_update_business else R.string.pack_update_whatsapp))
-            }
+    waResult?.let { r ->
+        Text(
+            stringResource(
+                when (r) {
+                    QuickWaResult.OK -> R.string.quick_wa_ok
+                    QuickWaResult.ALREADY -> R.string.quick_wa_already
+                    QuickWaResult.CANCELLED -> R.string.quick_wa_cancelled
+                },
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+    if (waResult != QuickWaResult.OK && waResult != QuickWaResult.ALREADY) for (pkg in whatsApps) {
+        Button(modifier = Modifier.fillMaxWidth(), enabled = pendingPackage == null, onClick = { send(pkg) }) {
+            Text(stringResource(if (pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE) R.string.quick_add_business else R.string.quick_add_whatsapp))
         }
     }
     waError?.let { Text(stringResource(R.string.wa_rejected, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
-    OutlinedButton(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = { context.startActivity(StickerShare.intent(context, sticker.webp, null)) },
-    ) { Text(stringResource(R.string.quick_share_other)) }
     if (StickerShare.canSaveToGallery) {
         OutlinedButton(modifier = Modifier.fillMaxWidth(), onClick = { saveToGallery(context, sticker.webp) }) {
             Text(stringResource(R.string.save_to_gallery))

@@ -122,34 +122,23 @@ class PackRepository(context: Context) {
         }
     }
 
-    /**
-     * Tek stickerı "hızlı" pakete ekler; son hızlı paket doluysa (30) yenisi açılır ([baseName], "[baseName] 2"…).
-     * Kullanıcı hızlı paketi WhatsApp'a bir kez ekler, sonra her yeni stickerda yalnızca güncellemeyi onaylar.
-     * @return stickerın eklendiği paketin güncel hâli
-     */
-    suspend fun addToQuickPack(webp: ByteArray, recipe: EditRecipe, baseName: String): PackManifest = edit {
-        val quick = store.packs().filter { it.identifier.startsWith(QUICK_PREFIX) }
-        val target = quick.lastOrNull { it.stickers.size < WhatsAppLimits.PACK_MAX_STICKERS } ?: run {
-            val n = quick.size + 1
-            PackManifest(
-                identifier = QUICK_PREFIX + UUID.randomUUID().toString().replace("-", "").take(8),
-                name = (if (n == 1) baseName else "$baseName $n").take(WhatsAppLimits.MAX_TEXT_LENGTH),
-                publisher = DEFAULT_PUBLISHER,
-                trayImageFile = TRAY_FILE,
-                animated = true,
-                stickers = emptyList(),
-                createdAt = System.currentTimeMillis(),
-            )
-        }
+    /** Tek stickerlık yeni paket açar ("[baseName] 1", "[baseName] 2"…); WhatsApp'a hemen eklenebilir. */
+    suspend fun createQuickPack(webp: ByteArray, recipe: EditRecipe, baseName: String): PackManifest = edit {
+        val n = store.packs().count { it.identifier.startsWith(QUICK_PREFIX) } + 1
         val fileName = "s_" + UUID.randomUUID().toString().replace("-", "").take(12) + ".webp"
-        store.writeFile(target.identifier, fileName, webp)
-        if (target.stickers.isEmpty()) store.writeFile(target.identifier, TRAY_FILE, StickerFactory.trayIcon(webp))
-        val updated = target.copy(
-            stickers = target.stickers + StickerEntry(fileName, listOf(DEFAULT_EMOJI), recipe = recipe),
-            imageDataVersion = target.imageDataVersion + 1,
+        val pack = PackManifest(
+            identifier = QUICK_PREFIX + UUID.randomUUID().toString().replace("-", "").take(8),
+            name = "$baseName $n".take(WhatsAppLimits.MAX_TEXT_LENGTH),
+            publisher = DEFAULT_PUBLISHER,
+            trayImageFile = TRAY_FILE,
+            animated = true,
+            stickers = listOf(StickerEntry(fileName, listOf(DEFAULT_EMOJI), recipe = recipe)),
+            createdAt = System.currentTimeMillis(),
         )
-        store.saveManifest(updated)
-        updated
+        store.writeFile(pack.identifier, fileName, webp)
+        store.writeFile(pack.identifier, TRAY_FILE, StickerFactory.trayIcon(webp))
+        store.saveManifest(pack)
+        pack
     }
 
     private suspend fun produce(sourceFile: File, mimeType: String, recipe: EditRecipe, onProgress: (StickerFactory.Progress) -> Unit): CreatedSticker =

@@ -12,7 +12,7 @@ An open-source Android app for making WhatsApp stickers from your photos, videos
 - **Editor:** square crop or fit the whole image, choose the time range of a video/GIF, rotate, margin, white or black outline, text with outline.
 - **Background removal** with an on-device AI model (IS-Net), for photos and frame by frame for videos. Erase / restore brush for fine touches.
 - **Sticker packs:** add up to 30 stickers per pack, pick emojis, and add or update the pack in WhatsApp and WhatsApp Business. Packs are checked against WhatsApp's rules before sending, with a clear message if something is wrong.
-- **Single sticker:** make one sticker without building a pack; it goes into a "Quick stickers" pack.
+- **Quick sticker:** make one sticker and add it straight to WhatsApp as its own pack.
 - **Sticker keyboard:** send your stickers straight into a chat as stickers, without adding a pack.
 - **Import from WhatsApp:** copy stickers you received in chats (or whole shared packs) into your own packs, without recompressing them.
 - **11 languages:** English, Turkish, Spanish, Portuguese, German, French, Italian, Russian, Arabic, Indonesian and Hindi. The app follows your phone's language and can be changed in Settings.
@@ -47,7 +47,7 @@ Notes:
 | Module | Purpose |
 |---|---|
 | `app` | Entry point, settings, quality lab (developer screen) |
-| `feature/packs` | Packs, single sticker, import, sticker keyboard, language setting |
+| `feature/packs` | Packs, quick sticker, import, sticker keyboard, language setting |
 | `feature/editor` | Sticker editor |
 | `core/imaging` | Image/video/GIF loading, resizing, encoding pipeline |
 | `core/webp` | libwebp via JNI (`third_party/libwebp` submodule) |

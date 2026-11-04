@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">Escolha de 1 a 3 emojis. O WhatsApp usa esses emojis para sugerir esta figurinha.</string>
     <string name="sticker_delete">Excluir figurinha</string>
 
-    <string name="quick_start">Criar uma figurinha avulsa</string>
-    <string name="quick_title">Figurinha avulsa</string>
+    <string name="quick_start">Figurinha rápida</string>
+    <string name="quick_title">Figurinha rápida</string>
     <string name="quick_working">Preparando figurinha…</string>
-    <string name="quick_pack_name">Figurinhas rápidas</string>
-    <string name="quick_explain">O WhatsApp não permite enviar uma figurinha avulsa para uma conversa (ela chega como foto). Por isso a figurinha vai para o pacote “Figurinhas rápidas”: adicione o pacote ao WhatsApp uma vez e depois só confirme a atualização a cada figurinha nova.</string>
-    <string name="quick_add_whatsapp">Adicionar ao pacote rápido → WhatsApp</string>
-    <string name="quick_add_business">Adicionar ao pacote rápido → WhatsApp Business</string>
-    <string name="quick_added">Adicionada a “%1$s” (%2$d / %3$d).</string>
-    <string name="quick_wa_ok">✅ No WhatsApp. Ela aparece dentro do pacote no seu painel de figurinhas.</string>
-    <string name="quick_wa_already">O pacote já está no WhatsApp; a atualização não foi confirmada. Toque em “Atualizar no WhatsApp” para a nova figurinha aparecer.</string>
+    <string name="quick_pack_name">Figurinha rápida</string>
+    <string name="quick_add_whatsapp">Adicionar ao WhatsApp</string>
+    <string name="quick_add_business">Adicionar ao WhatsApp Business</string>
+    <string name="quick_wa_ok">✅ Adicionado ao WhatsApp. Você encontra no seu painel de figurinhas.</string>
+    <string name="quick_wa_already">Esta figurinha já está no WhatsApp.</string>
     <string name="quick_wa_cancelled">Não foi adicionado ao WhatsApp (cancelado).</string>
-    <string name="quick_share_other">Compartilhar com outro app (chega como foto no WhatsApp)</string>
     <string name="quick_done">Concluído</string>
 
     <string name="pack_import_whatsapp">Importar do WhatsApp</string>
@@ -94,12 +91,12 @@
     <string name="keyboard_enable">1. Ativar nas Configurações</string>
     <string name="keyboard_pick">2. Escolher teclado</string>
     <string name="keyboard_ready">✅ Teclado ativado. Numa conversa, escolha “DVScreator Sticker” no seletor de teclado; toque no ícone de teclado lá embaixo para voltar.</string>
-    <string name="save_to_gallery">Salvar na galeria (para o Teclado Samsung)</string>
-    <string name="saved_to_gallery">Salvo em Pictures/DVScreator. No Teclado Samsung: aba de figurinhas → + (Criar figurinha) → escolha esta imagem.</string>
+    <string name="save_to_gallery">Salvar na galeria</string>
+    <string name="saved_to_gallery">Salvo em Pictures/DVScreator.</string>
     <string name="save_failed">Não foi possível salvar na galeria.</string>
 
     <string name="home_title">Minhas figurinhas</string>
-    <string name="home_quick_subtitle">Crie e envie pelo teclado</string>
+    <string name="home_quick_subtitle">Crie e adicione direto ao WhatsApp</string>
     <string name="home_new_pack_subtitle">Um pacote para adicionar ao WhatsApp</string>
     <string name="settings_title">Configurações</string>
     <string name="operation_failed">Não foi possível concluir: %1$s</string>

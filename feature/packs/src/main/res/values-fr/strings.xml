@@ -43,18 +43,15 @@
     <string name="sticker_emojis_hint">Choisissez 1 à 3 emojis. WhatsApp les utilise pour suggérer ce sticker.</string>
     <string name="sticker_delete">Supprimer le sticker</string>
 
-    <string name="quick_start">Créer un sticker seul</string>
-    <string name="quick_title">Sticker seul</string>
+    <string name="quick_start">Sticker rapide</string>
+    <string name="quick_title">Sticker rapide</string>
     <string name="quick_working">Préparation du sticker…</string>
-    <string name="quick_pack_name">Stickers rapides</string>
-    <string name="quick_explain">WhatsApp ne permet pas d’envoyer un sticker seul dans une discussion (il arrive comme photo). Le sticker va donc dans le pack « Stickers rapides » : ajoutez ce pack à WhatsApp une fois, puis confirmez simplement la mise à jour à chaque nouveau sticker.</string>
-    <string name="quick_add_whatsapp">Ajouter au pack rapide → WhatsApp</string>
-    <string name="quick_add_business">Ajouter au pack rapide → WhatsApp Business</string>
-    <string name="quick_added">Ajouté à « %1$s » (%2$d / %3$d).</string>
-    <string name="quick_wa_ok">✅ Dans WhatsApp. Il apparaît dans le pack de votre panneau de stickers.</string>
-    <string name="quick_wa_already">Le pack est déjà dans WhatsApp ; la mise à jour n’a pas été confirmée. Touchez « Mettre à jour dans WhatsApp » pour faire apparaître le nouveau sticker.</string>
+    <string name="quick_pack_name">Sticker rapide</string>
+    <string name="quick_add_whatsapp">Ajouter à WhatsApp</string>
+    <string name="quick_add_business">Ajouter à WhatsApp Business</string>
+    <string name="quick_wa_ok">✅ Ajouté à WhatsApp. Tu le trouveras dans ton panneau de stickers.</string>
+    <string name="quick_wa_already">Ce sticker est déjà dans WhatsApp.</string>
     <string name="quick_wa_cancelled">Non ajouté à WhatsApp (annulé).</string>
-    <string name="quick_share_other">Partager avec une autre application (arrive comme photo dans WhatsApp)</string>
     <string name="quick_done">Terminé</string>
 
     <string name="pack_import_whatsapp">Importer depuis WhatsApp</string>
@@ -94,12 +91,12 @@
     <string name="keyboard_enable">1. Activer dans les paramètres</string>
     <string name="keyboard_pick">2. Choisir le clavier</string>
     <string name="keyboard_ready">✅ Clavier activé. Dans une discussion, choisissez « DVScreator Sticker » dans le sélecteur de clavier ; touchez l’icône de clavier tout en bas pour revenir.</string>
-    <string name="save_to_gallery">Enregistrer dans la galerie (pour Samsung Keyboard)</string>
-    <string name="saved_to_gallery">Enregistré dans Pictures/DVScreator. Dans Samsung Keyboard : onglet stickers → + (Créer un sticker) → choisissez cette image.</string>
+    <string name="save_to_gallery">Enregistrer dans la galerie</string>
+    <string name="saved_to_gallery">Enregistré dans Pictures/DVScreator.</string>
     <string name="save_failed">Impossible d’enregistrer dans la galerie.</string>
 
     <string name="home_title">Mes stickers</string>
-    <string name="home_quick_subtitle">Créez-le, envoyez-le avec le clavier</string>
+    <string name="home_quick_subtitle">Crée-le et ajoute-le directement à WhatsApp</string>
     <string name="home_new_pack_subtitle">Un pack à ajouter à WhatsApp</string>
     <string name="settings_title">Paramètres</string>
     <string name="operation_failed">Échec : %1$s</string>
