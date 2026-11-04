@@ -50,7 +50,6 @@
     <string name="quick_explain">WhatsApp किसी चैट में अकेला स्टिकर भेजने नहीं देता (वह फ़ोटो की तरह पहुँचता है)। इसलिए स्टिकर “क्विक स्टिकर” पैक में जाता है: पैक को एक बार WhatsApp में जोड़ें, फिर हर नए स्टिकर पर बस अपडेट की पुष्टि करें।</string>
     <string name="quick_add_whatsapp">क्विक पैक में जोड़ें → WhatsApp</string>
     <string name="quick_add_business">क्विक पैक में जोड़ें → WhatsApp Business</string>
-    <string name="quick_need_more">“%1$s” में जोड़ा गया (%2$d स्टिकर)। WhatsApp को हर पैक में कम से कम 3 स्टिकर चाहिए: %3$d और बनाएँ, फिर यह WhatsApp में जुड़ जाएगा।</string>
     <string name="quick_added">“%1$s” में जोड़ा गया (%2$d / %3$d)।</string>
     <string name="quick_wa_ok">✅ WhatsApp में है। यह आपके स्टिकर पैनल में पैक के अंदर दिखेगा।</string>
     <string name="quick_wa_already">पैक पहले से WhatsApp में है; अपडेट की पुष्टि नहीं हुई। नया स्टिकर दिखाने के लिए “WhatsApp में अपडेट करें” पर टैप करें।</string>

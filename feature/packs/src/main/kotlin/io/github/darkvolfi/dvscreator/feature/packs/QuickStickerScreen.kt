@@ -118,7 +118,6 @@ private fun QuickResult(state: QuickState.Done, vm: PacksViewModel) {
     val quickName = stringResource(R.string.quick_pack_name)
 
     fun sendToWhatsApp(target: PackManifest, pkg: String) {
-        if (target.stickers.size < WhatsAppLimits.PACK_MIN_STICKERS) return
         val problems = vm.repository.validate(target.identifier)
         if (problems.isNotEmpty()) { waError = problems.joinToString("\n"); return }
         pendingPackage = pkg
@@ -149,11 +148,9 @@ private fun QuickResult(state: QuickState.Done, vm: PacksViewModel) {
             }
         }
     } else {
-        val missing = WhatsAppLimits.PACK_MIN_STICKERS - pack.stickers.size
         Card(Modifier.fillMaxWidth()) {
             Text(
-                if (missing > 0) stringResource(R.string.quick_need_more, pack.name, pack.stickers.size, missing)
-                else stringResource(R.string.quick_added, pack.name, pack.stickers.size, WhatsAppLimits.PACK_MAX_STICKERS),
+                stringResource(R.string.quick_added, pack.name, pack.stickers.size, WhatsAppLimits.PACK_MAX_STICKERS),
                 Modifier.padding(12.dp), style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -170,7 +167,7 @@ private fun QuickResult(state: QuickState.Done, vm: PacksViewModel) {
             )
         }
         // Eklendikten sonra yeniden deneme (ör. güncelleme iptal edildiyse)
-        if (missing <= 0) for (pkg in whatsApps) {
+        for (pkg in whatsApps) {
             OutlinedButton(modifier = Modifier.fillMaxWidth(), enabled = pendingPackage == null, onClick = { sendToWhatsApp(pack, pkg) }) {
                 Text(stringResource(if (pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE) R.string.pack_update_business else R.string.pack_update_whatsapp))
             }

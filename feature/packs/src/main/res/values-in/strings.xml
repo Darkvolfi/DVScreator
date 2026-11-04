@@ -50,7 +50,6 @@
     <string name="quick_explain">WhatsApp tidak mengizinkan pengiriman satu stiker ke chat (stiker tiba sebagai foto). Karena itu stiker masuk ke paket “Stiker cepat”: tambahkan paket ke WhatsApp sekali, lalu cukup konfirmasi pembaruan untuk setiap stiker baru.</string>
     <string name="quick_add_whatsapp">Tambah ke paket cepat → WhatsApp</string>
     <string name="quick_add_business">Tambah ke paket cepat → WhatsApp Business</string>
-    <string name="quick_need_more">Ditambahkan ke “%1$s” (%2$d stiker). WhatsApp memerlukan minimal 3 stiker per paket: buat %3$d lagi dan paket akan ditambahkan ke WhatsApp.</string>
     <string name="quick_added">Ditambahkan ke “%1$s” (%2$d / %3$d).</string>
     <string name="quick_wa_ok">✅ Ada di WhatsApp. Stiker muncul di dalam paket pada panel stiker Anda.</string>
     <string name="quick_wa_already">Paket sudah ada di WhatsApp; pembaruan belum dikonfirmasi. Ketuk “Perbarui di WhatsApp” agar stiker baru muncul.</string>

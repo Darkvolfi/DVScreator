@@ -50,7 +50,6 @@
     <string name="quick_explain">WhatsApp ne permet pas d’envoyer un sticker seul dans une discussion (il arrive comme photo). Le sticker va donc dans le pack « Stickers rapides » : ajoutez ce pack à WhatsApp une fois, puis confirmez simplement la mise à jour à chaque nouveau sticker.</string>
     <string name="quick_add_whatsapp">Ajouter au pack rapide → WhatsApp</string>
     <string name="quick_add_business">Ajouter au pack rapide → WhatsApp Business</string>
-    <string name="quick_need_more">Ajouté à « %1$s » (%2$d stickers). WhatsApp exige au moins 3 stickers par pack : créez-en encore %3$d et il sera ajouté à WhatsApp.</string>
     <string name="quick_added">Ajouté à « %1$s » (%2$d / %3$d).</string>
     <string name="quick_wa_ok">✅ Dans WhatsApp. Il apparaît dans le pack de votre panneau de stickers.</string>
     <string name="quick_wa_already">Le pack est déjà dans WhatsApp ; la mise à jour n’a pas été confirmée. Touchez « Mettre à jour dans WhatsApp » pour faire apparaître le nouveau sticker.</string>

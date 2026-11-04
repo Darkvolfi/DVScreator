@@ -50,7 +50,6 @@
     <string name="quick_explain">WhatsApp не позволяет отправить в чат отдельный стикер (он приходит как фото). Поэтому стикер попадает в набор «Быстрые стикеры»: добавьте набор в WhatsApp один раз, а потом для каждого нового стикера просто подтверждайте обновление.</string>
     <string name="quick_add_whatsapp">В быстрый набор → WhatsApp</string>
     <string name="quick_add_business">В быстрый набор → WhatsApp Business</string>
-    <string name="quick_need_more">Добавлено в «%1$s» (стикеров: %2$d). WhatsApp требует не меньше 3 стикеров в наборе: сделайте ещё %3$d, и набор будет добавлен в WhatsApp.</string>
     <string name="quick_added">Добавлено в «%1$s» (%2$d / %3$d).</string>
     <string name="quick_wa_ok">✅ В WhatsApp. Стикер появится в наборе на панели стикеров.</string>
     <string name="quick_wa_already">Набор уже есть в WhatsApp; обновление не подтверждено. Нажмите «Обновить в WhatsApp», чтобы новый стикер появился.</string>

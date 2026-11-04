@@ -50,7 +50,6 @@
     <string name="quick_explain">O WhatsApp não permite enviar uma figurinha avulsa para uma conversa (ela chega como foto). Por isso a figurinha vai para o pacote “Figurinhas rápidas”: adicione o pacote ao WhatsApp uma vez e depois só confirme a atualização a cada figurinha nova.</string>
     <string name="quick_add_whatsapp">Adicionar ao pacote rápido → WhatsApp</string>
     <string name="quick_add_business">Adicionar ao pacote rápido → WhatsApp Business</string>
-    <string name="quick_need_more">Adicionada a “%1$s” (%2$d figurinhas). O WhatsApp precisa de pelo menos 3 figurinhas por pacote: crie mais %3$d e ele será adicionado ao WhatsApp.</string>
     <string name="quick_added">Adicionada a “%1$s” (%2$d / %3$d).</string>
     <string name="quick_wa_ok">✅ No WhatsApp. Ela aparece dentro do pacote no seu painel de figurinhas.</string>
     <string name="quick_wa_already">O pacote já está no WhatsApp; a atualização não foi confirmada. Toque em “Atualizar no WhatsApp” para a nova figurinha aparecer.</string>

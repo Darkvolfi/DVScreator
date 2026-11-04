@@ -50,7 +50,6 @@
     <string name="quick_explain">WhatsApp sohbete tek sticker gönderilmesine izin vermiyor (fotoğraf olarak gidiyor). Bunun yerine sticker \"Hızlı stickerlar\" paketine eklenir: paketi WhatsApp\'a bir kez eklersin, sonraki stickerlarda yalnızca güncellemeyi onaylarsın.</string>
     <string name="quick_add_whatsapp">Hızlı pakete ekle → WhatsApp</string>
     <string name="quick_add_business">Hızlı pakete ekle → WhatsApp Business</string>
-    <string name="quick_need_more">\"%1$s\" paketine eklendi (%2$d sticker). WhatsApp bir paket için en az 3 sticker istiyor: %3$d tane daha yapınca WhatsApp\'a eklenecek.</string>
     <string name="quick_added">\"%1$s\" paketine eklendi (%2$d / %3$d).</string>
     <string name="quick_wa_ok">✅ WhatsApp\'ta. Sticker panelinde paketin içinde görünür.</string>
     <string name="quick_wa_already">Paket zaten WhatsApp\'ta; güncelleme onaylanmadı. Yeni stickerın görünmesi için \"WhatsApp\'ta güncelle\"ye bas.</string>

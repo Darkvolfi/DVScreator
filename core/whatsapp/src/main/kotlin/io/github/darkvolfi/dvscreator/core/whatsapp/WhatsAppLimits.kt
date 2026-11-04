@@ -15,7 +15,8 @@ object WhatsAppLimits {
     const val TRAY_ICON_SIZE_PX = 96
     const val TRAY_ICON_MAX_BYTES = 50 * 1024
 
-    const val PACK_MIN_STICKERS = 3
+    /** Resmî belge 3 diyor ama WhatsApp tek stickerlık paketi kabul ediyor (2026-11-04, 2.26.42.74 ile denendi). */
+    const val PACK_MIN_STICKERS = 1
     /** 30 üstü WhatsApp tarafından reddediliyor (60 ile denendi, 2026-10-10); WhatsApp'ın kendi içinde yapılan paketler farklı. */
     const val PACK_MAX_STICKERS = 30
     const val MIN_EMOJIS_PER_STICKER = 1

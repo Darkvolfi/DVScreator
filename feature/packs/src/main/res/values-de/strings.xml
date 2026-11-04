@@ -50,7 +50,6 @@
     <string name="quick_explain">WhatsApp erlaubt nicht, einen einzelnen Sticker in einen Chat zu senden (er kommt als Foto an). Deshalb kommt der Sticker ins Paket „Schnelle Sticker“: Füge das Paket einmal zu WhatsApp hinzu und bestätige danach bei jedem neuen Sticker nur noch die Aktualisierung.</string>
     <string name="quick_add_whatsapp">Zum Schnellpaket → WhatsApp</string>
     <string name="quick_add_business">Zum Schnellpaket → WhatsApp Business</string>
-    <string name="quick_need_more">Zu „%1$s“ hinzugefügt (%2$d Sticker). WhatsApp braucht mindestens 3 Sticker pro Paket: Erstelle noch %3$d, dann wird es zu WhatsApp hinzugefügt.</string>
     <string name="quick_added">Zu „%1$s“ hinzugefügt (%2$d / %3$d).</string>
     <string name="quick_wa_ok">✅ In WhatsApp. Er erscheint im Paket in deinem Sticker-Bereich.</string>
     <string name="quick_wa_already">Das Paket ist schon in WhatsApp; die Aktualisierung wurde nicht bestätigt. Tippe auf „In WhatsApp aktualisieren“, damit der neue Sticker erscheint.</string>
