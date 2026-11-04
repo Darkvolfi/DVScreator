@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Arrastra las esquinas o bordes para cambiar el tamaño, arrastra por dentro para mover, pellizca para hacer zoom.</string>
     <string name="editor_fit_hint">Se conserva toda la imagen; los lados vacíos quedan transparentes.</string>
     <string name="editor_skip">Omitir este</string>
+    <string name="editor_open_failed">No se pudo abrir este archivo. Puede estar dañado o tener un formato no compatible.</string>
     <string name="editor_confirm">Crear sticker</string>
     <string name="editor_remove_bg">Quitar fondo</string>
     <string name="ok">Aceptar</string>

@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Arraste os cantos ou bordas para mudar o tamanho, arraste por dentro para mover, faça pinça para zoom.</string>
     <string name="editor_fit_hint">A imagem inteira é mantida; as laterais vazias ficam transparentes.</string>
     <string name="editor_skip">Pular este</string>
+    <string name="editor_open_failed">Não foi possível abrir este arquivo. Ele pode estar corrompido ou em um formato sem suporte.</string>
     <string name="editor_confirm">Criar figurinha</string>
     <string name="editor_remove_bg">Remover fundo</string>
     <string name="ok">OK</string>

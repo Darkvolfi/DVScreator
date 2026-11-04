@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Drag the corners or edges to resize, drag inside to move, pinch to zoom.</string>
     <string name="editor_fit_hint">The whole image is kept; empty sides stay transparent.</string>
     <string name="editor_skip">Skip this one</string>
+    <string name="editor_open_failed">This file couldn’t be opened. It may be damaged or in an unsupported format.</string>
     <string name="editor_confirm">Make sticker</string>
     <string name="editor_remove_bg">Remove background</string>
     <string name="ok">OK</string>

@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Ziehe an den Ecken oder Kanten zum Ändern der Größe, ziehe innen zum Verschieben, mit zwei Fingern zoomen.</string>
     <string name="editor_fit_hint">Das ganze Bild bleibt erhalten; leere Ränder bleiben transparent.</string>
     <string name="editor_skip">Diesen überspringen</string>
+    <string name="editor_open_failed">Diese Datei konnte nicht geöffnet werden. Sie ist möglicherweise beschädigt oder das Format wird nicht unterstützt.</string>
     <string name="editor_confirm">Sticker erstellen</string>
     <string name="editor_remove_bg">Hintergrund entfernen</string>
     <string name="ok">OK</string>

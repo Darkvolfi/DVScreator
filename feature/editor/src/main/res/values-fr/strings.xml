@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Faites glisser les coins ou les bords pour redimensionner, glissez à l’intérieur pour déplacer, pincez pour zoomer.</string>
     <string name="editor_fit_hint">L’image entière est conservée ; les bords vides restent transparents.</string>
     <string name="editor_skip">Passer celui-ci</string>
+    <string name="editor_open_failed">Impossible d’ouvrir ce fichier. Il est peut-être endommagé ou son format n’est pas pris en charge.</string>
     <string name="editor_confirm">Créer le sticker</string>
     <string name="editor_remove_bg">Supprimer l’arrière-plan</string>
     <string name="ok">OK</string>

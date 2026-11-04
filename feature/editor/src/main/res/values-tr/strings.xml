@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Köşelerden ya da kenarlardan tutarak boyutlandır, içinden sürükleyerek taşı, iki parmakla büyüt.</string>
     <string name="editor_fit_hint">Görüntünün tamamı korunur; boş kalan kenarlar şeffaf olur.</string>
     <string name="editor_skip">Bunu geç</string>
+    <string name="editor_open_failed">Bu dosya açılamadı. Bozuk olabilir ya da biçimi desteklenmiyor olabilir.</string>
     <string name="editor_confirm">Sticker yap</string>
     <string name="editor_remove_bg">Arka planı kaldır</string>
     <string name="ok">Tamam</string>

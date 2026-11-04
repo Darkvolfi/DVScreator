@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">اسحب الزوايا أو الحواف لتغيير الحجم، واسحب من الداخل للتحريك، وقرّب بإصبعين للتكبير.</string>
     <string name="editor_fit_hint">تبقى الصورة كاملة؛ والجوانب الفارغة تبقى شفافة.</string>
     <string name="editor_skip">تخطي هذا</string>
+    <string name="editor_open_failed">تعذّر فتح هذا الملف. قد يكون تالفًا أو بتنسيق غير مدعوم.</string>
     <string name="editor_confirm">إنشاء الملصق</string>
     <string name="editor_remove_bg">إزالة الخلفية</string>
     <string name="ok">حسنًا</string>

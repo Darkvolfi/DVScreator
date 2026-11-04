@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">साइज़ बदलने के लिए कोनों या किनारों को खींचें, खिसकाने के लिए अंदर से खींचें, ज़ूम करने के लिए पिंच करें।</string>
     <string name="editor_fit_hint">पूरी इमेज रहती है; खाली किनारे पारदर्शी रहते हैं।</string>
     <string name="editor_skip">इसे छोड़ें</string>
+    <string name="editor_open_failed">यह फ़ाइल नहीं खुल सकी। हो सकता है वह खराब हो या उसका फ़ॉर्मैट समर्थित न हो।</string>
     <string name="editor_confirm">स्टिकर बनाएँ</string>
     <string name="editor_remove_bg">बैकग्राउंड हटाएँ</string>
     <string name="ok">ठीक है</string>

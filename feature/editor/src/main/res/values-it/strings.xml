@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Trascina gli angoli o i bordi per ridimensionare, trascina all’interno per spostare, pizzica per ingrandire.</string>
     <string name="editor_fit_hint">L’immagine resta intera; i lati vuoti restano trasparenti.</string>
     <string name="editor_skip">Salta questo</string>
+    <string name="editor_open_failed">Impossibile aprire questo file. Potrebbe essere danneggiato o in un formato non supportato.</string>
     <string name="editor_confirm">Crea sticker</string>
     <string name="editor_remove_bg">Rimuovi sfondo</string>
     <string name="ok">OK</string>

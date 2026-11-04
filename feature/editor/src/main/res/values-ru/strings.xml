@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Перетащите углы или края, чтобы изменить размер, потяните внутри для перемещения, щипком меняйте масштаб.</string>
     <string name="editor_fit_hint">Изображение сохраняется целиком; пустые края остаются прозрачными.</string>
     <string name="editor_skip">Пропустить этот</string>
+    <string name="editor_open_failed">Не удалось открыть этот файл. Возможно, он повреждён или его формат не поддерживается.</string>
     <string name="editor_confirm">Создать стикер</string>
     <string name="editor_remove_bg">Удалить фон</string>
     <string name="ok">ОК</string>

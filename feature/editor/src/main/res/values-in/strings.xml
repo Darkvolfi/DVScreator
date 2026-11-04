@@ -6,6 +6,7 @@
     <string name="editor_crop_hint">Seret sudut atau tepi untuk mengubah ukuran, seret bagian dalam untuk memindahkan, cubit untuk memperbesar.</string>
     <string name="editor_fit_hint">Seluruh gambar dipertahankan; sisi yang kosong tetap transparan.</string>
     <string name="editor_skip">Lewati yang ini</string>
+    <string name="editor_open_failed">File ini tidak dapat dibuka. File mungkin rusak atau formatnya tidak didukung.</string>
     <string name="editor_confirm">Buat stiker</string>
     <string name="editor_remove_bg">Hapus latar belakang</string>
     <string name="ok">OK</string>

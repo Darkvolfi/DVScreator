@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import android.os.Build
 import android.widget.VideoView
 import androidx.compose.foundation.Image
@@ -129,12 +130,25 @@ fun StickerEditor(
 ) {
     val context = LocalContext.current
     val isVideo = mimeType.startsWith("video/")
-    val meta by produceState<SourceMeta?>(null, uri) {
-        value = withContext(Dispatchers.IO) { runCatching { if (isVideo) readVideoMeta(context, uri) else readStillMeta(context, uri, mimeType) }.getOrNull() }
+    val meta by produceState<Result<SourceMeta>?>(null, uri) {
+        value = withContext(Dispatchers.IO) { runCatching<SourceMeta> { if (isVideo) readVideoMeta(context, uri) else readStillMeta(context, uri, mimeType) } }
+            .onFailure { Log.e("StickerEditor", "kaynak açılamadı", it) }
     }
-    val m = meta
-    if (m == null) {
+    val result = meta
+    if (result == null) {
         Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+        return
+    }
+    val m = result.getOrNull()
+    if (m == null) {
+        Column(
+            modifier.fillMaxSize().padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(stringResource(R.string.editor_open_failed), style = MaterialTheme.typography.bodyLarge)
+            OutlinedButton(onClick = onSkip) { Text(stringResource(if (remaining > 1) R.string.editor_skip else R.string.cancel)) }
+        }
         return
     }
 
