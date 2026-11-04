@@ -10,12 +10,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -106,7 +109,7 @@ private fun PackListScreen(
             }
         }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 ActionCard(
                     icon = painterResource(R.drawable.ic_send),
                     title = stringResource(R.string.quick_start),
@@ -170,7 +173,8 @@ private fun ActionCard(
 ) {
     Card(
         onClick = onClick,
-        modifier = modifier.height(140.dp),
+        // Sabit yükseklik değil: bazı dillerde metin iki satıra taşıp kesiliyordu; Row iki kartı aynı boyda tutar
+        modifier = modifier.fillMaxHeight().heightIn(min = 140.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = container, contentColor = content),
     ) {
@@ -179,7 +183,7 @@ private fun ActionCard(
                 Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(content.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center,
             ) { Icon(icon, contentDescription = null, modifier = Modifier.size(22.dp)) }
-            Column {
+            Column(Modifier.padding(top = 12.dp)) {
                 Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Text(subtitle, style = MaterialTheme.typography.bodySmall)
             }
