@@ -178,6 +178,7 @@ class BackgroundRemover private constructor(
             inputSize: Int = FAST_INPUT,
         ): BackgroundRemover {
             val env = OrtEnvironment.getEnvironment()
+            env.setTelemetry(false)   // varsayılan açık; uygulamanın internet izni de yok (app/AndroidManifest.xml)
             val t0 = System.nanoTime()
             val model = if (modelFile != null) FileInputStream(modelFile).channel.use { it.map(FileChannel.MapMode.READ_ONLY, 0, it.size()) }
             else context.assets.openFd(MODEL_ASSET).use { afd ->

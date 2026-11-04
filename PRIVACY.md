@@ -1,11 +1,18 @@
 # DVScreator Privacy Policy
 
-*Last updated: 3 November 2026*
+*Last updated: 4 November 2026*
 
 DVScreator is a free, open-source app for making stickers. It is developed by Darkvolfi, an individual developer.
 
 ## Summary
-DVScreator does not collect, store on any server, share or sell any personal data. The app has no internet permission, so it cannot send anything off your device.
+From version 1.3.0, DVScreator does not collect, store on any server, share or sell any personal data. The app has no internet permission, so it cannot send anything off your device.
+
+## Correction for versions 1.2.1 and earlier
+Versions 0.1.0 to 1.2.1 were published with the claim that the app had no internet access. That was wrong. The ONNX Runtime library used for background removal added the internet permission and a telemetry component that contacts Microsoft's telemetry service. We measured a small amount of network traffic from version 1.3.0 test builds that still had this component: at least 41 KB sent over one day of heavy use.
+
+The traffic is encrypted, so we could not inspect its contents. The library's telemetry includes usage data and a device identifier field. The amount is very small compared with the images processed, so we do not believe your photos were sent, but we cannot state this with certainty. DVScreator's own code never used the network.
+
+Version 1.3.0 removes the permission and the component. Please update.
 
 ## What the app accesses and why
 - **Photos, videos and GIFs you choose.** The app opens only the files you pick in the system picker, to turn them into stickers. They are processed on your device and never uploaded.
@@ -38,9 +45,13 @@ Changes to this policy will be published on this page with a new date.
 
 # DVScreator Gizlilik Politikası (Türkçe)
 
-*Son güncelleme: 3 Kasım 2026*
+*Son güncelleme: 4 Kasım 2026*
 
 DVScreator, çıkartma yapmak için ücretsiz ve açık kaynak bir uygulamadır. Bireysel geliştirici Darkvolfi tarafından geliştirilir.
+
+**1.2.1 ve önceki sürümler için düzeltme:** 0.1.0–1.2.1 sürümleri "internete çıkmaz" denilerek yayımlandı; bu yanlıştı. Arka plan silmede kullanılan ONNX Runtime kütüphanesi internet iznini ve Microsoft'un telemetri servisine bağlanan bir bileşeni ekliyordu. Bu bileşeni hâlâ içeren 1.3.0 test sürümlerinde az miktarda trafik ölçtük: yoğun kullanılan bir günde en az 41 KB gönderim. Trafik şifreli olduğu için içeriğini göremedik. Kütüphanenin telemetrisinde kullanım verileri ve bir cihaz kimliği alanı var. Miktar işlenen görsellere göre çok küçük, bu yüzden fotoğrafların gönderildiğini düşünmüyoruz ama bunu kesin olarak söyleyemeyiz. DVScreator'ın kendi kodu ağı hiç kullanmadı. 1.3.0 bu izni ve bileşeni kaldırır; lütfen güncelle.
+
+Aşağıdakiler 1.3.0 ve sonrası için geçerlidir:
 
 - **Kişisel veri toplanmaz, paylaşılmaz, satılmaz.** Uygulamanın internet izni yoktur; cihazından dışarı hiçbir şey gönderemez.
 - **Fotoğraf, video ve GIF'ler:** yalnızca senin seçtiğin dosyalar açılır, telefonda işlenir, hiçbir yere yüklenmez.

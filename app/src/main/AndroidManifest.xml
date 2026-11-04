@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Bilinçli olarak HİÇBİR izin istenmez (INTERNET dahil). Bkz. agents/00 — İlkeler. -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ONNX Runtime kendi manifestiyle bunları ve Microsoft'a telemetri bileşenini ekliyor; hiçbirini istemiyoruz -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
 
     <!-- Android 11+: WhatsApp'ın yüklü olup olmadığını ve paketin ekli olup olmadığını görebilmek için -->
     <queries>
@@ -27,6 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="ai.onnxruntime.TelemetryInitializer"
+            android:authorities="${applicationId}.onnxruntime_telemetry_initializer"
+            tools:node="remove" />
 
         <!-- StickerContentProvider M2'de eklenecek (bkz. agents/01 — Entegrasyon mekanizması) -->
     </application>
