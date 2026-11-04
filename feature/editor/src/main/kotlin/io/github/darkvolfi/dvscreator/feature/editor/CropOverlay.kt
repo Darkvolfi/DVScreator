@@ -3,8 +3,6 @@ package io.github.darkvolfi.dvscreator.feature.editor
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.calculatePan
-import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -47,16 +45,6 @@ data class CropFrame(val left: Float, val top: Float, val right: Float, val bott
     /** Boyutu koruyarak kaydırır. */
     fun moved(dx: Float, dy: Float, sourceW: Int, sourceH: Int) =
         CropFrame(left + dx, top + dy, right + dx, bottom + dy).inside(sourceW, sourceH)
-
-    /** Merkez sabit, iki parmakla büyütme / küçültme. */
-    fun scaled(zoom: Float, sourceW: Int, sourceH: Int, square: Boolean): CropFrame {
-        if (square) return withSide(width * zoom, sourceW, sourceH)
-        val minS = minSide(sourceW, sourceH)
-        val w = (width * zoom).coerceIn(minS, sourceW.toFloat())
-        val h = (height * zoom).coerceIn(minS, sourceH.toFloat())
-        val cx = (left + right) / 2; val cy = (top + bottom) / 2
-        return CropFrame(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2).inside(sourceW, sourceH)
-    }
 
     /**
      * Tutamaçla boyutlandırma: [handle] hangi kenarların ([LEFT], [TOP], [RIGHT], [BOTTOM]) hareket ettiği.
@@ -122,8 +110,9 @@ data class CropFrame(val left: Float, val top: Float, val right: Float, val bott
  * Önizlemenin üzerine çizilen kırpma çerçevesi. Bu bileşen önizlemeyle AYNI boyutta (kaynağın en-boy
  * oranında) yerleştirilmeli: ekran koordinatı = kaynak koordinatı × (bileşen genişliği / kaynak genişliği).
  *
- * Köşelerden ve kenarlardan tutarak boyutlandırılır, içinden sürüklenerek taşınır, iki parmakla büyütülür.
- * [square]: çerçeve kare kalır.
+ * Köşelerden ve kenarlardan tutarak boyutlandırılır, içinden sürüklenerek taşınır. İki parmak fotoğrafı
+ * yakınlaştırır (StickerEditor); o sırada çerçeve parmak inmeden önceki yerine döner.
+ * [square]: çerçeve kare kalır. [viewScale]: görünümün yakınlaştırması; tutamaçlar ekranda aynı boyutta kalsın diye.
  */
 @Composable
 fun CropOverlay(
@@ -131,33 +120,37 @@ fun CropOverlay(
     sourceW: Int,
     sourceH: Int,
     square: Boolean,
+    viewScale: Float,
     onChange: (CropFrame) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val current by rememberUpdatedState(crop)
     val isSquare by rememberUpdatedState(square)
+    val latestScale by rememberUpdatedState(viewScale)
     Canvas(
         modifier.pointerInput(sourceW, sourceH) {
             awaitEachGesture {
                 val down = awaitFirstDown()
-                val k = sourceW / size.width.toFloat()   // ekran px → kaynak px
-                val handle = hitHandle(current, down.position.x * k, down.position.y * k, HANDLE_TOUCH.toPx() * k)
+                val k = sourceW / size.width.toFloat()   // bileşen px → kaynak px
+                val handle = hitHandle(current, down.position.x * k, down.position.y * k, HANDLE_TOUCH.toPx() / latestScale * k)
                     ?: return@awaitEachGesture   // çerçevenin dışı
                 down.consume()
+                val start = current
+                var multi = false
                 while (true) {
                     val event = awaitPointerEvent()
                     val pressed = event.changes.filter { it.pressed }
                     if (pressed.isEmpty()) break
-                    val c = current
-                    val next = if (pressed.size >= 2) {
-                        val pan = event.calculatePan()
-                        c.scaled(event.calculateZoom(), sourceW, sourceH, isSquare).moved(pan.x * k, pan.y * k, sourceW, sourceH)
-                    } else {
+                    if (pressed.size >= 2 && !multi) {
+                        multi = true
+                        if (current != start) onChange(start)
+                    } else if (!multi) {
+                        val c = current
                         val d = pressed[0].positionChange()
-                        if (handle == CropFrame.MOVE) c.moved(d.x * k, d.y * k, sourceW, sourceH)
+                        val next = if (handle == CropFrame.MOVE) c.moved(d.x * k, d.y * k, sourceW, sourceH)
                         else c.resized(handle, d.x * k, d.y * k, sourceW, sourceH, isSquare)
+                        if (next != c) onChange(next)
                     }
-                    if (next != c) onChange(next)
                     event.changes.forEach { it.consume() }
                 }
             }
@@ -167,20 +160,21 @@ fun CropOverlay(
         val left = crop.left * k; val top = crop.top * k
         val w = crop.width * k; val h = crop.height * k
         val dim = Color.Black.copy(alpha = 0.55f)
+        val line = 1.dp.toPx() / viewScale
         // Çerçeve dışını karart
         drawRect(dim, Offset.Zero, Size(size.width, top))
         drawRect(dim, Offset(0f, top + h), Size(size.width, size.height - top - h))
         drawRect(dim, Offset(0f, top), Size(left, h))
         drawRect(dim, Offset(left + w, top), Size(size.width - left - w, h))
         // Çerçeve ve üçte bir çizgileri
-        drawRect(Color.White, Offset(left, top), Size(w, h), style = Stroke(width = 1.5.dp.toPx()))
+        drawRect(Color.White, Offset(left, top), Size(w, h), style = Stroke(width = 1.5f * line))
         for (i in 1..2) {
-            drawLine(Color.White.copy(alpha = 0.5f), Offset(left + w * i / 3, top), Offset(left + w * i / 3, top + h))
-            drawLine(Color.White.copy(alpha = 0.5f), Offset(left, top + h * i / 3), Offset(left + w, top + h * i / 3))
+            drawLine(Color.White.copy(alpha = 0.5f), Offset(left + w * i / 3, top), Offset(left + w * i / 3, top + h), strokeWidth = line / 2)
+            drawLine(Color.White.copy(alpha = 0.5f), Offset(left, top + h * i / 3), Offset(left + w, top + h * i / 3), strokeWidth = line / 2)
         }
         // Tutamaçlar: köşelerde L, kenar ortalarında kısa çizgi
-        val thick = 4.dp.toPx()
-        val arm = min(HANDLE_ARM.toPx(), min(w, h) / 3)
+        val thick = 4 * line
+        val arm = min(HANDLE_ARM.toPx() / viewScale, min(w, h) / 3)
         fun bar(a: Offset, b: Offset) = drawLine(Color.White, a, b, strokeWidth = thick, cap = StrokeCap.Round)
         val r = left + w; val b = top + h
         for ((x, sx) in listOf(left to 1f, r to -1f)) for ((y, sy) in listOf(top to 1f, b to -1f)) {

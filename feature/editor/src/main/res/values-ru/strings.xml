@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Квадрат</string>
     <string name="editor_mode_fit">Целиком</string>
     <string name="editor_crop_hint">Перетащите углы или края, чтобы изменить размер, потяните внутри для перемещения, щипком меняйте масштаб.</string>
+    <string name="editor_crop_zoom">Увеличить</string>
+    <string name="editor_crop_show_all">Показать всё</string>
     <string name="editor_fit_hint">Изображение сохраняется целиком; пустые края остаются прозрачными.</string>
     <string name="editor_skip">Пропустить этот</string>
     <string name="editor_open_failed">Не удалось открыть этот файл. Возможно, он повреждён или его формат не поддерживается.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Вернуть</string>
     <string name="editor_brush">Кисть</string>
     <string name="editor_erase_hint">Рисуйте одним пальцем, масштабируйте и двигайте двумя. Стёртые области становятся прозрачными; «Вернуть» восстанавливает оригинал.</string>
-    <string name="editor_undo">↶ Отменить</string>
-    <string name="editor_redo">↷ Повторить</string>
+    <string name="editor_undo">Отменить</string>
+    <string name="editor_redo">Повторить</string>
     <string name="editor_clear_strokes">Очистить всё</string>
     <string name="editor_remove_bg_hint">Выполняется моделью ИИ на вашем телефоне; ничего не загружается.</string>
     <string name="editor_remove_bg_hint_video">Каждый кадр обрабатывается отдельно: примерно на %1$d с дольше.</string>

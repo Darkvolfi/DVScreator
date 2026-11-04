@@ -4,6 +4,8 @@
     <string name="editor_mode_square">مربّع</string>
     <string name="editor_mode_fit">كاملة</string>
     <string name="editor_crop_hint">اسحب الزوايا أو الحواف لتغيير الحجم، واسحب من الداخل للتحريك، وقرّب بإصبعين للتكبير.</string>
+    <string name="editor_crop_zoom">تكبير</string>
+    <string name="editor_crop_show_all">عرض الكل</string>
     <string name="editor_fit_hint">تبقى الصورة كاملة؛ والجوانب الفارغة تبقى شفافة.</string>
     <string name="editor_skip">تخطي هذا</string>
     <string name="editor_open_failed">تعذّر فتح هذا الملف. قد يكون تالفًا أو بتنسيق غير مدعوم.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">استعادة</string>
     <string name="editor_brush">الفرشاة</string>
     <string name="editor_erase_hint">ارسم بإصبع واحد، وكبّر وحرّك بإصبعين. الأجزاء الممسوحة تصبح شفافة؛ و«استعادة» تُرجع الأصل.</string>
-    <string name="editor_undo">↶ تراجع</string>
-    <string name="editor_redo">↷ إعادة</string>
+    <string name="editor_undo">تراجع</string>
+    <string name="editor_redo">إعادة</string>
     <string name="editor_clear_strokes">مسح الكل</string>
     <string name="editor_remove_bg_hint">يتم ذلك على هاتفك بواسطة نموذج ذكاء اصطناعي؛ لا يُرفع أي شيء.</string>
     <string name="editor_remove_bg_hint_video">تُعالَج كل لقطة على حدة: نحو %1$d ث إضافية.</string>

@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Square</string>
     <string name="editor_mode_fit">Whole</string>
     <string name="editor_crop_hint">Drag the corners or edges to resize, drag inside to move, pinch to zoom.</string>
+    <string name="editor_crop_zoom">Zoom in</string>
+    <string name="editor_crop_show_all">Show all</string>
     <string name="editor_fit_hint">The whole image is kept; empty sides stay transparent.</string>
     <string name="editor_skip">Skip this one</string>
     <string name="editor_open_failed">This file couldn’t be opened. It may be damaged or in an unsupported format.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Restore</string>
     <string name="editor_brush">Brush</string>
     <string name="editor_erase_hint">Draw with one finger, zoom and move with two. Erased parts become transparent; “Restore” brings the original back.</string>
-    <string name="editor_undo">↶ Undo</string>
-    <string name="editor_redo">↷ Redo</string>
+    <string name="editor_undo">Undo</string>
+    <string name="editor_redo">Redo</string>
     <string name="editor_clear_strokes">Clear all</string>
     <string name="editor_remove_bg_hint">Done on your phone by an AI model; nothing is uploaded.</string>
     <string name="editor_remove_bg_hint_video">Every frame is processed separately: about %1$d s extra.</string>

@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Quadrat</string>
     <string name="editor_mode_fit">Ganz</string>
     <string name="editor_crop_hint">Ziehe an den Ecken oder Kanten zum Ändern der Größe, ziehe innen zum Verschieben, mit zwei Fingern zoomen.</string>
+    <string name="editor_crop_zoom">Vergrößern</string>
+    <string name="editor_crop_show_all">Alles anzeigen</string>
     <string name="editor_fit_hint">Das ganze Bild bleibt erhalten; leere Ränder bleiben transparent.</string>
     <string name="editor_skip">Diesen überspringen</string>
     <string name="editor_open_failed">Diese Datei konnte nicht geöffnet werden. Sie ist möglicherweise beschädigt oder das Format wird nicht unterstützt.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Wiederherstellen</string>
     <string name="editor_brush">Pinsel</string>
     <string name="editor_erase_hint">Mit einem Finger malen, mit zwei zoomen und verschieben. Radierte Stellen werden transparent; „Wiederherstellen“ holt das Original zurück.</string>
-    <string name="editor_undo">↶ Rückgängig</string>
-    <string name="editor_redo">↷ Wiederholen</string>
+    <string name="editor_undo">Rückgängig</string>
+    <string name="editor_redo">Wiederholen</string>
     <string name="editor_clear_strokes">Alles löschen</string>
     <string name="editor_remove_bg_hint">Wird von einem KI-Modell auf deinem Handy erledigt; nichts wird hochgeladen.</string>
     <string name="editor_remove_bg_hint_video">Jedes Bild wird einzeln verarbeitet: etwa %1$d s länger.</string>

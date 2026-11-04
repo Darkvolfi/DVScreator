@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Persegi</string>
     <string name="editor_mode_fit">Utuh</string>
     <string name="editor_crop_hint">Seret sudut atau tepi untuk mengubah ukuran, seret bagian dalam untuk memindahkan, cubit untuk memperbesar.</string>
+    <string name="editor_crop_zoom">Perbesar</string>
+    <string name="editor_crop_show_all">Tampilkan semua</string>
     <string name="editor_fit_hint">Seluruh gambar dipertahankan; sisi yang kosong tetap transparan.</string>
     <string name="editor_skip">Lewati yang ini</string>
     <string name="editor_open_failed">File ini tidak dapat dibuka. File mungkin rusak atau formatnya tidak didukung.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Pulihkan</string>
     <string name="editor_brush">Kuas</string>
     <string name="editor_erase_hint">Gambar dengan satu jari, perbesar dan geser dengan dua jari. Bagian yang dihapus menjadi transparan; “Pulihkan” mengembalikan aslinya.</string>
-    <string name="editor_undo">↶ Urungkan</string>
-    <string name="editor_redo">↷ Ulangi</string>
+    <string name="editor_undo">Urungkan</string>
+    <string name="editor_redo">Ulangi</string>
     <string name="editor_clear_strokes">Hapus semua</string>
     <string name="editor_remove_bg_hint">Dilakukan di ponsel Anda oleh model AI; tidak ada yang diunggah.</string>
     <string name="editor_remove_bg_hint_video">Setiap bingkai diproses terpisah: sekitar %1$d dtk tambahan.</string>

@@ -4,6 +4,8 @@
     <string name="editor_mode_square">चौकोर</string>
     <string name="editor_mode_fit">पूरी</string>
     <string name="editor_crop_hint">साइज़ बदलने के लिए कोनों या किनारों को खींचें, खिसकाने के लिए अंदर से खींचें, ज़ूम करने के लिए पिंच करें।</string>
+    <string name="editor_crop_zoom">ज़ूम करें</string>
+    <string name="editor_crop_show_all">सब दिखाएँ</string>
     <string name="editor_fit_hint">पूरी इमेज रहती है; खाली किनारे पारदर्शी रहते हैं।</string>
     <string name="editor_skip">इसे छोड़ें</string>
     <string name="editor_open_failed">यह फ़ाइल नहीं खुल सकी। हो सकता है वह खराब हो या उसका फ़ॉर्मैट समर्थित न हो।</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">वापस लाएँ</string>
     <string name="editor_brush">ब्रश</string>
     <string name="editor_erase_hint">एक उँगली से बनाएँ, दो से ज़ूम करें और खिसकाएँ। मिटाए गए हिस्से पारदर्शी हो जाते हैं; “वापस लाएँ” मूल हिस्सा लौटा देता है।</string>
-    <string name="editor_undo">↶ पहले जैसा करें</string>
-    <string name="editor_redo">↷ फिर से करें</string>
+    <string name="editor_undo">पहले जैसा करें</string>
+    <string name="editor_redo">फिर से करें</string>
     <string name="editor_clear_strokes">सब मिटाएँ</string>
     <string name="editor_remove_bg_hint">यह आपके फ़ोन पर एक AI मॉडल करता है; कुछ भी अपलोड नहीं होता।</string>
     <string name="editor_remove_bg_hint_video">हर फ़्रेम अलग से प्रोसेस होता है: लगभग %1$d सेकंड ज़्यादा।</string>

@@ -13,9 +13,9 @@ android {
         applicationId = "io.github.darkvolfi.dvscreator"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 9
+        versionCode = 10
         // Sürüm: UYGULAMA.BÜYÜK.KÜÇÜK — 1 = uygulama; ortadaki büyük değişiklik / hata düzeltmesi turu; sonuncu küçük düzeltmeler
-        versionName = "1.3.3"
+        versionName = "1.3.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

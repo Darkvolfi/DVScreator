@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Quadrato</string>
     <string name="editor_mode_fit">Intera</string>
     <string name="editor_crop_hint">Trascina gli angoli o i bordi per ridimensionare, trascina all’interno per spostare, pizzica per ingrandire.</string>
+    <string name="editor_crop_zoom">Ingrandisci</string>
+    <string name="editor_crop_show_all">Mostra tutto</string>
     <string name="editor_fit_hint">L’immagine resta intera; i lati vuoti restano trasparenti.</string>
     <string name="editor_skip">Salta questo</string>
     <string name="editor_open_failed">Impossibile aprire questo file. Potrebbe essere danneggiato o in un formato non supportato.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Ripristina</string>
     <string name="editor_brush">Pennello</string>
     <string name="editor_erase_hint">Disegna con un dito, ingrandisci e sposta con due. Le parti cancellate diventano trasparenti; “Ripristina” riporta l’originale.</string>
-    <string name="editor_undo">↶ Annulla</string>
-    <string name="editor_redo">↷ Ripeti</string>
+    <string name="editor_undo">Annulla</string>
+    <string name="editor_redo">Ripeti</string>
     <string name="editor_clear_strokes">Cancella tutto</string>
     <string name="editor_remove_bg_hint">Lo fa un modello di IA sul tuo telefono; non viene caricato nulla.</string>
     <string name="editor_remove_bg_hint_video">Ogni fotogramma viene elaborato separatamente: circa %1$d s in più.</string>

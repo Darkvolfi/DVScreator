@@ -15,7 +15,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -58,6 +67,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -91,6 +104,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -194,7 +208,12 @@ fun StickerEditor(
 
     // Videoda silgi / arka plan önizlemesi oynayan video üzerinde değil, seçilen aralığın ilk karesinde yapılır;
     // izler sticker üretilirken her kareye uygulanır
-    val needFrame = video != null && (tool != EditorTool.CROP || cutting)
+    // Kırpmada yakınlaştırma: görünüm = merkez + (içerik - merkez) × ölçek + kayma. Video oynatıcı dönüştürülemediği
+    // için yakınlaştırılınca videoda da duran kare gösterilir
+    var cropScale by remember(uri) { mutableStateOf(1f) }
+    var cropPan by remember(uri) { mutableStateOf(Offset.Zero) }
+    var previewPx by remember { mutableStateOf(0f) }
+    val needFrame = video != null && (tool != EditorTool.CROP || cutting || cropScale > 1f)
     val frameMs = ((currentRange?.start ?: 0f) / 100f).roundToInt() * 100
     val videoFrame by produceState<StillFrame?>(null, uri, needFrame, frameMs) {
         if (!needFrame) return@produceState
@@ -342,7 +361,27 @@ fun StickerEditor(
         Text(stringResource(R.string.editor_title), style = MaterialTheme.typography.titleLarge)
 
         // Önizleme: kare alan içinde kaynağın en-boy oranında kutu; kırpma çerçevesi aynı kutunun üzerinde
-        Box(Modifier.fillMaxWidth().aspectRatio(1f).background(Color.Black), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier.fillMaxWidth().aspectRatio(1f).background(Color.Black).clipToBounds()
+                .onSizeChanged { previewPx = it.width.toFloat() }
+                .then(if (tool != EditorTool.CROP) Modifier else Modifier.pointerInput(Unit) {
+                    // Initial: tek parmak çerçeveye kalır, iki parmak ondan önce yakalanır
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                        do {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            if (event.changes.count { it.pressed } >= 2) {
+                                val newScale = (cropScale * event.calculateZoom()).coerceIn(1f, MAX_CROP_ZOOM)
+                                val c = event.calculateCentroid(useCurrent = true) - Offset(size.width / 2f, size.height / 2f)
+                                cropPan = clampPan((cropPan - c) * (newScale / cropScale) + c + event.calculatePan(), newScale, size.width.toFloat())
+                                cropScale = newScale
+                                event.changes.forEach { it.consume() }
+                            }
+                        } while (event.changes.any { it.pressed })
+                    }
+                }),
+            contentAlignment = Alignment.Center,
+        ) {
             if (tool == EditorTool.TEXT) {
                 // Yazı aracı: stickerın son hâli
                 val canvas = finalCanvas
@@ -357,7 +396,15 @@ fun StickerEditor(
                 }
             } else {
             val ratio = m.width.toFloat() / m.height
-            Box(Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f).graphicsLayer { rotationZ = rotation.toFloat() }) {
+            val viewScale = if (tool == EditorTool.CROP) cropScale else 1f
+            val viewPan = if (tool == EditorTool.CROP) cropPan else Offset.Zero
+            Box(
+                Modifier.aspectRatio(ratio, matchHeightConstraintsFirst = ratio < 1f).graphicsLayer {
+                    scaleX = viewScale; scaleY = viewScale
+                    translationX = viewPan.x; translationY = viewPan.y
+                    rotationZ = rotation.toFloat()
+                },
+            ) {
                 when {
                     m is SourceMeta.Still || needFrame -> {
                         // Oynayan karede izler GPU'da çizilir; duran karede izler (değnek dahil) işlenmiş önizlemededir
@@ -397,7 +444,7 @@ fun StickerEditor(
                     )
                 }
                 if (cropMode != CropMode.FIT && tool == EditorTool.CROP) {
-                    CropOverlay(crop, m.width, m.height, square = cropMode == CropMode.SQUARE, onChange = { crop = it; cropTouched = true }, modifier = Modifier.fillMaxSize())
+                    CropOverlay(crop, m.width, m.height, square = cropMode == CropMode.SQUARE, viewScale = viewScale, onChange = { crop = it; cropTouched = true }, modifier = Modifier.fillMaxSize())
                 }
             }
             }
@@ -442,7 +489,7 @@ fun StickerEditor(
                     }
                     Spacer(Modifier.width(8.dp))
                     val rotateLabel = stringResource(R.string.editor_rotate)
-                    OutlinedIconButton(onClick = { rotation = (rotation + 90) % 360 }, modifier = Modifier.semantics { contentDescription = rotateLabel }) {
+                    OutlinedIconButton(onClick = { rotation = (rotation + 90) % 360; cropScale = 1f; cropPan = Offset.Zero }, modifier = Modifier.semantics { contentDescription = rotateLabel }) {
                         Text("↻", style = MaterialTheme.typography.titleLarge)
                     }
                 }
@@ -450,6 +497,21 @@ fun StickerEditor(
                     Text(stringResource(R.string.editor_fit_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else {
                     Text(stringResource(R.string.editor_crop_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    // Seçilen alanı ekrana doldurur (sonuç değişmez); yakınlaştırılmışsa tüm fotoğrafa döner
+                    val zoomed = cropScale > 1f
+                    val focusScale = frameFocusScale(crop, m.width, m.height, rotation)
+                    FilledTonalButton(
+                        enabled = zoomed || focusScale > 1.05f,
+                        onClick = {
+                            if (zoomed) {
+                                cropScale = 1f
+                                cropPan = Offset.Zero
+                            } else {
+                                cropScale = focusScale
+                                cropPan = clampPan(frameFocusPan(crop, m.width, m.height, rotation, focusScale, previewPx), focusScale, previewPx)
+                            }
+                        },
+                    ) { Text(stringResource(if (zoomed) R.string.editor_crop_show_all else R.string.editor_crop_zoom)) }
                 }
 
                 if (timeline != null && currentRange != null) {
@@ -538,20 +600,10 @@ fun StickerEditor(
                     }
                 }
                 // Hep görünür: yalnızca çizimden sonra çıkınca fark edilmiyordu
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilledTonalButton(modifier = Modifier.weight(1f), enabled = strokes.isNotEmpty(), onClick = { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }) {
-                        Icon(painterResource(R.drawable.ic_undo), contentDescription = null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.editor_undo))
-                    }
-                    FilledTonalButton(modifier = Modifier.weight(1f), enabled = redo.isNotEmpty(), onClick = { strokes = strokes + redo.last(); redo = redo.dropLast(1) }) {
-                        Icon(painterResource(R.drawable.ic_redo), contentDescription = null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.editor_redo))
-                    }
-                }
-                if (strokes.isNotEmpty()) {
-                    TextButton(onClick = { redo = emptyList(); strokes = emptyList() }) { Text(stringResource(R.string.editor_clear_strokes)) }
+                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    StrokeButton(R.drawable.ic_undo, R.string.editor_undo, strokes.isNotEmpty()) { redo = redo + strokes.last(); strokes = strokes.dropLast(1) }
+                    StrokeButton(R.drawable.ic_clear, R.string.editor_clear_strokes, strokes.isNotEmpty()) { redo = emptyList(); strokes = emptyList() }
+                    StrokeButton(R.drawable.ic_redo, R.string.editor_redo, redo.isNotEmpty()) { strokes = strokes + redo.last(); redo = redo.dropLast(1) }
                 }
             }
 
@@ -672,6 +724,49 @@ private val CUT_TOOLS = listOf(
     EditorTool.RESTORE to R.string.editor_tool_restore,
 )
 
+/** Üç düğme tek satıra sığsın diye simge üstte, yazı altta. */
+@Composable
+private fun RowScope.StrokeButton(icon: Int, label: Int, enabled: Boolean, onClick: () -> Unit) {
+    FilledTonalButton(
+        onClick, Modifier.weight(1f).fillMaxHeight(), enabled = enabled,
+        shape = MaterialTheme.shapes.medium, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(painterResource(icon), contentDescription = null)
+            Text(stringResource(label), style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center)
+        }
+    }
+}
+
+/** Yakınlaştırılan görüntü önizleme kutusunun dışına boş alan bırakmasın. */
+private fun clampPan(pan: Offset, scale: Float, boxPx: Float): Offset {
+    val limit = boxPx * (scale - 1f) / 2f
+    return Offset(pan.x.coerceIn(-limit, limit), pan.y.coerceIn(-limit, limit))
+}
+
+/** Çerçeveyi kutunun %90'ına dolduran ölçek: uzun kenarı kaynağın uzun kenarına oranla. */
+private fun frameFocusScale(crop: CropFrame, sourceW: Int, sourceH: Int, rotation: Int): Float {
+    val quarter = rotation % 180 != 0
+    val shownW = if (quarter) crop.height else crop.width
+    val shownH = if (quarter) crop.width else crop.height
+    return (0.9f * max(sourceW, sourceH) / max(shownW, shownH)).coerceIn(1f, MAX_CROP_ZOOM)
+}
+
+/** Çerçevenin merkezini kutunun ortasına getiren kayma (döndürme hesaba katılır). */
+private fun frameFocusPan(crop: CropFrame, sourceW: Int, sourceH: Int, rotation: Int, scale: Float, boxPx: Float): Offset {
+    val k = boxPx / max(sourceW, sourceH)
+    val x = ((crop.left + crop.right) / 2 - sourceW / 2f) * k
+    val y = ((crop.top + crop.bottom) / 2 - sourceH / 2f) * k
+    val turned = when (rotation) {
+        90 -> Offset(-y, x)
+        180 -> Offset(-x, -y)
+        270 -> Offset(y, -x)
+        else -> Offset(x, y)
+    }
+    return turned * -scale
+}
+
+private const val MAX_CROP_ZOOM = 8f
 private const val MIN_MS = 500
 /** Bu süreden uzun seçimde "daha az net olabilir" uyarısı (500 KB sınırına sığmak için kalite düşer). */
 private const val LONG_CLIP_MS = 6000

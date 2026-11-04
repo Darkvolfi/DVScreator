@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -167,10 +169,11 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
                     IconButton(onClick = onBack) {
                         Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.back))
                     }
-                    Text(
-                        pack.name, style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f).clickable { renaming = true },
-                    )
+                    Row(Modifier.weight(1f).clickable { renaming = true }, verticalAlignment = Alignment.CenterVertically) {
+                        Text(pack.name, style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f, fill = false))
+                        Spacer(Modifier.width(8.dp))
+                        Icon(painterResource(R.drawable.ic_edit), contentDescription = stringResource(R.string.pack_rename), modifier = Modifier.size(18.dp))
+                    }
                     // Paketi siler (onay sorulur): masum bir yazı gibi durmasın diye kırmızı çöp kutusu
                     IconButton(onClick = { confirmDelete = true }) {
                         Icon(painterResource(R.drawable.ic_delete), contentDescription = stringResource(R.string.pack_delete), tint = MaterialTheme.colorScheme.error)

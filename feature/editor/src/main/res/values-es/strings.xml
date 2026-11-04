@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Cuadrado</string>
     <string name="editor_mode_fit">Completa</string>
     <string name="editor_crop_hint">Arrastra las esquinas o bordes para cambiar el tamaño, arrastra por dentro para mover, pellizca para hacer zoom.</string>
+    <string name="editor_crop_zoom">Acercar</string>
+    <string name="editor_crop_show_all">Ver todo</string>
     <string name="editor_fit_hint">Se conserva toda la imagen; los lados vacíos quedan transparentes.</string>
     <string name="editor_skip">Omitir este</string>
     <string name="editor_open_failed">No se pudo abrir este archivo. Puede estar dañado o tener un formato no compatible.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Restaurar</string>
     <string name="editor_brush">Pincel</string>
     <string name="editor_erase_hint">Dibuja con un dedo; acerca y mueve con dos. Lo borrado queda transparente; “Restaurar” recupera el original.</string>
-    <string name="editor_undo">↶ Deshacer</string>
-    <string name="editor_redo">↷ Rehacer</string>
+    <string name="editor_undo">Deshacer</string>
+    <string name="editor_redo">Rehacer</string>
     <string name="editor_clear_strokes">Borrar todo</string>
     <string name="editor_remove_bg_hint">Lo hace un modelo de IA en tu teléfono; no se sube nada.</string>
     <string name="editor_remove_bg_hint_video">Cada fotograma se procesa por separado: unos %1$d s más.</string>

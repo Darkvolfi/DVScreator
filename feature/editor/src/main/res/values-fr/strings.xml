@@ -4,6 +4,8 @@
     <string name="editor_mode_square">Carré</string>
     <string name="editor_mode_fit">Entière</string>
     <string name="editor_crop_hint">Faites glisser les coins ou les bords pour redimensionner, glissez à l’intérieur pour déplacer, pincez pour zoomer.</string>
+    <string name="editor_crop_zoom">Zoomer</string>
+    <string name="editor_crop_show_all">Tout afficher</string>
     <string name="editor_fit_hint">L’image entière est conservée ; les bords vides restent transparents.</string>
     <string name="editor_skip">Passer celui-ci</string>
     <string name="editor_open_failed">Impossible d’ouvrir ce fichier. Il est peut-être endommagé ou son format n’est pas pris en charge.</string>
@@ -26,8 +28,8 @@
     <string name="editor_tool_restore">Restaurer</string>
     <string name="editor_brush">Pinceau</string>
     <string name="editor_erase_hint">Dessinez avec un doigt, zoomez et déplacez avec deux. Les zones gommées deviennent transparentes ; « Restaurer » ramène l’original.</string>
-    <string name="editor_undo">↶ Annuler</string>
-    <string name="editor_redo">↷ Rétablir</string>
+    <string name="editor_undo">Annuler</string>
+    <string name="editor_redo">Rétablir</string>
     <string name="editor_clear_strokes">Tout effacer</string>
     <string name="editor_remove_bg_hint">Réalisé sur votre téléphone par un modèle d’IA ; rien n’est envoyé.</string>
     <string name="editor_remove_bg_hint_video">Chaque image est traitée séparément : environ %1$d s de plus.</string>
