@@ -6,6 +6,9 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
 import io.github.darkvolfi.dvscreator.core.model.TextLayer
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Sticker üzerindeki yazılar. Konumlar ve boyut SON sticker tuvaline göre (0..1) — yazı kırpma ya da
@@ -37,6 +40,16 @@ object TextOverlay {
         val cx = layer.centerX * size
         val cy = layer.centerY * size
         return RectF(cx - width / 2, cy - height / 2, cx + width / 2, cy + height / 2)
+    }
+
+    /** Dokunulan nokta (piksel) döndürülmüş yazının üstünde mi. */
+    fun hit(layer: TextLayer, size: Int, x: Float, y: Float): Boolean {
+        val b = bounds(layer, size)
+        val a = Math.toRadians(-layer.rotationDegrees.toDouble())
+        val dx = x - b.centerX(); val dy = y - b.centerY()
+        val localX = dx * cos(a) - dy * sin(a)
+        val localY = dx * sin(a) + dy * cos(a)
+        return abs(localX) <= b.width() / 2 && abs(localY) <= b.height() / 2
     }
 
     /** Yazıları her kareye bindirir (yerinde). */
@@ -72,6 +85,8 @@ object TextOverlay {
         val descent = paint.fontMetrics.descent
         val pad = (lineHeight - ascent - descent) / 2
         val x = layer.centerX * size
+        canvas.save()
+        canvas.rotate(layer.rotationDegrees, x, layer.centerY * size)
         for ((i, line) in lines.withIndex()) {
             val baseline = top + i * lineHeight + pad + ascent
             layer.outlineArgb?.let { outline ->
@@ -87,6 +102,7 @@ object TextOverlay {
             paint.color = layer.colorArgb
             canvas.drawText(line, x, baseline, paint)
         }
+        canvas.restore()
     }
 
     /** Düz (premultiplied olmayan) ARGB'de "üstüne" birleştirme. */

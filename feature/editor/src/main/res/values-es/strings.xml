@@ -17,10 +17,12 @@
     <string name="editor_margin">Margen</string>
     <string name="editor_outline">Contorno</string>
     <string name="text_add">Añadir texto</string>
+    <string name="text_add_emoji">Añadir emoji</string>
+    <string name="text_angle">Ángulo</string>
     <string name="text_edit">Editar</string>
     <string name="text_delete">Eliminar</string>
     <string name="text_size">Tamaño</string>
-    <string name="text_hint">Este es el sticker final. Toca un texto para seleccionarlo, arrástralo para moverlo y pellizca para cambiar su tamaño.</string>
+    <string name="text_hint">Este es el sticker final. Toca un texto o emoji para seleccionarlo, arrastra para mover y pellizca para cambiar el tamaño y rotar.</string>
     <string name="text_dialog_title">Texto</string>
     <string name="text_outline">Contorno</string>
     <string name="editor_tool_crop">Recortar</string>

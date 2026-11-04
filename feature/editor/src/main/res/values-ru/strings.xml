@@ -17,10 +17,12 @@
     <string name="editor_margin">Отступ</string>
     <string name="editor_outline">Обводка</string>
     <string name="text_add">Добавить текст</string>
+    <string name="text_add_emoji">Добавить эмодзи</string>
+    <string name="text_angle">Угол</string>
     <string name="text_edit">Изменить</string>
     <string name="text_delete">Удалить</string>
     <string name="text_size">Размер</string>
-    <string name="text_hint">Это готовый стикер. Нажмите на текст, чтобы выбрать его, перетаскивайте для перемещения, меняйте размер двумя пальцами.</string>
+    <string name="text_hint">Это финальный стикер. Нажмите на текст или эмодзи для выбора, перетащите для перемещения, сведите пальцы для изменения размера и поворота.</string>
     <string name="text_dialog_title">Текст</string>
     <string name="text_outline">Обводка</string>
     <string name="editor_tool_crop">Обрезка</string>

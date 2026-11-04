@@ -17,10 +17,12 @@
     <string name="editor_margin">Margin</string>
     <string name="editor_outline">Garis tepi</string>
     <string name="text_add">Tambah teks</string>
+    <string name="text_add_emoji">Tambah emoji</string>
+    <string name="text_angle">Sudut</string>
     <string name="text_edit">Edit</string>
     <string name="text_delete">Hapus</string>
     <string name="text_size">Ukuran</string>
-    <string name="text_hint">Inilah stiker akhirnya. Ketuk teks untuk memilihnya, seret untuk memindahkan, cubit untuk mengubah ukuran.</string>
+    <string name="text_hint">Ini adalah stiker akhir. Ketuk teks atau emoji untuk memilih, seret untuk memindahkan, cubit untuk mengubah ukuran dan memutar.</string>
     <string name="text_dialog_title">Teks</string>
     <string name="text_outline">Garis tepi</string>
     <string name="editor_tool_crop">Potong</string>

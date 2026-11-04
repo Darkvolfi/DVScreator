@@ -17,10 +17,12 @@
     <string name="editor_margin">Margin</string>
     <string name="editor_outline">Outline</string>
     <string name="text_add">Add text</string>
+    <string name="text_add_emoji">Add emoji</string>
+    <string name="text_angle">Angle</string>
     <string name="text_edit">Edit</string>
     <string name="text_delete">Delete</string>
     <string name="text_size">Size</string>
-    <string name="text_hint">This is the final sticker. Tap a text to select it, drag to move, pinch to resize.</string>
+    <string name="text_hint">This is the final sticker. Tap a text or emoji to select it, drag to move, pinch to resize and rotate.</string>
     <string name="text_dialog_title">Text</string>
     <string name="text_outline">Outline</string>
     <string name="editor_tool_crop">Crop</string>

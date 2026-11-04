@@ -17,10 +17,12 @@
     <string name="editor_margin">मार्जिन</string>
     <string name="editor_outline">आउटलाइन</string>
     <string name="text_add">टेक्स्ट जोड़ें</string>
+    <string name="text_add_emoji">इमोजी जोड़ें</string>
+    <string name="text_angle">कोण</string>
     <string name="text_edit">एडिट करें</string>
     <string name="text_delete">हटाएँ</string>
     <string name="text_size">साइज़</string>
-    <string name="text_hint">यह तैयार स्टिकर है। टेक्स्ट चुनने के लिए उस पर टैप करें, खिसकाने के लिए खींचें, साइज़ बदलने के लिए दो उँगलियाँ इस्तेमाल करें।</string>
+    <string name="text_hint">यह अंतिम स्टिकर है। किसी टेक्स्ट या इमोजी को चुनने के लिए उस पर टैप करें, खिसकाने के लिए खींचें, आकार बदलने और घुमाने के लिए पिंच करें।</string>
     <string name="text_dialog_title">टेक्स्ट</string>
     <string name="text_outline">आउटलाइन</string>
     <string name="editor_tool_crop">क्रॉप</string>

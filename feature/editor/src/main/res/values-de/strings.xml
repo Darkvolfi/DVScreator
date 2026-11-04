@@ -17,10 +17,12 @@
     <string name="editor_margin">Rand</string>
     <string name="editor_outline">Kontur</string>
     <string name="text_add">Text hinzufügen</string>
+    <string name="text_add_emoji">Emoji hinzufügen</string>
+    <string name="text_angle">Winkel</string>
     <string name="text_edit">Bearbeiten</string>
     <string name="text_delete">Löschen</string>
     <string name="text_size">Größe</string>
-    <string name="text_hint">Das ist der fertige Sticker. Tippe auf einen Text, um ihn auszuwählen, ziehe zum Verschieben, und ändere die Größe mit zwei Fingern.</string>
+    <string name="text_hint">Das ist der fertige Sticker. Tippe auf einen Text oder ein Emoji zum Auswählen, ziehe zum Verschieben, mit zwei Fingern skalieren und drehen.</string>
     <string name="text_dialog_title">Text</string>
     <string name="text_outline">Kontur</string>
     <string name="editor_tool_crop">Zuschneiden</string>

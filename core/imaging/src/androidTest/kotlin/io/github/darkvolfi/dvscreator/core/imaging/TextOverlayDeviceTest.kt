@@ -31,6 +31,28 @@ class TextOverlayDeviceTest {
     }
 
     @Test
+    fun rotatedTextFollowsAngle() {
+        val flat = TextLayer("WWWWWW", 0.5f, 0.5f, 0.1f, 0xFFFFFFFF.toInt())
+        val turned = flat.copy(rotationDegrees = 90f)
+        // Yatay yazının sağ ucu: düzken üstünde, 90° dönünce değil; üst ucu tersi
+        val b = TextOverlay.bounds(flat, 512)
+        assertEquals(true, TextOverlay.hit(flat, 512, b.right - 4, 256f))
+        assertEquals(false, TextOverlay.hit(turned, 512, b.right - 4, 256f))
+        assertEquals(true, TextOverlay.hit(turned, 512, 256f, 256f - b.width() / 2 + 4))
+        val a = TextOverlay.render(listOf(flat), 512)!!
+        val c = TextOverlay.render(listOf(turned), 512)!!
+        assertEquals(false, a.sameAs(c))
+    }
+
+    @Test
+    fun emojiIsDrawnInColor() {
+        val bmp = TextOverlay.render(listOf(TextLayer("😀", 0.5f, 0.5f, 0.3f, 0xFF000000.toInt())), 512)!!
+        val p = IntArray(512 * 512).also { bmp.getPixels(it, 0, 512, 0, 0, 512, 512) }
+        // Siyah yazı rengiyle değil renkli çizilmeli
+        assertEquals(true, p.count { (it ushr 24) > 200 && ((it shr 16) and 0xFF) > 150 } > 500)
+    }
+
+    @Test
     fun outlineRotationAndText() {
         // Şeffaf zemin üzerinde turuncu bir "konu" (daire + çubuk), dış çizgi + 90° döndürme + yazı
         val src = ArgbImage(800, 600)

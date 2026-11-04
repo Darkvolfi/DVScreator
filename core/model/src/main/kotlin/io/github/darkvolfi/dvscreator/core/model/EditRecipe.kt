@@ -64,6 +64,8 @@ data class TextLayer(
     val sizeFraction: Float,
     val colorArgb: Int,
     val outlineArgb: Int? = null,
+    /** Merkez etrafında saat yönünde açı, derece. */
+    val rotationDegrees: Float = 0f,
 )
 
 /**

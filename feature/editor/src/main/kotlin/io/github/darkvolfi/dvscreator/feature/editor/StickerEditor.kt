@@ -104,6 +104,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -200,6 +201,7 @@ fun StickerEditor(
     var selectedText by remember(uri) { mutableStateOf<Int?>(null) }
     // Açık yazı penceresi: -1 yeni yazı, ≥0 düzenlenen yazı
     var textDialog by remember(uri) { mutableStateOf<Int?>(null) }
+    var emojiDialog by remember(uri) { mutableStateOf(false) }
     val maxMs = AnimationLoader.MAX_DURATION_MS.toFloat()
     val video = m as? SourceMeta.Video
     val timeline = video?.timeline ?: (m as? SourceMeta.Still)?.timeline
@@ -610,13 +612,25 @@ fun StickerEditor(
             ToolGroup.STYLE -> {
                 Text(stringResource(R.string.text_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { textDialog = -1 }) { Text(stringResource(R.string.text_add)) }
-                    selectedText?.let { i ->
+                    Button(modifier = Modifier.weight(1f), onClick = { textDialog = -1 }) { Text(stringResource(R.string.text_add)) }
+                    Button(modifier = Modifier.weight(1f), onClick = { emojiDialog = true }) { Text(stringResource(R.string.text_add_emoji)) }
+                }
+                selectedText?.let { i ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedButton(onClick = { textDialog = i }) { Text(stringResource(R.string.text_edit)) }
                         TextButton(onClick = { texts = texts.filterIndexed { j, _ -> j != i }; selectedText = null }) { Text(stringResource(R.string.text_delete)) }
                     }
                 }
                 selectedText?.let { i -> texts.getOrNull(i) }?.let { t ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.text_angle), style = MaterialTheme.typography.bodySmall)
+                        Slider(
+                            value = t.rotationDegrees, valueRange = -180f..180f,
+                            // Düz konuma kolay dönsün
+                            onValueChange = { v -> texts = texts.toMutableList().also { l -> l[selectedText!!] = t.copy(rotationDegrees = if (abs(v) < 4f) 0f else v) } },
+                            modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                        )
+                    }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.text_size), style = MaterialTheme.typography.bodySmall)
                         Slider(
@@ -643,6 +657,12 @@ fun StickerEditor(
                     Slider(value = margin.toFloat(), valueRange = 0f..MAX_MARGIN.toFloat(), steps = MAX_MARGIN / 4 - 1, onValueChange = { margin = it.roundToInt() }, modifier = Modifier.weight(1f).padding(horizontal = 8.dp))
                 }
             }
+        }
+        if (emojiDialog) {
+            EmojiDialog(
+                onPick = { e -> texts = texts + newEmojiLayer(e); selectedText = texts.lastIndex; emojiDialog = false },
+                onDismiss = { emojiDialog = false },
+            )
         }
         textDialog?.let { index ->
             TextDialog(

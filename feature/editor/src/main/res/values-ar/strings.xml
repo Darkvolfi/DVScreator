@@ -17,10 +17,12 @@
     <string name="editor_margin">الهامش</string>
     <string name="editor_outline">الحدّ</string>
     <string name="text_add">إضافة نص</string>
+    <string name="text_add_emoji">إضافة رمز تعبيري</string>
+    <string name="text_angle">الزاوية</string>
     <string name="text_edit">تعديل</string>
     <string name="text_delete">حذف</string>
     <string name="text_size">الحجم</string>
-    <string name="text_hint">هذا هو الملصق النهائي. المس نصًا لتحديده، واسحبه لتحريكه، واستخدم إصبعين لتغيير حجمه.</string>
+    <string name="text_hint">هذا هو الملصق النهائي. اضغط على نص أو رمز تعبيري لتحديده، واسحب للتحريك، وقرّب بإصبعيك لتغيير الحجم والتدوير.</string>
     <string name="text_dialog_title">نص</string>
     <string name="text_outline">الحدّ</string>
     <string name="editor_tool_crop">قص</string>
