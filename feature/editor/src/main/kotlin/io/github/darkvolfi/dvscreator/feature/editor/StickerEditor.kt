@@ -3,6 +3,7 @@ package io.github.darkvolfi.dvscreator.feature.editor
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 import android.os.Build
@@ -108,6 +109,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 /** Hareketli kaynağın zaman çizelgesi (video ve GIF ortak): süre kırpma arayüzü için. */
 private class Timeline(val durationMs: Int, val fps: Double, val thumbnails: List<ImageBitmap>)
@@ -176,6 +178,13 @@ fun StickerEditor(
     var cropTouched by remember(uri) { mutableStateOf(false) }
     var range by remember(uri) { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
     var player by remember(uri) { mutableStateOf<VideoView?>(null) }
+    var media by remember(uri) { mutableStateOf<MediaPlayer?>(null) }
+    // VideoView.seekTo önceki anahtar kareye atlar (saniyeler önce olabilir); Android 8+ tam ana atla
+    fun seekPlayer(ms: Float) {
+        val mp = media
+        if (mp != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) mp.seekTo(ms.roundToLong(), MediaPlayer.SEEK_CLOSEST)
+        else player?.seekTo(ms.roundToInt())
+    }
     var removeBackground by remember(uri) { mutableStateOf(false) }
     var tool by remember(uri) { mutableStateOf(EditorTool.CROP) }
     // "Kes" sekmesine dönünce son kullanılan kesme aracı seçili gelir
@@ -344,12 +353,16 @@ fun StickerEditor(
     // Videoda önizlemeyi seçili aralıkta döngüde tut
     LaunchedEffect(player) {
         val p = player ?: return@LaunchedEffect
+        // Başa atlanınca konum anahtar kare yüzünden başlangıcın biraz öncesine düşebilir: aynı başlangıca tekrar
+        // tekrar atlamak videoyu dondurur, o yüzden ancak başlangıç değişince yeniden atlanır
+        var seekedStart = -1f
         while (true) {
             delay(40)
             val r = latestRange ?: continue
             val pos = p.currentPosition
-            if (pos >= r.endInclusive || pos < r.start - 250) {
-                p.seekTo(r.start.roundToInt())
+            if (pos >= r.endInclusive || (pos < r.start - 250 && r.start != seekedStart) || !p.isPlaying) {
+                seekPlayer(r.start)
+                seekedStart = r.start
                 if (!p.isPlaying) p.start()
             }
         }
@@ -438,11 +451,13 @@ fun StickerEditor(
                                 setOnPreparedListener { mp ->
                                     mp.setVolume(0f, 0f)   // sticker'da ses yok
                                     start()
+                                    media = mp
                                     player = this
                                 }
                             }
                         },
-                        onRelease = { it.stopPlayback() },
+                        // Bırakılan oynatıcıya dokunulmasın (serbest bırakılmış MediaPlayer hata verir)
+                        onRelease = { player = null; media = null; it.stopPlayback() },
                     )
                 }
                 if (cropMode != CropMode.FIT && tool == EditorTool.CROP) {
@@ -532,7 +547,7 @@ fun StickerEditor(
                             range = next
                             // Hangi tutamaç hareket ettiyse o ana atla (bitişte, bitişten hemen önceki an)
                             val seekTo = if (new.start != currentRange.start) next.start else next.endInclusive - 300f
-                            player?.seekTo(seekTo.coerceAtLeast(next.start).roundToInt())
+                            seekPlayer(seekTo.coerceAtLeast(next.start))
                         },
                     )
                     val selMs = (currentRange.endInclusive - currentRange.start).roundToInt()

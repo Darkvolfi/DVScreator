@@ -2,6 +2,7 @@ package io.github.darkvolfi.dvscreator.core.imaging
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -98,7 +99,18 @@ class AnimationLoader(private val context: Context) {
             // Lanczos için hedefin en az 2 katı piksele sahip olsun
             val displayLong = maxOf(info.displayWidth, info.displayHeight)
             val cropLong = crop?.let { maxOf(it.right - it.left, it.bottom - it.top) } ?: displayLong
-            val targetLongSide = (2 * (STICKER_SIZE - 2 * margin) * displayLong / cropLong.coerceAtLeast(1)).coerceAtMost(displayLong)
+            var targetLongSide = (2 * (STICKER_SIZE - 2 * margin) * displayLong / cropLong.coerceAtLeast(1)).coerceAtMost(displayLong)
+            // 4K videoda küçük kırpma tam kareyi çözünürlüğü düşürmeden çıkarıyordu (kare başına ~33 MB) ve
+            // 256 MB yığın yetmiyordu (2026-11-24). Maske yoksa yalnızca kırpılan bölge çıkarılır; maske tam kareyi
+            // istediği için (kement koordinatları tam kareye göre) orada uzun kenar sınırlanır
+            val region = if (matte == null) crop?.let { Rect(it.left, it.top, it.right, it.bottom) } else null
+            if (matte != null) targetLongSide = targetLongSide.coerceAtMost(MATTE_MAX_LONG_SIDE)
+            val displayShort = minOf(info.displayWidth, info.displayHeight).coerceAtLeast(1)
+            val f = maxOf(1, displayLong / targetLongSide.coerceAtLeast(1))
+            val framePixels = region?.let { it.width().toLong() * it.height() } ?: (displayLong.toLong() * displayShort)
+            val frameBytes = 4L * framePixels / (f * f)
+            // Büyük karede paralel işçi sayısı belleğe göre azalır
+            val workers = (Runtime.getRuntime().maxMemory() / 3 / (2 * frameBytes).coerceAtLeast(1)).toInt().coerceIn(1, FIT_WORKERS)
 
             // Hızlı yol: MediaCodec ile tek geçiş. Desteklenmeyen videoda (ör. 10-bit HDR) eski yönteme dön.
             val frames = ArrayList<ArgbImage>(count)
@@ -106,13 +118,15 @@ class AnimationLoader(private val context: Context) {
                 // Çözme sürerken önceki kareler paralel küçültülür (Lanczos kare başına onlarca ms);
                 // aynı anda en fazla FIT_WORKERS ham kare bellekte bekler
                 coroutineScope {
-                    val gate = Semaphore(FIT_WORKERS)
+                    val gate = Semaphore(workers)
                     val pending = ArrayList<Deferred<ArgbImage>>(count)
-                    VideoFrameExtractor(context).extract(uri, times, targetLongSide) { k, image ->
+                    VideoFrameExtractor(context).extract(uri, times, targetLongSide, region) { k, image ->
                         gate.acquire()
                         pending += async(Dispatchers.Default) {
                             try {
-                                StickerCanvas.fit(matteThenCrop(image, crop, info.displayWidth, matte), STICKER_SIZE, margin, fast = true)
+                                // Bölge çıkarıldıysa kare zaten kırpılmış
+                                val cropped = if (region != null) image else matteThenCrop(image, crop, info.displayWidth, matte)
+                                StickerCanvas.fit(cropped, STICKER_SIZE, margin, fast = true)
                             } finally {
                                 gate.release()
                             }
@@ -308,6 +322,8 @@ class AnimationLoader(private val context: Context) {
         private const val TAG = "WSC_LOADER"
         /** Paralel kare küçültme iş parçacığı sayısı. */
         private const val FIT_WORKERS = 4
+        /** Maskeli videoda kare uzun kenarı sınırı (model zaten küçük girdiyle çalışır). */
+        private const val MATTE_MAX_LONG_SIDE = 1920
 
         /** Kaynak videonun süresi ve kare hızı (kırpma ekranındaki tahmin için de kullanılır). */
         /** [displayWidth]×[displayHeight]: döndürme uygulanmış (ekranda görünen) çözünürlük. */

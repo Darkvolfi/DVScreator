@@ -2,6 +2,7 @@ package io.github.darkvolfi.dvscreator.core.imaging
 
 import android.content.Context
 import android.graphics.ImageFormat
+import android.graphics.Rect
 import android.media.Image
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
@@ -36,12 +37,15 @@ class VideoFrameExtractor(private val context: Context) {
 
     /**
      * @param timesMs istenen kare anları (artan sırada, kaynak zaman çizelgesinde)
+     * @param region verilirse yalnızca bu bölge çıkarılır (döndürülmüş, ekranda görünen karenin pikselleri);
+     *   küçültme katsayısı yine tam kareye göre seçilir. 4K'da tam kare ~33 MB: küçük kırpmada bellek yetmiyordu
      * @param onFrame her istenen an için bir kez çağrılır (sırayla); görüntü döndürme uygulanmış
      */
     suspend fun extract(
         uri: Uri,
         timesMs: DoubleArray,
         targetLongSide: Int,
+        region: Rect? = null,
         onFrame: suspend (index: Int, image: ArgbImage) -> Unit,
     ) {
         require(timesMs.isNotEmpty())
@@ -103,7 +107,7 @@ class VideoFrameExtractor(private val context: Context) {
                         if (info.size > 0 && pts + frameUs / 2 >= timesMs[next] * 1000) {
                             val image = codec.getOutputImage(outIndex) ?: throw UnsupportedVideoException("çıkış görüntüsü yok")
                             val argb = try {
-                                toArgb(image, targetLongSide, colors)
+                                toArgb(image, targetLongSide, colors, region?.let { unrotate(it, rotation, image.cropRect.width(), image.cropRect.height()) })
                             } finally {
                                 image.close()
                             }
@@ -171,14 +175,29 @@ class VideoFrameExtractor(private val context: Context) {
          * uzun kenar [targetLongSide]'ın altına inmeyecek şekilde). Kroma her blokta merkezden örneklenir
          * (zaten yarım çözünürlüklü).
          */
-        fun toArgb(image: Image, targetLongSide: Int, colors: ColorSpec): ArgbImage {
+        /**
+         * Ekranda görünen (döndürülmüş) karedeki [shown] bölgesini çözücü karesinin (döndürülmemiş, [w]×[h])
+         * koordinatlarına çevirir; [ArgbImage.rotate] ile aynı yönler.
+         */
+        fun unrotate(shown: Rect, rotation: Int, w: Int, h: Int): Rect {
+            val r = when (((rotation % 360) + 360) % 360) {
+                90 -> Rect(shown.top, h - shown.right, shown.bottom, h - shown.left)
+                180 -> Rect(w - shown.right, h - shown.bottom, w - shown.left, h - shown.top)
+                270 -> Rect(w - shown.bottom, shown.left, w - shown.top, shown.right)
+                else -> Rect(shown)
+            }
+            if (!r.intersect(0, 0, w, h)) r.set(0, 0, w, h)
+            return r
+        }
+
+        fun toArgb(image: Image, targetLongSide: Int, colors: ColorSpec, region: Rect? = null): ArgbImage {
             if (image.format != ImageFormat.YUV_420_888) throw UnsupportedVideoException("desteklenmeyen biçim: ${image.format}")
-            val crop = image.cropRect
-            val srcW = crop.width()
-            val srcH = crop.height()
-            val f = max(1, max(srcW, srcH) / targetLongSide)
-            val outW = srcW / f
-            val outH = srcH / f
+            val full = image.cropRect
+            // Küçültme katsayısı tam kareye göre: bölge çıkarılsa da sonuç tam kareden kırpılmışla aynı ölçekte
+            val f = max(1, max(full.width(), full.height()) / targetLongSide)
+            val crop = if (region == null) full else Rect(full.left + region.left, full.top + region.top, full.left + region.right, full.top + region.bottom)
+            val outW = max(1, crop.width() / f)
+            val outH = max(1, crop.height() / f)
 
             // Hızlı yol: C (Kotlin döngüsü debug derlemede 1280×720 kare başına ~200 ms)
             val (yp, up, vp) = image.planes
