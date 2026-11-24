@@ -103,4 +103,8 @@
     <string name="error_too_large">सबसे कम क्वालिटी में भी यह %1$s है; सीमा %2$s है। छोटा हिस्सा चुनें।</string>
     <string name="error_out_of_memory">मेमोरी कम है — छोटा वीडियो आज़माएँ।</string>
     <string name="pack_added_simple">जोड़ दिया गया।</string>
+    <string name="home_tab_quick">झटपट स्टिकर</string>
+    <string name="quick_empty">अभी कोई झटपट स्टिकर नहीं है। ऊपर “झटपट स्टिकर” से एक बनाएँ।</string>
+    <string name="sticker_add_alone">सिर्फ़ यह स्टिकर WhatsApp में जोड़ें</string>
+    <string name="sticker_add_alone_business">सिर्फ़ यह स्टिकर WhatsApp Business में जोड़ें</string>
 </resources>

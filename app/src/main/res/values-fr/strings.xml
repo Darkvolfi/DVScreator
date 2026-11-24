@@ -30,4 +30,16 @@
     <string name="settings_bg_quality_high">Haute qualité</string>
     <string name="settings_bg_quality_unknown">mesuré à la première utilisation</string>
     <string name="settings_bg_quality_text">La haute qualité préserve bien mieux les éléments fins (poteaux, antennes, canons), mais prend plusieurs fois plus de temps par photo. Le mode automatique s’adapte à la vitesse de votre téléphone. Les vidéos utilisent toujours le mode rapide.</string>
+    <string name="settings_theme">Thème</string>
+    <string name="theme_mode">Apparence</string>
+    <string name="theme_mode_system">Selon le téléphone</string>
+    <string name="theme_mode_light">Clair</string>
+    <string name="theme_mode_dark">Sombre</string>
+    <string name="theme_color">Couleur</string>
+    <string name="theme_color_phone">Couleurs du téléphone</string>
+    <string name="theme_color_green">Vert</string>
+    <string name="theme_color_blue">Bleu</string>
+    <string name="theme_color_purple">Violet</string>
+    <string name="theme_color_orange">Orange</string>
+    <string name="theme_color_red">Rouge</string>
 </resources>

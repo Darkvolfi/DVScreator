@@ -103,4 +103,8 @@
     <string name="error_too_large">En düşük kalitede bile %1$s; sınır %2$s. Daha kısa bir bölüm seçin.</string>
     <string name="error_out_of_memory">Bellek yetmedi — daha kısa bir video deneyin.</string>
     <string name="pack_added_simple">Eklendi.</string>
+    <string name="home_tab_quick">Hızlı stickerlar</string>
+    <string name="quick_empty">Henüz hızlı sticker yok. Yukarıdaki Hızlı sticker ile bir tane yap.</string>
+    <string name="sticker_add_alone">Sadece bu stickerı WhatsApp\'a ekle</string>
+    <string name="sticker_add_alone_business">Sadece bu stickerı WhatsApp Business\'a ekle</string>
 </resources>

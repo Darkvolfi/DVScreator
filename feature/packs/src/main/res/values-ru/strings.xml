@@ -103,4 +103,8 @@
     <string name="error_too_large">Даже при самом низком качестве получается %1$s; предел — %2$s. Выберите фрагмент покороче.</string>
     <string name="error_out_of_memory">Не хватает памяти — попробуйте видео покороче.</string>
     <string name="pack_added_simple">Добавлено.</string>
+    <string name="home_tab_quick">Быстрые стикеры</string>
+    <string name="quick_empty">Быстрых стикеров пока нет. Создайте с помощью «Быстрый стикер» выше.</string>
+    <string name="sticker_add_alone">Добавить только этот стикер в WhatsApp</string>
+    <string name="sticker_add_alone_business">Добавить только этот стикер в WhatsApp Business</string>
 </resources>

@@ -52,6 +52,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.darkvolfi.dvscreator.feature.packs.keyboard.KeyboardCard
 import io.github.darkvolfi.dvscreator.feature.packs.R as PacksR
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import io.github.darkvolfi.dvscreator.ui.theme.ThemeColor
+import io.github.darkvolfi.dvscreator.ui.theme.ThemeMode
+import io.github.darkvolfi.dvscreator.ui.theme.ThemeSettings
 
 /** Uygulamanın kullandığı açık kaynak bileşenler ve lisansları (Ayarlar → Hakkında). */
 private val COMPONENTS = listOf(
@@ -84,6 +92,9 @@ fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () 
 
         item { SectionTitle(stringResource(R.string.settings_language)) }
         item { LanguageCard() }
+
+        item { SectionTitle(stringResource(R.string.settings_theme)) }
+        item { ThemeCard() }
 
         item { SectionTitle(stringResource(R.string.settings_bg_quality)) }
         item { BackgroundQualityCard() }
@@ -292,6 +303,63 @@ private fun BackgroundQualityCard() {
                 }
             },
             confirmButton = { TextButton(onClick = { choosing = false }) { Text(stringResource(PacksR.string.cancel)) } },
+        )
+    }
+}
+
+/** Tema: açık/koyu (telefona göre ya da sabit) ve renk (telefonun renkleri ya da sabit paletler). Hemen uygulanır. */
+@Composable
+private fun ThemeCard() {
+    val context = LocalContext.current
+    var choosing by remember { mutableStateOf(false) }
+    val modes = listOf(
+        ThemeMode.SYSTEM to stringResource(R.string.theme_mode_system),
+        ThemeMode.LIGHT to stringResource(R.string.theme_mode_light),
+        ThemeMode.DARK to stringResource(R.string.theme_mode_dark),
+    )
+    val colors = listOfNotNull(
+        (ThemeColor.PHONE to stringResource(R.string.theme_color_phone)).takeIf { ThemeSettings.phoneColorsAvailable },
+        ThemeColor.GREEN to stringResource(R.string.theme_color_green),
+        ThemeColor.BLUE to stringResource(R.string.theme_color_blue),
+        ThemeColor.PURPLE to stringResource(R.string.theme_color_purple),
+        ThemeColor.ORANGE to stringResource(R.string.theme_color_orange),
+        ThemeColor.RED to stringResource(R.string.theme_color_red),
+    )
+    // Android 11 ve öncesinde "telefonun renkleri" yok: yeşil görünür
+    val shownColor = ThemeSettings.color.takeIf { it != ThemeColor.PHONE || ThemeSettings.phoneColorsAvailable } ?: ThemeColor.GREEN
+    val label = modes.first { it.first == ThemeSettings.mode }.second + " · " + colors.first { it.first == shownColor }.second
+
+    Card(
+        onClick = { choosing = true },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+    ) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+            Icon(painterResource(PacksR.drawable.ic_chevron_right), contentDescription = null)
+        }
+    }
+
+    if (choosing) {
+        AlertDialog(
+            onDismissRequest = { choosing = false },
+            title = { Text(stringResource(R.string.settings_theme)) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    Text(stringResource(R.string.theme_mode), style = MaterialTheme.typography.titleSmall)
+                    for ((m, name) in modes) LanguageOption(name, selected = ThemeSettings.mode == m) { ThemeSettings.setMode(context, m) }
+                    Text(stringResource(R.string.theme_color), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 12.dp))
+                    for ((c, name) in colors) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(Modifier.weight(1f)) { LanguageOption(name, selected = shownColor == c) { ThemeSettings.setColor(context, c) } }
+                            // Telefonun renkleri için örnek yok (duvar kâğıdına göre değişir)
+                            if (c != ThemeColor.PHONE) Box(Modifier.size(20.dp).clip(CircleShape).background(c.swatch))
+                        }
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { choosing = false }) { Text(stringResource(PacksR.string.ok)) } },
         )
     }
 }

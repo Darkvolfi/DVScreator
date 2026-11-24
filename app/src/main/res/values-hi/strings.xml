@@ -30,4 +30,16 @@
     <string name="settings_bg_quality_high">उच्च क्वालिटी</string>
     <string name="settings_bg_quality_unknown">पहले इस्तेमाल पर मापा गया</string>
     <string name="settings_bg_quality_text">उच्च क्वालिटी पतले हिस्सों (खंभे, एंटीना, बंदूक की नली) को बहुत बेहतर बनाए रखती है, लेकिन प्रति फोटो कई गुना अधिक समय लेती है। स्वचालित आपके फ़ोन की गति के आधार पर चुनता है। वीडियो हमेशा तेज़ मोड का उपयोग करते हैं।</string>
+    <string name="settings_theme">थीम</string>
+    <string name="theme_mode">दिखावट</string>
+    <string name="theme_mode_system">फ़ोन के अनुसार</string>
+    <string name="theme_mode_light">लाइट</string>
+    <string name="theme_mode_dark">डार्क</string>
+    <string name="theme_color">रंग</string>
+    <string name="theme_color_phone">फ़ोन के रंग</string>
+    <string name="theme_color_green">हरा</string>
+    <string name="theme_color_blue">नीला</string>
+    <string name="theme_color_purple">बैंगनी</string>
+    <string name="theme_color_orange">नारंगी</string>
+    <string name="theme_color_red">लाल</string>
 </resources>

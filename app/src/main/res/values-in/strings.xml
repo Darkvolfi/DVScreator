@@ -30,4 +30,16 @@
     <string name="settings_bg_quality_high">Kualitas tinggi</string>
     <string name="settings_bg_quality_unknown">diukur saat penggunaan pertama</string>
     <string name="settings_bg_quality_text">Kualitas tinggi mempertahankan bagian tipis (tiang, antena, laras senjata) jauh lebih baik, tetapi butuh waktu beberapa kali lebih lama per foto. Otomatis memilih berdasarkan kecepatan ponsel Anda. Video selalu menggunakan mode cepat.</string>
+    <string name="settings_theme">Tema</string>
+    <string name="theme_mode">Tampilan</string>
+    <string name="theme_mode_system">Ikuti ponsel</string>
+    <string name="theme_mode_light">Terang</string>
+    <string name="theme_mode_dark">Gelap</string>
+    <string name="theme_color">Warna</string>
+    <string name="theme_color_phone">Warna ponsel</string>
+    <string name="theme_color_green">Hijau</string>
+    <string name="theme_color_blue">Biru</string>
+    <string name="theme_color_purple">Ungu</string>
+    <string name="theme_color_orange">Oranye</string>
+    <string name="theme_color_red">Merah</string>
 </resources>

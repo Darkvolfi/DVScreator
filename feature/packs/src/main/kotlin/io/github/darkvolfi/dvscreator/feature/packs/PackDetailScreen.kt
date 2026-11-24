@@ -94,6 +94,9 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
     var pendingPackage by remember { mutableStateOf<String?>(null) }
     var pendingWasAdded by remember { mutableStateOf(false) }
     val whatsApps = remember { WhatsAppIntents.installedWhatsApps(context) }
+    // Paketteki bir stickerı tek başına (hızlı sticker olarak) WhatsApp'a ekleme
+    val addAlone = rememberQuickAdder(vm)
+    val quickName = stringResource(R.string.quick_pack_name)
     val inFlight by vm.inFlight.collectAsState()
     // Düzenleme sırasında bekleyenler ve işlenmekte olanlar da yer tutar
     val room = (WhatsAppLimits.PACK_MAX_STICKERS - pack.stickers.size - queue.size - (inFlight[pack.identifier] ?: 0)).coerceAtLeast(0)
@@ -270,6 +273,11 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
             onEmojis = { vm.setEmojis(pack.identifier, sticker.imageFile, it); editing = null },
             onDelete = { vm.removeSticker(pack.identifier, sticker.imageFile); editing = null },
             onSave = { vm.repository.stickerBytes(pack.identifier, sticker.imageFile)?.let { saveToGallery(context, it) } },
+            whatsApps = whatsApps,
+            onAddAlone = { pkg ->
+                editing = null
+                vm.quickPackFromSticker(pack.identifier, sticker.imageFile, quickName) { addAlone(it, pkg) }
+            },
         )
     }
     if (renaming) {
@@ -373,6 +381,9 @@ private fun StickerDialog(
     onDelete: () -> Unit,
     /** Galeriye kaydet (Samsung Klavye'de özel sticker yapmak için). */
     onSave: () -> Unit,
+    /** Kurulu WhatsApp'lar ve stickerı paketin geri kalanı olmadan tek başına ekleme. */
+    whatsApps: List<String>,
+    onAddAlone: (String) -> Unit,
 ) {
     var selected by remember { mutableStateOf(sticker.emojis) }
     AlertDialog(
@@ -406,6 +417,11 @@ private fun StickerDialog(
                                 contentAlignment = Alignment.Center,
                             ) { Text(e, style = MaterialTheme.typography.titleLarge) }
                         }
+                    }
+                }
+                for (pkg in whatsApps) {
+                    OutlinedButton(onClick = { onAddAlone(pkg) }) {
+                        Text(stringResource(if (pkg == WhatsAppLimits.WHATSAPP_BUSINESS_PACKAGE) R.string.sticker_add_alone_business else R.string.sticker_add_alone))
                     }
                 }
                 if (StickerShare.canSaveToGallery) OutlinedButton(onClick = onSave) { Text(stringResource(R.string.save_to_gallery)) }

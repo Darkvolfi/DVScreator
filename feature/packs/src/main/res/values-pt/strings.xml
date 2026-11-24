@@ -103,4 +103,8 @@
     <string name="error_too_large">Mesmo na menor qualidade fica com %1$s; o limite é %2$s. Escolha um trecho mais curto.</string>
     <string name="error_out_of_memory">Memória insuficiente; tente um vídeo mais curto.</string>
     <string name="pack_added_simple">Adicionada.</string>
+    <string name="home_tab_quick">Figurinhas rápidas</string>
+    <string name="quick_empty">Ainda não há figurinhas rápidas. Crie uma em “Figurinha rápida” acima.</string>
+    <string name="sticker_add_alone">Adicionar apenas esta figurinha ao WhatsApp</string>
+    <string name="sticker_add_alone_business">Adicionar apenas esta figurinha ao WhatsApp Business</string>
 </resources>

@@ -103,4 +103,8 @@
     <string name="error_too_large">حتى بأقل جودة يبلغ الحجم %1$s؛ والحد %2$s. اختر جزءًا أقصر.</string>
     <string name="error_out_of_memory">الذاكرة غير كافية — جرّب فيديو أقصر.</string>
     <string name="pack_added_simple">تمت الإضافة.</string>
+    <string name="home_tab_quick">ملصقات سريعة</string>
+    <string name="quick_empty">لا توجد ملصقات سريعة بعد. أنشئ ملصقًا عبر «ملصق سريع» أعلاه.</string>
+    <string name="sticker_add_alone">إضافة هذا الملصق فقط إلى WhatsApp</string>
+    <string name="sticker_add_alone_business">إضافة هذا الملصق فقط إلى WhatsApp Business</string>
 </resources>

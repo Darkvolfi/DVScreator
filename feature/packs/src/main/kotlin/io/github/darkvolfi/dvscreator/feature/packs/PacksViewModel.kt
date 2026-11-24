@@ -216,6 +216,17 @@ class PacksViewModel(application: Application) : AndroidViewModel(application) {
 
     fun dismissQuick() { _quick.value = QuickState.Idle }
 
+    /**
+     * Paketteki bir stickerdan tek stickerlık hızlı paket açar: WhatsApp'a tek başına eklemek için
+     * (paketin tamamını eklemeden). Hızlı sekmede görünür.
+     */
+    fun quickPackFromSticker(packId: String, imageFile: String, baseName: String, onCreated: (PackManifest) -> Unit) = launchSafely {
+        val pack = packs.value.firstOrNull { it.identifier == packId } ?: return@launchSafely
+        val entry = pack.stickers.firstOrNull { it.imageFile == imageFile } ?: return@launchSafely
+        val bytes = repository.stickerBytes(packId, imageFile) ?: return@launchSafely
+        onCreated(repository.createQuickPack(bytes, entry.recipe, baseName, entry.emojis, pack.animated))
+    }
+
     /** WhatsApp'tan içe aktarma sonucu (paket kimliği → eklenen sayı, reddedilenler). */
     private val _importResult = MutableStateFlow<Map<String, ImportStatus>>(emptyMap())
     val importResult: StateFlow<Map<String, ImportStatus>> = _importResult.asStateFlow()

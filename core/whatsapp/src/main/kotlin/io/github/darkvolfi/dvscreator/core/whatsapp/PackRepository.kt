@@ -123,7 +123,10 @@ class PackRepository(context: Context) {
     }
 
     /** Tek stickerlık yeni paket açar ("[baseName] 1", "[baseName] 2"…); WhatsApp'a hemen eklenebilir. */
-    suspend fun createQuickPack(webp: ByteArray, recipe: EditRecipe, baseName: String): PackManifest = edit {
+    suspend fun createQuickPack(
+        webp: ByteArray, recipe: EditRecipe, baseName: String,
+        emojis: List<String> = listOf(DEFAULT_EMOJI), animated: Boolean = true,
+    ): PackManifest = edit {
         val n = store.packs().count { it.identifier.startsWith(QUICK_PREFIX) } + 1
         val fileName = "s_" + UUID.randomUUID().toString().replace("-", "").take(12) + ".webp"
         val pack = PackManifest(
@@ -131,8 +134,8 @@ class PackRepository(context: Context) {
             name = "$baseName $n".take(WhatsAppLimits.MAX_TEXT_LENGTH),
             publisher = DEFAULT_PUBLISHER,
             trayImageFile = TRAY_FILE,
-            animated = true,
-            stickers = listOf(StickerEntry(fileName, listOf(DEFAULT_EMOJI), recipe = recipe)),
+            animated = animated,
+            stickers = listOf(StickerEntry(fileName, emojis, recipe = recipe)),
             createdAt = System.currentTimeMillis(),
         )
         store.writeFile(pack.identifier, fileName, webp)

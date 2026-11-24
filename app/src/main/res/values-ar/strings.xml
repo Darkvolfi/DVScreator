@@ -30,4 +30,16 @@
     <string name="settings_bg_quality_high">جودة عالية</string>
     <string name="settings_bg_quality_unknown">يتم القياس عند أول استخدام</string>
     <string name="settings_bg_quality_text">تحافظ الجودة العالية على الأجزاء الدقيقة (الأعمدة، الهوائيات، فوهات الأسلحة) بشكل أفضل بكثير، ولكنها تستغرق وقتاً أطول بعدة مرات لكل صورة. يتم الاختيار التلقائي بناءً على سرعة هاتفك. تستخدم مقاطع الفيديو دائماً الوضع السريع.</string>
+    <string name="settings_theme">المظهر</string>
+    <string name="theme_mode">النمط</string>
+    <string name="theme_mode_system">تلقائي حسب الهاتف</string>
+    <string name="theme_mode_light">فاتح</string>
+    <string name="theme_mode_dark">داكن</string>
+    <string name="theme_color">اللون</string>
+    <string name="theme_color_phone">ألوان الهاتف</string>
+    <string name="theme_color_green">أخضر</string>
+    <string name="theme_color_blue">أزرق</string>
+    <string name="theme_color_purple">أرجواني</string>
+    <string name="theme_color_orange">برتقالي</string>
+    <string name="theme_color_red">أحمر</string>
 </resources>

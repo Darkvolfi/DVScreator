@@ -32,6 +32,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -84,6 +87,9 @@ private fun PackListScreen(
     modifier: Modifier,
 ) {
     var creating by remember { mutableStateOf(false) }
+    var showQuick by rememberSaveable { mutableStateOf(false) }
+    var selectedQuick by rememberSaveable { mutableStateOf<String?>(null) }
+    val (quickPacks, regular) = remember(packs) { packs.partition { it.isQuick } }
     val context = LocalContext.current
     val quickPicker = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) vm.onQuickPicked(StickerSource(uri, context.contentResolver.getType(uri) ?: "image/*"))
@@ -131,24 +137,42 @@ private fun PackListScreen(
             }
         }
         if (!keyboardReady) item { KeyboardCard() }
+        // Hızlı stickerlar (her biri tek stickerlık paket) paket listesini doldurmasın: ayrı sekmede sticker olarak
         item {
-            Text(
-                stringResource(R.string.packs_title),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 8.dp),
-            )
+            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                SegmentedButton(
+                    selected = !showQuick, onClick = { showQuick = false },
+                    shape = SegmentedButtonDefaults.itemShape(0, 2),
+                    label = { Text(stringResource(R.string.packs_title) + " (${regular.size})") },
+                )
+                SegmentedButton(
+                    selected = showQuick, onClick = { showQuick = true },
+                    shape = SegmentedButtonDefaults.itemShape(1, 2),
+                    label = { Text(stringResource(R.string.home_tab_quick) + " (${quickPacks.size})") },
+                )
+            }
         }
-        if (packs.isEmpty()) {
+        val empty = if (showQuick) quickPacks.isEmpty() else regular.isEmpty()
+        if (empty) {
             item {
                 Text(
-                    stringResource(R.string.packs_empty),
+                    stringResource(if (showQuick) R.string.quick_empty else R.string.packs_empty),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
-        // En yeni paket üstte
-        items(packs.asReversed(), key = { it.identifier }) { pack -> PackRow(vm, pack, onClick = { onOpen(pack.identifier) }) }
+        // En yeni üstte
+        if (showQuick) {
+            items(quickPacks.asReversed().chunked(QUICK_COLUMNS), key = { row -> row.first().identifier }) { row ->
+                QuickStickerRow(vm, row, onSelect = { selectedQuick = it.identifier })
+            }
+        } else {
+            items(regular.asReversed(), key = { it.identifier }) { pack -> PackRow(vm, pack, onClick = { onOpen(pack.identifier) }) }
+        }
+    }
+    quickPacks.firstOrNull { it.identifier == selectedQuick }?.let { pack ->
+        QuickStickerDialog(pack, vm, onDismiss = { selectedQuick = null })
     }
     if (creating) {
         NameDialog(

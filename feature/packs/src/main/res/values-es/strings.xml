@@ -103,4 +103,8 @@
     <string name="error_too_large">Incluso con la calidad más baja ocupa %1$s; el límite es %2$s. Elige una parte más corta.</string>
     <string name="error_out_of_memory">No hay suficiente memoria; prueba con un vídeo más corto.</string>
     <string name="pack_added_simple">Añadido.</string>
+    <string name="home_tab_quick">Stickers rápidos</string>
+    <string name="quick_empty">Aún no hay stickers rápidos. Crea uno con “Sticker rápido” arriba.</string>
+    <string name="sticker_add_alone">Añadir solo este sticker a WhatsApp</string>
+    <string name="sticker_add_alone_business">Añadir solo este sticker a WhatsApp Business</string>
 </resources>

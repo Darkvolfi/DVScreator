@@ -33,4 +33,16 @@
     <string name="settings_bg_quality_high">High quality</string>
     <string name="settings_bg_quality_unknown">measured on first use</string>
     <string name="settings_bg_quality_text">High quality keeps thin parts (poles, antennas, gun barrels) much better, but takes several times longer per photo. Automatic picks based on your phone’s speed. Videos always use fast mode.</string>
+    <string name="settings_theme">Theme</string>
+    <string name="theme_mode">Appearance</string>
+    <string name="theme_mode_system">Follow phone</string>
+    <string name="theme_mode_light">Light</string>
+    <string name="theme_mode_dark">Dark</string>
+    <string name="theme_color">Color</string>
+    <string name="theme_color_phone">Phone colors</string>
+    <string name="theme_color_green">Green</string>
+    <string name="theme_color_blue">Blue</string>
+    <string name="theme_color_purple">Purple</string>
+    <string name="theme_color_orange">Orange</string>
+    <string name="theme_color_red">Red</string>
 </resources>

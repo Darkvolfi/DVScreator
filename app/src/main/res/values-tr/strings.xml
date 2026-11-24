@@ -30,4 +30,16 @@
     <string name="settings_bg_quality_high">Yüksek kalite</string>
     <string name="settings_bg_quality_unknown">ilk kullanımda ölçülür</string>
     <string name="settings_bg_quality_text">Yüksek kalite ince parçaları (direk, anten, namlu) çok daha iyi korur ama fotoğraf başına birkaç kat uzun sürer. Otomatik, telefonun hızına göre seçer. Videolar her zaman hızlı modda işlenir.</string>
+    <string name="settings_theme">Tema</string>
+    <string name="theme_mode">Görünüm</string>
+    <string name="theme_mode_system">Telefona göre</string>
+    <string name="theme_mode_light">Açık</string>
+    <string name="theme_mode_dark">Koyu</string>
+    <string name="theme_color">Renk</string>
+    <string name="theme_color_phone">Telefonun renkleri</string>
+    <string name="theme_color_green">Yeşil</string>
+    <string name="theme_color_blue">Mavi</string>
+    <string name="theme_color_purple">Mor</string>
+    <string name="theme_color_orange">Turuncu</string>
+    <string name="theme_color_red">Kırmızı</string>
 </resources>
