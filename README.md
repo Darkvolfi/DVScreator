@@ -19,7 +19,7 @@ An open-source Android app for making WhatsApp stickers from your photos, videos
 
 ## Download
 
-Get the latest APK from [Releases](https://github.com/Darkvolfi/DVScreator/releases). `arm64-v8a` works on almost every phone; `armeabi-v7a` is for older 32-bit phones and `x86_64` for emulators.
+Get it on [Google Play](https://play.google.com/store/apps/details?id=io.github.darkvolfi.dvscreator), or download the latest APK from [Releases](https://github.com/Darkvolfi/DVScreator/releases). `arm64-v8a` works on almost every phone; `armeabi-v7a` is for older 32-bit phones and `x86_64` for emulators.
 
 Requires Android 7.0 or newer.
 
