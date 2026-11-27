@@ -65,7 +65,7 @@ internal fun QuickStickerScreen(state: QuickState, vm: PacksViewModel, modifier:
         return
     }
     Column(
-        modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
+        modifier.readableWidth().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(stringResource(R.string.quick_title), style = MaterialTheme.typography.headlineSmall)

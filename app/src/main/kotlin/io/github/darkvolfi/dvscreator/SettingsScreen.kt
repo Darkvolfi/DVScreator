@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.darkvolfi.dvscreator.feature.packs.keyboard.KeyboardCard
+import io.github.darkvolfi.dvscreator.feature.packs.readableWidth
 import io.github.darkvolfi.dvscreator.feature.packs.R as PacksR
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -84,7 +85,7 @@ fun SettingsScreen(onBack: () -> Unit, onOpenLicense: () -> Unit, onOpenLab: () 
     val context = LocalContext.current
     val version = remember { runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull().orEmpty() }
     LazyColumn(
-        modifier.fillMaxSize(),
+        modifier.readableWidth(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

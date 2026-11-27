@@ -82,7 +82,7 @@ internal fun ImportScreen(
         }
     }
 
-    Column(modifier.fillMaxSize().padding(horizontal = 12.dp)) {
+    Column(modifier.readableWidth(960.dp).padding(horizontal = 12.dp)) {
         Row(Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = onClose) { Text("‹ " + stringResource(R.string.back)) }
             Text(stringResource(R.string.import_title), style = MaterialTheme.typography.titleLarge)

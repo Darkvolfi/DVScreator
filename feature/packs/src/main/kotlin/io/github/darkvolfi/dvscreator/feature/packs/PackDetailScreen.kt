@@ -161,8 +161,9 @@ internal fun PackDetailScreen(pack: PackManifest, vm: PacksViewModel, onBack: ()
     }
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = modifier.fillMaxSize().padding(horizontal = 12.dp),
+        // Sütun sayısı ekrana göre (telefonda 3, tablette daha çok)
+        columns = GridCells.Adaptive(100.dp),
+        modifier = modifier.readableWidth(960.dp).padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {

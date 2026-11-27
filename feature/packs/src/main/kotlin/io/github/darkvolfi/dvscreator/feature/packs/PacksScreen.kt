@@ -97,7 +97,7 @@ private fun PackListScreen(
     // Klavye kurulmuşsa ana ekranda yer kaplamasın (ayarlarda her zaman var)
     val keyboardReady = remember { isStickerKeyboardEnabled(context) }
     LazyColumn(
-        modifier.fillMaxSize(),
+        modifier.readableWidth(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

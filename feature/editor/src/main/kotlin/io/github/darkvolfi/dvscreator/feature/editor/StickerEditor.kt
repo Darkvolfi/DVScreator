@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -369,15 +371,14 @@ fun StickerEditor(
     }
 
     Column(modifier.fillMaxSize()) {
-    Column(
-        Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text(stringResource(R.string.editor_title), style = MaterialTheme.typography.titleLarge)
-
+    // Yatayda (tablet, yan çevrilmiş telefon) önizleme solda, araçlar sağda: alt alta dizilince kare önizleme
+    // ekrana sığmıyor, araçlara uzun kaydırmayla ulaşılıyordu
+    BoxWithConstraints(Modifier.weight(1f)) {
+    val wide = maxWidth > maxHeight && maxWidth >= WIDE_MIN_WIDTH
+    val preview: @Composable (Modifier) -> Unit = { boxModifier ->
         // Önizleme: kare alan içinde kaynağın en-boy oranında kutu; kırpma çerçevesi aynı kutunun üzerinde
         Box(
-            Modifier.fillMaxWidth().aspectRatio(1f).background(Color.Black).clipToBounds()
+            boxModifier.background(Color.Black).clipToBounds()
                 .onSizeChanged { previewPx = it.width.toFloat() }
                 .then(if (tool != EditorTool.CROP) Modifier else Modifier.pointerInput(Unit) {
                     // Initial: tek parmak çerçeveye kalır, iki parmak ondan önce yakalanır
@@ -466,7 +467,9 @@ fun StickerEditor(
             }
             }
         }
+    }
 
+    val tools: @Composable ColumnScope.() -> Unit = {
         // Araçlar üç sekmede: Kırp (çerçeve, döndür, süre) · Kes (arka plan, kement, değnek, fırça) · Süsle (yazı, kenar, boşluk)
         val group = when (tool) {
             EditorTool.CROP -> ToolGroup.CROP
@@ -692,6 +695,30 @@ fun StickerEditor(
         }
     }
 
+    val title = stringResource(R.string.editor_title)
+    if (wide) {
+        Row(Modifier.fillMaxSize().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(title, style = MaterialTheme.typography.titleLarge)
+                preview(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true))
+            }
+            Column(
+                Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) { tools() }
+        }
+    } else {
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(title, style = MaterialTheme.typography.titleLarge)
+            preview(Modifier.fillMaxWidth().aspectRatio(1f))
+            tools()
+        }
+    }
+    }
+
     // Ana işlem her sekmede görünür: kaydırılan alanın dışında, ekranın altında sabit
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         if (remaining > 1) {
@@ -802,6 +829,8 @@ private fun frameFocusPan(crop: CropFrame, sourceW: Int, sourceH: Int, rotation:
 }
 
 private const val MAX_CROP_ZOOM = 8f
+/** Bundan geniş ve yatay alanda önizleme ile araçlar yan yana. */
+private val WIDE_MIN_WIDTH = 560.dp
 private const val MIN_MS = 500
 /** Bu süreden uzun seçimde "daha az net olabilir" uyarısı (500 KB sınırına sığmak için kalite düşer). */
 private const val LONG_CLIP_MS = 6000
